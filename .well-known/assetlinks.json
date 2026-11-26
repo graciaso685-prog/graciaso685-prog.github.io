@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.graciaso685prog.glimmermaze",
+      "sha256_cert_fingerprints": [
+        "E3:31:4D:9F:DE:C7:FE:87:A8:45:07:DE:B0:AE:FE:08:B7:76:27:1C:26:66:EF:C1:45:53:6C:51:E3:5A:DF:73",
+        "B8:CC:51:D7:6F:2D:33:C8:69:E5:B0:79:84:3F:CA:85:D6:5B:C0:7D:05:93:19:40:6B:AF:D0:54:4A:BE:99:D7"
+      ]
+    }
+  }
+]
