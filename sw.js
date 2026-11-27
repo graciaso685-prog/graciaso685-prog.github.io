@@ -1,8 +1,8 @@
 // Studiom : met le site en cache pour qu'il s'ouvre même hors connexion.
-// Ne touche pas au jeu Glimmer Maze ni aux pages légales (/number--merge-privacy/), qui ont leurs propres règles.
-const CACHE = 'studiom-v3';
+// Ne touche pas au jeu Glimmer Maze (/glimmer-maze/) ni aux pages légales de Merge it, qui ont leurs propres règles.
+const CACHE = 'studiom-v4';
 const FILES = ['/', '/site-texts.js', '/studiom-fb.js', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png', '/icons/apple-touch-icon.png', '/icons/favicon-48.png', '/brand/logo-s.webp', '/brand/logo-studiom.webp',
-  '/number--merge-privacy/glimmer-maze/icons/icon-192.png', '/number--merge-privacy/glimmer-maze/icons/icon-512.png'];
+  '/glimmer-maze/icons/icon-192.png', '/glimmer-maze/icons/icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
