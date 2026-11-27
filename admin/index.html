@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="fr" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#081630">
+<title>Studiom Admin</title>
+<link rel="manifest" href="/admin/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/admin/icon-192.png">
+<link rel="apple-touch-icon" href="/admin/icon-192.png">
+<style>
+/* Layout : barre du haut (Site / Glimmer Maze), puis sous-onglets, puis cartes empilées. Pensé pour le téléphone. */
+:root{
+  --bg:#081630; --surface:#0f2246; --surface2:#15305e; --ink:#e8f0fb; --muted:#9bb0cc; --line:#223f6e;
+  --brand:#64b5f6; --sun:#ffd54f; --sun-ink:#2b1f00; --ok:#66bb6a; --bad:#ef5350; --lamp:#ffc56b;
+  --body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+body{padding:0 max(14px,env(safe-area-inset-right,0px)) 40px max(14px,env(safe-area-inset-left,0px))}
+.wrap{max-width:760px;margin:0 auto}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(env(safe-area-inset-top,0px) + 12px) 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+header img{width:30px;height:30px}
+header h1{font-size:17px;margin:0;flex:1}
+header .who{font-size:12px;color:var(--muted);text-align:right}
+.seg{display:flex;gap:6px;margin:12px 0}
+.seg button{flex:1;border:1px solid var(--line);background:transparent;color:var(--muted);font:600 14px var(--body);padding:10px;border-radius:12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#06203d;border-color:var(--brand)}
+.sub{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px}
+.sub button{border:0;background:var(--surface);color:var(--muted);font:600 13px var(--body);padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.sub button[aria-pressed="true"]{background:var(--sun);color:var(--sun-ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.card h2{font-size:15px;margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi b{display:block;font-size:24px;font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi span{font-size:12px;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;padding-top:6px}
+.bars div{flex:1;min-width:3px;background:var(--brand);border-radius:3px 3px 0 0;position:relative}
+.bars div.zero{background:var(--line);height:2px!important}
+.axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 6px;border-top:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:12px}
+td.n,th.n{text-align:right}
+.tbl{overflow-x:auto}
+.meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:50px}
+.meter i{display:block;height:100%;background:var(--ok)}
+button.btn,a.btn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--brand);color:#06203d;font:600 14px var(--body);padding:10px 16px;border-radius:12px;cursor:pointer;text-decoration:none}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.danger{background:transparent;color:var(--bad);border:1px solid var(--bad)}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--sun);outline-offset:2px}
+label.f{display:grid;gap:4px;margin-bottom:10px;font-size:13px;color:var(--muted)}
+input,select,textarea{font:15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+textarea{resize:vertical;min-height:70px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.msg{border-top:1px solid var(--line);padding:12px 0}
+.msg:first-of-type{border-top:0}
+.msg.unread .mtext{font-weight:600}
+.msg .mhead{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
+.msg .mtext{white-space:pre-wrap;margin:6px 0 8px;word-break:break-word}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--sun);color:var(--sun-ink);font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);translate:-50% 0;background:var(--surface2);border:1px solid var(--line);padding:10px 16px;border-radius:999px;font-size:14px;z-index:9}
+.center{min-height:70vh;display:grid;place-items:center;text-align:center}
+.center .box{max-width:420px;display:grid;gap:14px;justify-items:center}
+code{font-size:13px;background:var(--bg);padding:6px 8px;border-radius:8px;user-select:all;word-break:break-all;display:inline-block}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="/brand/logo-s.webp" alt="" width="30" height="30">
+    <h1>Studiom Admin</h1>
+    <div class="who" id="who"></div>
+  </header>
+
+  <div id="screen-msg" class="center" hidden><div class="box" id="msgbox"></div></div>
+
+  <div id="app" hidden>
+    <div class="seg" role="group" aria-label="Espace">
+      <button type="button" data-space="site" aria-pressed="true">Site Studiom</button>
+      <button type="button" data-space="glimmer" aria-pressed="false">Glimmer Maze</button>
+    </div>
+    <div class="sub" id="sub" role="group" aria-label="Section"></div>
+    <div id="view"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/firebase-config.js"></script>
+<script src="/site-texts.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var fmtN = function (n) { return (n || 0).toLocaleString('fr-FR'); };
+  var LANGS = { fr: 'Français', en: 'English', es: 'Español', pt: 'Português', de: 'Deutsch', ru: 'Русский', zh: '中文', mn: 'Монгол' };
+  var PAGES = { accueil: 'Accueil', projets: 'Projets', projet_merge_it: 'Fiche Merge it', projet_pouls: 'Fiche Pouls', projet_glimmer_maze: 'Fiche Glimmer Maze', studio: 'Le studio', contact: 'Contact' };
+  var CATALOG = [
+    ['Lampes', [['ambre', 'Ambre', 0], ['lune', 'Lune', 25], ['glacier', 'Glacier', 50], ['lilas', 'Lilas', 80], ['rose', 'Rose', 120], ['soleil', 'Soleil', 160], ['prisme', 'Prisme', 300]]],
+    ['Explorateurs', [['sk-classique', 'Classique', 0], ['sk-renard', 'Renard', 40], ['sk-chat', 'Chat', 60], ['sk-robot', 'Robot', 100], ['sk-fantome', 'Fantôme', 180]]],
+    ['Traînées', [['tr-aucune', 'Aucune', 0], ['tr-poussiere', 'Poussière', 20], ['tr-etincelles', 'Étincelles', 60], ['tr-petales', 'Pétales', 90], ['tr-etoiles', 'Étoiles', 140]]]
+  ];
+  var RC_DEFAULT = { starBonus: 5, batDrain: 2.6, batRecharge: 3.5, hunterSpeed: 1, revealBase: 4 };
+
+  function toast(t) {
+    var el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); el.textContent = t;
+    document.body.appendChild(el); setTimeout(function () { el.remove(); }, 2200);
+  }
+  function showMsg(html) { $('app').hidden = true; $('screen-msg').hidden = false; $('msgbox').innerHTML = html; }
+
+  // ---------- Connexion ----------
+  var C = window.STUDIOM_FIREBASE || {};
+  if (!C.projectId || !C.apiKey) {
+    showMsg('<h2>Firebase n\'est pas encore configuré</h2><p class="muted">Remplis le fichier <code>firebase-config.js</code> à la racine du site avec la configuration de ton projet Firebase, puis recharge cette page.</p>');
+    return;
+  }
+  firebase.initializeApp(C);
+  var auth = firebase.auth(), db = firebase.firestore();
+  var FV = firebase.firestore.FieldValue;
+
+  function signIn() {
+    var p = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(p).catch(function (e) {
+      if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) auth.signInWithRedirect(p);
+      else toast('Connexion impossible : ' + (e && e.code || 'erreur'));
+    });
+  }
+  auth.onAuthStateChanged(function (u) {
+    if (!u) {
+      $('who').textContent = '';
+      showMsg('<img src="/brand/logo-s.webp" alt="" width="72" height="72"><h2>Studiom Admin</h2><p class="muted">Connecte-toi avec le compte Google administrateur.</p><button class="btn" type="button" id="signin">Se connecter avec Google</button>');
+      $('signin').onclick = signIn;
+      return;
+    }
+    $('who').innerHTML = esc(u.email || '') + '<br><a href="#" id="out" style="color:var(--muted)">Déconnexion</a>';
+    $('out').onclick = function (e) { e.preventDefault(); auth.signOut(); };
+    db.doc('admins/' + u.uid).get().then(function (d) {
+      if (!d.exists) throw new Error('not-admin');
+      $('screen-msg').hidden = true; $('app').hidden = false; render();
+    }).catch(function () {
+      showMsg('<h2>Accès refusé</h2><p class="muted">Ce compte n\'est pas administrateur. Pour l\'autoriser, crée dans Firestore un document <code>admins/' + esc(u.uid) + '</code> (vide).</p><p class="small muted">Ton identifiant (UID) :</p><code>' + esc(u.uid) + '</code><button class="btn ghost" type="button" id="retry">Réessayer</button>');
+      $('retry').onclick = function () { location.reload(); };
+    });
+  });
+
+  // ---------- Navigation ----------
+  var SECTIONS = { site: [['stats', 'Statistiques'], ['messages', 'Messages'], ['content', 'Contenu']], glimmer: [['gstats', 'Statistiques'], ['settings', 'Réglages'], ['announce', 'Annonce']] };
+  var space = 'site', section = 'stats';
+  document.querySelectorAll('[data-space]').forEach(function (b) {
+    b.onclick = function () { space = b.dataset.space; section = SECTIONS[space][0][0]; render(); };
+  });
+  function render() {
+    document.querySelectorAll('[data-space]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.space === space)); });
+    $('sub').innerHTML = SECTIONS[space].map(function (s) { return '<button type="button" data-sec="' + s[0] + '" aria-pressed="' + (s[0] === section) + '">' + s[1] + '</button>'; }).join('');
+    $('sub').querySelectorAll('[data-sec]').forEach(function (b) { b.onclick = function () { section = b.dataset.sec; render(); }; });
+    $('view').innerHTML = '<p class="muted">Chargement…</p>';
+    ({ stats: siteStats, messages: messages, content: content, gstats: gameStats, settings: settings, announce: announceView })[section]();
+  }
+
+  // ---------- Outils statistiques ----------
+  var period = 7;
+  function days(n) { var a = []; for (var i = n - 1; i >= 0; i--) { var d = new Date(Date.now() - i * 864e5); a.push(d.toISOString().slice(0, 10)); } return a; }
+  function loadDays(col, n) {
+    var list = days(n);
+    return db.collection(col).where(firebase.firestore.FieldPath.documentId(), '>=', list[0]).get().then(function (q) {
+      var m = {}; q.forEach(function (d) { m[d.id] = d.data(); });
+      return list.map(function (id) { return { id: id, d: m[id] || {} }; });
+    });
+  }
+  function sumMap(rows, key) { var o = {}; rows.forEach(function (r) { var m = r.d[key] || {}; for (var k in m) o[k] = (o[k] || 0) + m[k]; }); return o; }
+  function total(rows, key) { return rows.reduce(function (s, r) { return s + (r.d[key] || 0); }, 0); }
+  function bars(rows, key, label) {
+    var max = Math.max.apply(null, rows.map(function (r) { return r.d[key] || 0; }).concat([1]));
+    return '<div class="card"><h2>' + label + ' par jour</h2><div class="bars">' + rows.map(function (r) {
+      var v = r.d[key] || 0; return '<div class="' + (v ? '' : 'zero') + '" style="height:' + (v / max * 100) + '%" title="' + r.id + ' : ' + v + '"></div>';
+    }).join('') + '</div><div class="axis"><span>' + rows[0].id.slice(5) + '</span><span>' + rows[rows.length - 1].id.slice(5) + '</span></div></div>';
+  }
+  function topTable(title, map, names) {
+    var e = Object.keys(map).map(function (k) { return [k, map[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+    if (!e.length) return '<div class="card"><h2>' + title + '</h2><p class="muted small">Aucune donnée sur la période.</p></div>';
+    return '<div class="card"><h2>' + title + '</h2><div class="tbl"><table>' + e.map(function (x) { return '<tr><td>' + esc((names && names[x[0]]) || x[0]) + '</td><td class="n">' + fmtN(x[1]) + '</td></tr>'; }).join('') + '</table></div></div>';
+  }
+  function periodPicker(cb) {
+    return '<div class="row" style="margin-bottom:12px"><span class="muted small">Période :</span>' + [7, 30, 90].map(function (n) {
+      return '<button type="button" class="btn ' + (n === period ? '' : 'ghost') + '" data-p="' + n + '">' + n + ' jours</button>';
+    }).join('') + '</div>';
+  }
+  function bindPeriod() { $('view').querySelectorAll('[data-p]').forEach(function (b) { b.onclick = function () { period = +b.dataset.p; render(); }; }); }
+
+  // ---------- Site : statistiques ----------
+  function siteStats() {
+    loadDays('siteStats', period).then(function (rows) {
+      $('view').innerHTML = periodPicker() +
+        '<div class="kpis"><div class="kpi"><b>' + fmtN(total(rows, 'visits')) + '</b><span>visites</span></div><div class="kpi"><b>' + fmtN(total(rows, 'visitors')) + '</b><span>visiteurs (par jour, cumulés)</span></div></div>' +
+        bars(rows, 'visits', 'Visites') + topTable('Pages vues', sumMap(rows, 'views'), PAGES) + topTable('Langues', sumMap(rows, 'langs'), LANGS);
+      bindPeriod();
+    }).catch(err);
+  }
+
+  // ---------- Site : messages ----------
+  function messages() {
+    db.collection('messages').orderBy('createdAt', 'desc').limit(100).get().then(function (q) {
+      var unread = 0, html = '';
+      q.forEach(function (d) {
+        var m = d.data(); if (!m.read) unread++;
+        var date = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleString('fr-FR') : '';
+        var mail = m.email ? '<a class="btn ghost" href="mailto:' + encodeURIComponent(m.email) + '?subject=' + encodeURIComponent('Re: ton message à Studiom') + '">Répondre</a>' : '';
+        html += '<div class="msg ' + (m.read ? '' : 'unread') + '"><div class="mhead"><span>' + esc(m.name || 'Anonyme') + (m.email ? ' · <span style="user-select:all">' + esc(m.email) + '</span>' : '') + '</span><span>' + esc(date) + ' · ' + esc((m.lang || '').toUpperCase()) + '</span></div>' +
+          '<p class="mtext">' + esc(m.text) + '</p><div class="row">' + mail +
+          '<button type="button" class="btn ghost" data-read="' + d.id + '" data-v="' + (m.read ? '0' : '1') + '">' + (m.read ? 'Marquer non lu' : 'Marquer lu') + '</button>' +
+          '<button type="button" class="btn danger" data-del="' + d.id + '">Supprimer</button></div></div>';
+      });
+      $('view').innerHTML = '<div class="card"><h2>Messages ' + (unread ? '<span class="pill">' + unread + ' non lu' + (unread > 1 ? 's' : '') + '</span>' : '') + '</h2>' + (html || '<p class="muted small">Aucun message pour l\'instant.</p>') + '</div>' +
+        '<p class="muted small">Rappel : la politique du site promet de supprimer les messages au plus tard 12 mois après ta réponse.</p>';
+      $('view').querySelectorAll('[data-read]').forEach(function (b) { b.onclick = function () { db.doc('messages/' + b.dataset.read).update({ read: b.dataset.v === '1' }).then(render).catch(err); }; });
+      $('view').querySelectorAll('[data-del]').forEach(function (b) {
+        b.onclick = function () {
+          if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Confirmer la suppression'; return; }
+          db.doc('messages/' + b.dataset.del).delete().then(function () { toast('Message supprimé'); render(); }).catch(err);
+        };
+      });
+    }).catch(err);
+  }
+
+  // ---------- Site : contenu ----------
+  function content() {
+    db.doc('site/content').get().then(function (d) {
+      var c = d.exists ? d.data() : {}, tx = c.texts || {};
+      var keys = Object.keys(T.fr);
+      var over = [];
+      for (var l in tx) for (var k in tx[l]) over.push([l, k, tx[l][k]]);
+      $('view').innerHTML =
+        '<div class="card"><h2>Glimmer Maze sur Google Play</h2><p class="muted small">Quand le jeu est public, colle ici son lien Play Store : « Bientôt sur Google Play » sera remplacé par un bouton de téléchargement.</p>' +
+        '<label class="f">Lien Play Store<input id="gplay" type="url" placeholder="https://play.google.com/store/apps/details?id=io.github.graciaso685prog.glimmermaze" value="' + esc(c.glimmerPlayUrl || '') + '"></label>' +
+        '<div class="row"><button class="btn" type="button" id="saveplay">Enregistrer</button><button class="btn ghost" type="button" id="fillplay">Remplir avec l\'adresse prévue</button></div></div>' +
+        '<div class="card"><h2>Modifier un texte du site</h2><div class="grid2"><label class="f">Langue<select id="tl">' + Object.keys(LANGS).map(function (l) { return '<option value="' + l + '">' + LANGS[l] + '</option>'; }).join('') + '</select></label>' +
+        '<label class="f">Texte<select id="tk">' + keys.map(function (k) { return '<option value="' + k + '">' + esc(k) + '</option>'; }).join('') + '</select></label></div>' +
+        '<p class="small muted" style="margin:0 0 6px">Texte d\'origine :</p><p class="small" id="tdef" style="margin:0 0 10px"></p>' +
+        '<label class="f">Nouveau texte<textarea id="tv"></textarea></label><div class="row"><button class="btn" type="button" id="savet">Enregistrer</button></div></div>' +
+        '<div class="card"><h2>Textes modifiés</h2>' + (over.length ? '<div class="tbl"><table><tr><th>Langue</th><th>Texte</th><th>Valeur</th><th></th></tr>' + over.map(function (o) {
+          return '<tr><td>' + o[0].toUpperCase() + '</td><td>' + esc(o[1]) + '</td><td>' + esc(o[2]) + '</td><td><button class="btn danger" type="button" data-rm="' + o[0] + '|' + o[1] + '">Rétablir</button></td></tr>';
+        }).join('') + '</table></div>' : '<p class="muted small">Aucun texte modifié : le site affiche ses textes d\'origine.</p>') + '</div>';
+      function showDef() { var l = $('tl').value, k = $('tk').value; $('tdef').textContent = (T[l] && T[l][k]) || ''; $('tv').value = (tx[l] && tx[l][k]) || ''; }
+      $('tl').onchange = showDef; $('tk').onchange = showDef; showDef();
+      $('fillplay').onclick = function () { $('gplay').value = 'https://play.google.com/store/apps/details?id=io.github.graciaso685prog.glimmermaze'; };
+      $('saveplay').onclick = function () {
+        var u = $('gplay').value.trim();
+        if (u && !/^https:\/\/play\.google\.com\//.test(u)) { toast('Le lien doit commencer par https://play.google.com/'); return; }
+        db.doc('site/content').set({ glimmerPlayUrl: u }, { merge: true }).then(function () { toast('Enregistré'); }).catch(err);
+      };
+      $('savet').onclick = function () {
+        var l = $('tl').value, k = $('tk').value, v = $('tv').value.trim();
+        if (!v) { toast('Écris un texte, ou utilise « Rétablir » pour revenir à l\'original'); return; }
+        var o = { texts: {} }; o.texts[l] = {}; o.texts[l][k] = v;
+        db.doc('site/content').set(o, { merge: true }).then(function () { toast('Texte enregistré'); render(); }).catch(err);
+      };
+      $('view').querySelectorAll('[data-rm]').forEach(function (b) {
+        b.onclick = function () { var p = b.dataset.rm.split('|'); db.doc('site/content').update(new firebase.firestore.FieldPath('texts', p[0], p[1]), FV.delete()).then(function () { toast('Texte d\'origine rétabli'); render(); }).catch(err); };
+      });
+    }).catch(err);
+  }
+
+  // ---------- Glimmer Maze : statistiques ----------
+  function gameStats() {
+    loadDays('glimmerStats', period).then(function (rows) {
+      var starts = sumMap(rows, 'starts'), wins = sumMap(rows, 'wins'), losses = sumMap(rows, 'losses'), s3 = sumMap(rows, 'stars3');
+      var lv = Object.keys(starts).concat(Object.keys(wins)).map(function (k) { return +k.slice(1); }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
+      var funnel = lv.length ? '<div class="tbl"><table><tr><th>Niveau</th><th class="n">Parties</th><th class="n">Réussies</th><th class="n">Attrapé</th><th>Taux de réussite</th><th class="n">3★</th></tr>' + lv.map(function (n) {
+        var k = 'l' + n, w = wins[k] || 0, l = losses[k] || 0, rate = w + l ? Math.round(w / (w + l) * 100) : 0;
+        return '<tr><td>' + n + '</td><td class="n">' + fmtN(starts[k]) + '</td><td class="n">' + fmtN(w) + '</td><td class="n">' + fmtN(l) + '</td><td><div class="row" style="flex-wrap:nowrap"><div class="meter" style="flex:1"><i style="width:' + rate + '%"></i></div><span class="small">' + rate + '%</span></div></td><td class="n">' + fmtN(s3[k]) + '</td></tr>';
+      }).join('') + '</table></div>' : '<p class="muted small">Aucune partie sur la période.</p>';
+      var names = {}; CATALOG.forEach(function (c) { c[1].forEach(function (it) { names[it[0].replace(/-/g, '_')] = c[0] + ' · ' + it[1]; }); });
+      $('view').innerHTML = periodPicker() +
+        '<div class="kpis"><div class="kpi"><b>' + fmtN(total(rows, 'players')) + '</b><span>joueurs (par jour, cumulés)</span></div><div class="kpi"><b>' + fmtN(total(rows, 'sessions')) + '</b><span>ouvertures du jeu</span></div><div class="kpi"><b>' + fmtN(total(rows, 'tutorialDone')) + '</b><span>tutoriels terminés</span></div></div>' +
+        bars(rows, 'players', 'Joueurs') + '<div class="card"><h2>Niveaux</h2><p class="muted small" style="margin-top:-4px">Un taux de réussite très bas montre un niveau trop difficile.</p>' + funnel + '</div>' +
+        topTable('Achats en boutique', sumMap(rows, 'purchases'), names) + topTable('Langues', sumMap(rows, 'langs'), LANGS);
+      bindPeriod();
+    }).catch(err);
+  }
+
+  // ---------- Glimmer Maze : réglages ----------
+  function settings() {
+    db.doc('glimmer/config').get().then(function (d) {
+      var c = d.exists ? d.data() : {}, pr = c.prices || {};
+      var v = function (k) { return c[k] != null ? c[k] : RC_DEFAULT[k]; };
+      var num = function (id, label, k, step, min, max, hint) {
+        return '<label class="f">' + label + ' <span class="small">(défaut ' + RC_DEFAULT[k] + ', de ' + min + ' à ' + max + ')</span><input id="' + id + '" type="number" inputmode="decimal" step="' + step + '" min="' + min + '" max="' + max + '" value="' + v(k) + '">' + (hint ? '<span class="small">' + hint + '</span>' : '') + '</label>';
+      };
+      $('view').innerHTML =
+        '<div class="card"><h2>Gameplay</h2>' +
+        num('r-star', 'Éclats par nouvelle étoile', 'starBonus', 1, 0, 100, 'Les textes du jeu parlent de « 5 éclats » : pense à les modifier si tu changes cette valeur.') +
+        num('r-drain', 'Vitesse de décharge de la lampe (%/s)', 'batDrain', 0.1, 0.5, 10) +
+        num('r-rech', 'Vitesse de recharge lampe éteinte (%/s)', 'batRecharge', 0.1, 0.5, 20) +
+        num('r-hunt', 'Vitesse des chasseurs (×)', 'hunterSpeed', 0.05, 0.5, 1.5, '1 = normal, 0.9 = 10 % plus lents, 1.1 = 10 % plus rapides.') +
+        num('r-rev', 'Aperçu du labyrinthe au niveau 1 (secondes)', 'revealBase', 0.5, 1.5, 10) + '</div>' +
+        '<div class="card"><h2>Prix de la boutique (éclats)</h2><p class="muted small" style="margin-top:-4px">Les articles gratuits restent gratuits.</p>' + CATALOG.map(function (cat) {
+          return '<p class="small muted" style="margin:10px 0 6px">' + cat[0] + '</p><div class="grid2">' + cat[1].filter(function (it) { return it[2] > 0; }).map(function (it) {
+            return '<label class="f">' + it[1] + ' <span class="small">(défaut ' + it[2] + ')</span><input type="number" min="1" step="1" inputmode="numeric" data-price="' + it[0] + '" value="' + (pr[it[0]] != null ? pr[it[0]] : it[2]) + '"></label>';
+          }).join('') + '</div>';
+        }).join('') + '</div>' +
+        '<div class="row"><button class="btn" type="button" id="saverc">Enregistrer les réglages</button><button class="btn ghost" type="button" id="resetrc">Revenir aux valeurs par défaut</button></div>' +
+        '<p class="muted small">Les joueurs reçoivent les nouveaux réglages à la prochaine ouverture du jeu avec internet.</p>';
+      $('saverc').onclick = function () {
+        var o = { starBonus: +$('r-star').value, batDrain: +$('r-drain').value, batRecharge: +$('r-rech').value, hunterSpeed: +$('r-hunt').value, revealBase: +$('r-rev').value, prices: {} };
+        for (var k in o) if (k !== 'prices' && !isFinite(o[k])) { toast('Valeur invalide'); return; }
+        $('view').querySelectorAll('[data-price]').forEach(function (i) { var n = Math.round(+i.value); if (n >= 1) o.prices[i.dataset.price] = n; });
+        o.updatedAt = FV.serverTimestamp();
+        db.doc('glimmer/config').set(o).then(function () { toast('Réglages enregistrés'); }).catch(err);
+      };
+      $('resetrc').onclick = function () {
+        if ($('resetrc').dataset.sure !== '1') { $('resetrc').dataset.sure = '1'; $('resetrc').textContent = 'Confirmer'; return; }
+        db.doc('glimmer/config').delete().then(function () { toast('Valeurs par défaut rétablies'); render(); }).catch(err);
+      };
+    }).catch(err);
+  }
+
+  // ---------- Glimmer Maze : annonce ----------
+  function announceView() {
+    db.doc('glimmer/announcement').get().then(function (d) {
+      var a = d.exists ? d.data() : { active: false, text: {} }, tx = a.text || {};
+      $('view').innerHTML = '<div class="card"><h2>Annonce affichée dans le menu du jeu</h2>' +
+        '<label class="row" style="margin-bottom:12px;cursor:pointer"><input type="checkbox" id="aact" style="width:auto"' + (a.active ? ' checked' : '') + '> Afficher l\'annonce</label>' +
+        Object.keys(LANGS).map(function (l) { return '<label class="f">' + LANGS[l] + (l === 'fr' || l === 'en' ? '' : ' <span class="small">(facultatif, sinon anglais)</span>') + '<textarea data-al="' + l + '" maxlength="300">' + esc(tx[l] || '') + '</textarea></label>'; }).join('') +
+        '<div class="row"><button class="btn" type="button" id="saveann">Publier</button></div>' +
+        '<p class="muted small">Chaque publication est montrée à nouveau à tous les joueurs, même à ceux qui avaient fermé l\'annonce précédente.</p></div>';
+      $('saveann').onclick = function () {
+        var text = {}; $('view').querySelectorAll('[data-al]').forEach(function (t) { var v = t.value.trim(); if (v) text[t.dataset.al] = v; });
+        var active = $('aact').checked;
+        if (active && !text.fr && !text.en) { toast('Écris au moins le texte en français ou en anglais'); return; }
+        db.doc('glimmer/announcement').set({ active: active, text: text, id: Date.now(), updatedAt: FV.serverTimestamp() }).then(function () { toast(active ? 'Annonce publiée' : 'Annonce masquée'); }).catch(err);
+      };
+    }).catch(err);
+  }
+
+  function err(e) {
+    console.error(e);
+    $('view').innerHTML = '<div class="card"><h2>Erreur</h2><p class="muted small">' + esc(e && (e.code || e.message) || e) + '</p><p class="muted small">Si c\'est « permission-denied », vérifie que les règles Firestore sont bien publiées et que ton compte est dans /admins.</p></div>';
+  }
+})();
+</script>
+</body>
+</html>

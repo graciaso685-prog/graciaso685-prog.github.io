@@ -1,0 +1,58 @@
+rules_version = '2';
+// Règles de sécurité Firestore pour Studiom (site, Glimmer Maze, appli admin).
+// À coller dans la console Firebase : Firestore Database → Règles → Publier.
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    // Un administrateur = un compte dont l'identifiant (UID) a un document dans /admins
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(db)/documents/admins/$(request.auth.uid));
+    }
+    function isDay(d) { return d.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'); }
+    function keysIn(list) { return request.resource.data.keys().hasOnly(list); }
+
+    // Liste des admins : chacun peut seulement vérifier son propre accès. Ajout à la main dans la console.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Contenu du site modifiable depuis l'admin (lecture publique)
+    match /site/{doc} {
+      allow read: if doc == 'content';
+      allow write: if isAdmin();
+    }
+
+    // Réglages à distance et annonce de Glimmer Maze (lecture publique)
+    match /glimmer/{doc} {
+      allow read: if doc in ['config', 'announcement'];
+      allow write: if isAdmin();
+    }
+
+    // Statistiques anonymes du site : compteurs par jour, écriture publique limitée
+    match /siteStats/{day} {
+      allow read, delete: if isAdmin();
+      allow create, update: if isDay(day) && keysIn(['visits', 'visitors', 'views', 'langs']);
+    }
+
+    // Statistiques anonymes de Glimmer Maze : compteurs par jour
+    match /glimmerStats/{day} {
+      allow read, delete: if isAdmin();
+      allow create, update: if isDay(day)
+        && keysIn(['sessions', 'players', 'tutorialDone', 'starts', 'wins', 'losses', 'stars3', 'purchases', 'langs']);
+    }
+
+    // Messages du formulaire de contact : n'importe qui peut écrire, seul l'admin lit
+    match /messages/{id} {
+      allow create: if keysIn(['name', 'email', 'text', 'lang', 'read', 'createdAt'])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 2000
+        && request.resource.data.name is string && request.resource.data.name.size() <= 100
+        && request.resource.data.email is string && request.resource.data.email.size() <= 200
+        && request.resource.data.lang is string && request.resource.data.lang.size() <= 5
+        && request.resource.data.read == false
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

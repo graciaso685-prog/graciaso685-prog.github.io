@@ -131,6 +131,14 @@ nav.tabs a[aria-current="page"] { background: var(--brand); color: var(--brand-i
 .brandlogo img { display: block; width: 100%; max-width: 320px; height: auto; margin: 0 auto 24px; }
 
 /* Contact */
+.cform { display: grid; gap: 14px; max-width: 620px; margin-top: 28px; }
+.cform label { display: grid; gap: 6px; font-weight: 600; font-size: 15px; }
+.cform input, .cform textarea { font: 16px var(--font-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; width: 100%; }
+.cform textarea { resize: vertical; min-height: 120px; }
+.cform input:focus, .cform textarea:focus { outline: 3px solid var(--sun); outline-offset: 1px; }
+.fnote { margin: 0; color: var(--muted); font-size: 14px; }
+.fstatus { margin: 0; font-weight: 600; min-height: 1.6em; }
+.fstatus.ok { color: #2e7d32; } .fstatus.err { color: #c62828; }
 .contact-card { background: var(--brand); color: var(--brand-ink); border-radius: 22px; padding: 36px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; max-width: 620px; }
 .contact-card p { margin: 0; opacity: .92; }
 .contact-card code { font: 600 clamp(15px, 3.6vw, 20px) var(--font-body); background: rgba(255,255,255,.16); padding: 12px 18px; border-radius: 12px; user-select: all; word-break: break-all; }
@@ -283,7 +291,8 @@ footer a { color: var(--muted); }
           </div>
           <div class="actions">
             <a class="btn" href="/number--merge-privacy/glimmer-maze/" target="_blank" rel="noopener" data-i="g_cta"></a>
-            <span class="soon" data-i="g_soon"></span>
+            <span class="soon" data-i="g_soon" id="g-soon"></span>
+            <a class="btn sun" id="g-play" href="#" target="_blank" rel="noopener" data-i="m_cta" hidden></a>
           </div>
           <nav class="legal" aria-label="Glimmer Maze"><a href="/number--merge-privacy/glimmer-maze/privacy.html" data-i="privacy_full"></a></nav>
         </div>
@@ -318,355 +327,29 @@ footer a { color: var(--muted); }
         <code id="mail"></code>
         <button type="button" id="copy" data-i="copy"></button>
       </div>
+      <form class="cform" id="cform" hidden novalidate>
+        <label><span data-i="form_name"></span><input id="f-name" name="name" maxlength="100" autocomplete="name"></label>
+        <label><span data-i="form_email"></span><input id="f-email" name="email" type="email" maxlength="200" autocomplete="email"></label>
+        <label><span data-i="form_msg"></span><textarea id="f-msg" name="message" maxlength="2000" rows="5" required></textarea></label>
+        <p class="fnote" data-i="form_note"></p>
+        <div class="actions"><button class="btn" type="submit" id="f-send" data-i="form_send"></button></div>
+        <p class="fstatus" id="f-status" role="status"></p>
+      </form>
     </section>
   </main>
 
   <footer>
     <span>© 2026 Studiom</span>
+    <nav><a href="/privacy.html" data-i="site_privacy"></a></nav>
   </footer>
 </div>
 
+<script src="/site-texts.js"></script>
+<script src="/firebase-config.js"></script>
+<script src="/studiom-fb.js"></script>
 <script>
 var CONTACT_EMAIL = "studiom1276@gmail.com";
 
-var T = {
-  fr: {
-    install: "Installer l'app",
-    privacy_full: "Politique de confidentialité",
-    nav_home: "Accueil", nav_projects: "Projets", nav_about: "Le studio", nav_contact: "Contact",
-    eyebrow: "Studio d'applications et de jeux mobiles · Ouagadougou",
-    h1: "Simples à prendre en main, <em>durs à lâcher.</em>",
-    lead: "Studiom crée des jeux et des applications pour Android et le web.",
-    cta_projects: "Voir nos projets",
-    projects_h: "Nos projets",
-    projects_sub: "Touche une application pour voir sa description.",
-    back: "← Projets",
-    m_sub: "Jeu Android · par Studiom",
-    m_p: "Glisse les tuiles, fusionne les nombres identiques et vise 2048, puis bien au-delà. Progresse de niveau en niveau, relève le défi du jour et grimpe dans le classement de la semaine.",
-    m_tag1: "Puzzle", m_tag2: "Android", m_tag3: "Gratuit", m_tag4: "11 langues",
-    m_cta: "Télécharger sur Google Play",
-    f1_t: "Défi du jour", f1_p: "Un nouveau défi chaque jour, avec des récompenses qui augmentent si tu reviens.",
-    f2_t: "Amis et classement", f2_p: "Ajoute des amis avec ton code, envoie-leur des cadeaux, lance un duel et vise le haut du classement.",
-    f3_t: "Boosters", f3_p: "Annule un coup, nettoie une tuile ou tente une seconde chance quand la partie semble perdue.",
-    p_sub: "Application web · par Studiom",
-    p_p: "Des cours structurés et des QCM corrigés pour réviser un peu chaque jour, avec un objectif quotidien et une série de jours. Choisis ton école et ton année : le programme s'adapte.",
-    p_tag1: "Application web", p_tag2: "Français", p_tag3: "Gratuit",
-    p_schools: "Disponible pour 5 universités",
-    p_cta: "Ouvrir Pouls",
-    g_sub: "Jeu Android et web · par Studiom",
-    g_p: "Trouve la sortie d'un labyrinthe plongé dans le noir. Ta lampe n'éclaire qu'à 60° devant toi… et révèle ta position aux chasseurs. Éteins-la pour te cacher, rallume-la pour avancer : à toi de choisir.",
-    g_tag1: "Infiltration", g_tag2: "Labyrinthe", g_tag3: "Gratuit", g_tag4: "8 langues",
-    g1_t: "Une lampe à double tranchant", g1_p: "Ta lumière te guide, mais les chasseurs la voient de loin. La batterie se vide quand elle est allumée.",
-    g2_t: "3 étoiles par niveau", g2_p: "Trouve la sortie, ne te fais jamais repérer et bats le temps cible. Un nouveau labyrinthe à chaque partie.",
-    g3_t: "Hors connexion", g3_p: "Installe-le sur ton écran d'accueil et joue même sans internet. Sans pub, sans compte.",
-    g_cta: "Jouer maintenant", g_soon: "Bientôt sur Google Play",
-    about_h: "Le studio",
-    about_p1: "Studiom est un petit studio indépendant basé à Ouagadougou, au Burkina Faso. Nous concevons, développons et publions nos projets nous-mêmes.",
-    about_p2: "Nous améliorons nos applications à chaque version, en nous appuyant sur les retours des utilisateurs.",
-    fact1_k: "Fondé", fact1_v: "2026",
-    fact2_k: "Basé à", fact2_v: "Ouagadougou, Burkina Faso",
-    fact3_k: "Plateformes", fact3_v: "Android, web",
-    fact4_k: "Projets", fact4_v: "Merge it, Pouls, Glimmer Maze",
-    contact_h: "Une question, une idée ?",
-    contact_p: "Écris-nous, nous lisons tous les messages.",
-    copy: "Copier l'adresse", copied: "Adresse copiée",
-    privacy: "Confidentialité", delete: "Suppression des données", lang_label: "Langue"
-  },
-  en: {
-    install: "Install app",
-    privacy_full: "Privacy policy",
-    nav_home: "Home", nav_projects: "Projects", nav_about: "Studio", nav_contact: "Contact",
-    eyebrow: "Mobile app and game studio · Ouagadougou",
-    h1: "Easy to pick up, <em>hard to put down.</em>",
-    lead: "Studiom makes games and apps for Android and the web.",
-    cta_projects: "See our projects",
-    projects_h: "Our projects",
-    projects_sub: "Tap an app to see its description.",
-    back: "← Projects",
-    m_sub: "Android game · by Studiom",
-    m_p: "Swipe tiles, merge matching numbers and aim for 2048 and beyond. Level up, take on the daily challenge and climb the weekly leaderboard.",
-    m_tag1: "Puzzle", m_tag2: "Android", m_tag3: "Free", m_tag4: "11 languages",
-    m_cta: "Get it on Google Play",
-    f1_t: "Daily challenge", f1_p: "A new challenge every day, with rewards that grow when you come back.",
-    f2_t: "Friends and leaderboard", f2_p: "Add friends with your code, send them gifts, start a duel and aim for the top of the board.",
-    f3_t: "Boosters", f3_p: "Undo a move, clear a tile or take a second chance when the game looks lost.",
-    p_sub: "Web app · by Studiom",
-    p_p: "Structured courses and corrected multiple-choice questions to revise a little every day, with a daily goal and a day streak. Pick your school and year: the programme adapts.",
-    p_tag1: "Web app", p_tag2: "French", p_tag3: "Free",
-    p_schools: "Available for 5 universities",
-    p_cta: "Open Pouls",
-    g_sub: "Android and web game · by Studiom",
-    g_p: "Find the way out of a maze plunged in darkness. Your lamp lights only 60° ahead… and gives your position away to the hunters. Turn it off to hide, back on to move forward: your call.",
-    g_tag1: "Stealth", g_tag2: "Maze", g_tag3: "Free", g_tag4: "8 languages",
-    g1_t: "A double-edged lamp", g1_p: "Your light guides you, but hunters see it from afar. The battery drains while it's on.",
-    g2_t: "3 stars per level", g2_p: "Find the exit, never get spotted and beat the target time. A new maze every time you play.",
-    g3_t: "Plays offline", g3_p: "Add it to your home screen and play even without internet. No ads, no account.",
-    g_cta: "Play now", g_soon: "Coming soon to Google Play",
-    about_h: "The studio",
-    about_p1: "Studiom is a small independent studio based in Ouagadougou, Burkina Faso. We design, build and publish our projects ourselves.",
-    about_p2: "We improve our apps with every release, guided by user feedback.",
-    fact1_k: "Founded", fact1_v: "2026",
-    fact2_k: "Based in", fact2_v: "Ouagadougou, Burkina Faso",
-    fact3_k: "Platforms", fact3_v: "Android, web",
-    fact4_k: "Projects", fact4_v: "Merge it, Pouls, Glimmer Maze",
-    contact_h: "A question or an idea?",
-    contact_p: "Write to us, we read every message.",
-    copy: "Copy address", copied: "Address copied",
-    privacy: "Privacy", delete: "Data deletion", lang_label: "Language"
-  },
-  es: {
-    install: "Instalar la app",
-    privacy_full: "Política de privacidad",
-    nav_home: "Inicio", nav_projects: "Proyectos", nav_about: "El estudio", nav_contact: "Contacto",
-    eyebrow: "Estudio de apps y juegos móviles · Uagadugú",
-    h1: "Fáciles de aprender, <em>difíciles de soltar.</em>",
-    lead: "Studiom crea juegos y aplicaciones para Android y la web.",
-    cta_projects: "Ver nuestros proyectos",
-    projects_h: "Nuestros proyectos",
-    projects_sub: "Toca una aplicación para ver su descripción.",
-    back: "← Proyectos",
-    m_sub: "Juego para Android · por Studiom",
-    m_p: "Desliza las fichas, fusiona los números iguales y apunta a 2048 y más allá. Sube de nivel, acepta el reto del día y escala en la clasificación semanal.",
-    m_tag1: "Puzle", m_tag2: "Android", m_tag3: "Gratis", m_tag4: "11 idiomas",
-    m_cta: "Disponible en Google Play",
-    f1_t: "Reto del día", f1_p: "Un reto nuevo cada día, con recompensas que aumentan si vuelves.",
-    f2_t: "Amigos y clasificación", f2_p: "Añade amigos con tu código, envíales regalos, lanza un duelo y apunta a lo más alto.",
-    f3_t: "Potenciadores", f3_p: "Deshaz un movimiento, elimina una ficha o usa una segunda oportunidad cuando la partida parece perdida.",
-    p_sub: "Aplicación web · por Studiom",
-    p_p: "Cursos estructurados y preguntas tipo test corregidas para repasar un poco cada día, con un objetivo diario y una racha de días. Elige tu facultad y tu curso: el programa se adapta.",
-    p_tag1: "Aplicación web", p_tag2: "En francés", p_tag3: "Gratis",
-    p_schools: "Disponible para 5 universidades",
-    p_cta: "Abrir Pouls",
-    g_sub: "Juego para Android y web · por Studiom",
-    g_p: "Encuentra la salida de un laberinto a oscuras. Tu linterna solo ilumina 60° al frente… y delata tu posición a los cazadores. Apágala para esconderte, enciéndela para avanzar: tú decides.",
-    g_tag1: "Sigilo", g_tag2: "Laberinto", g_tag3: "Gratis", g_tag4: "8 idiomas",
-    g1_t: "Una linterna de doble filo", g1_p: "Tu luz te guía, pero los cazadores la ven desde lejos. La batería se gasta mientras está encendida.",
-    g2_t: "3 estrellas por nivel", g2_p: "Encuentra la salida, que nunca te descubran y bate el tiempo objetivo. Un laberinto nuevo en cada partida.",
-    g3_t: "Sin conexión", g3_p: "Instálalo en tu pantalla de inicio y juega incluso sin internet. Sin anuncios y sin cuenta.",
-    g_cta: "Jugar ahora", g_soon: "Próximamente en Google Play",
-    about_h: "El estudio",
-    about_p1: "Studiom es un pequeño estudio independiente con sede en Uagadugú, Burkina Faso. Diseñamos, desarrollamos y publicamos nuestros proyectos nosotros mismos.",
-    about_p2: "Mejoramos nuestras aplicaciones en cada versión, gracias a los comentarios de los usuarios.",
-    fact1_k: "Fundado", fact1_v: "2026",
-    fact2_k: "Con sede en", fact2_v: "Uagadugú, Burkina Faso",
-    fact3_k: "Plataformas", fact3_v: "Android, web",
-    fact4_k: "Proyectos", fact4_v: "Merge it, Pouls, Glimmer Maze",
-    contact_h: "¿Una pregunta o una idea?",
-    contact_p: "Escríbenos, leemos todos los mensajes.",
-    copy: "Copiar la dirección", copied: "Dirección copiada",
-    privacy: "Privacidad", delete: "Eliminación de datos", lang_label: "Idioma"
-  },
-  pt: {
-    install: "Instalar o app",
-    privacy_full: "Política de privacidade",
-    nav_home: "Início", nav_projects: "Projetos", nav_about: "O estúdio", nav_contact: "Contato",
-    eyebrow: "Estúdio de apps e jogos para celular · Uagadugu",
-    h1: "Fáceis de aprender, <em>difíceis de largar.</em>",
-    lead: "A Studiom cria jogos e aplicativos para Android e para a web.",
-    cta_projects: "Ver nossos projetos",
-    projects_h: "Nossos projetos",
-    projects_sub: "Toque em um aplicativo para ver a descrição.",
-    back: "← Projetos",
-    m_sub: "Jogo para Android · pela Studiom",
-    m_p: "Deslize as peças, junte os números iguais e mire em 2048 e além. Suba de nível, encare o desafio do dia e escale o ranking da semana.",
-    m_tag1: "Quebra-cabeça", m_tag2: "Android", m_tag3: "Grátis", m_tag4: "11 idiomas",
-    m_cta: "Baixar no Google Play",
-    f1_t: "Desafio do dia", f1_p: "Um novo desafio todo dia, com recompensas que aumentam quando você volta.",
-    f2_t: "Amigos e ranking", f2_p: "Adicione amigos com seu código, envie presentes, comece um duelo e mire no topo do ranking.",
-    f3_t: "Boosters", f3_p: "Desfaça uma jogada, limpe uma peça ou tente uma segunda chance quando a partida parecer perdida.",
-    p_sub: "Aplicativo web · pela Studiom",
-    p_p: "Aulas estruturadas e questões de múltipla escolha corrigidas para revisar um pouco todo dia, com uma meta diária e uma sequência de dias. Escolha sua faculdade e seu ano: o programa se adapta.",
-    p_tag1: "Aplicativo web", p_tag2: "Em francês", p_tag3: "Grátis",
-    p_schools: "Disponível para 5 universidades",
-    p_cta: "Abrir o Pouls",
-    g_sub: "Jogo para Android e web · pela Studiom",
-    g_p: "Encontre a saída de um labirinto no escuro. Sua lanterna só ilumina 60° à frente… e revela sua posição aos caçadores. Apague para se esconder, acenda para avançar: você decide.",
-    g_tag1: "Furtividade", g_tag2: "Labirinto", g_tag3: "Grátis", g_tag4: "8 idiomas",
-    g1_t: "Uma lanterna de dois gumes", g1_p: "Sua luz te guia, mas os caçadores a veem de longe. A bateria gasta enquanto ela está acesa.",
-    g2_t: "3 estrelas por nível", g2_p: "Encontre a saída, nunca seja descoberto e bata o tempo-alvo. Um labirinto novo a cada partida.",
-    g3_t: "Offline", g3_p: "Instale na tela inicial e jogue mesmo sem internet. Sem anúncios e sem conta.",
-    g_cta: "Jogar agora", g_soon: "Em breve no Google Play",
-    about_h: "O estúdio",
-    about_p1: "A Studiom é um pequeno estúdio independente sediado em Uagadugu, Burkina Faso. Criamos, desenvolvemos e publicamos nossos próprios projetos.",
-    about_p2: "Melhoramos nossos aplicativos a cada versão, com base no retorno dos usuários.",
-    fact1_k: "Fundado em", fact1_v: "2026",
-    fact2_k: "Sediado em", fact2_v: "Uagadugu, Burkina Faso",
-    fact3_k: "Plataformas", fact3_v: "Android, web",
-    fact4_k: "Projetos", fact4_v: "Merge it, Pouls, Glimmer Maze",
-    contact_h: "Uma pergunta ou uma ideia?",
-    contact_p: "Escreva para nós, lemos todas as mensagens.",
-    copy: "Copiar endereço", copied: "Endereço copiado",
-    privacy: "Privacidade", delete: "Exclusão de dados", lang_label: "Idioma"
-  },
-  de: {
-    install: "App installieren",
-    privacy_full: "Datenschutzerklärung",
-    nav_home: "Start", nav_projects: "Projekte", nav_about: "Das Studio", nav_contact: "Kontakt",
-    eyebrow: "Studio für Mobile-Apps und -Spiele · Ouagadougou",
-    h1: "Schnell gelernt, <em>schwer wieder weggelegt.</em>",
-    lead: "Studiom entwickelt Spiele und Apps für Android und das Web.",
-    cta_projects: "Unsere Projekte ansehen",
-    projects_h: "Unsere Projekte",
-    projects_sub: "Tippe auf eine App, um ihre Beschreibung zu sehen.",
-    back: "← Projekte",
-    m_sub: "Android-Spiel · von Studiom",
-    m_p: "Wische die Kacheln, verschmelze gleiche Zahlen und peile 2048 und mehr an. Steige Level für Level auf, nimm die Tagesherausforderung an und klettere in der Wochenrangliste nach oben.",
-    m_tag1: "Puzzle", m_tag2: "Android", m_tag3: "Kostenlos", m_tag4: "11 Sprachen",
-    m_cta: "Bei Google Play herunterladen",
-    f1_t: "Tagesherausforderung", f1_p: "Jeden Tag eine neue Herausforderung, mit Belohnungen, die wachsen, wenn du wiederkommst.",
-    f2_t: "Freunde und Rangliste", f2_p: "Füge Freunde mit deinem Code hinzu, schick ihnen Geschenke, starte ein Duell und ziel auf die Spitze.",
-    f3_t: "Booster", f3_p: "Mach einen Zug rückgängig, entferne eine Kachel oder nutze eine zweite Chance, wenn das Spiel verloren scheint.",
-    p_sub: "Web-App · von Studiom",
-    p_p: "Strukturierte Kurse und korrigierte Multiple-Choice-Fragen, um jeden Tag ein wenig zu lernen, mit Tagesziel und Lernserie. Wähle deine Hochschule und dein Studienjahr: Das Programm passt sich an.",
-    p_tag1: "Web-App", p_tag2: "Auf Französisch", p_tag3: "Kostenlos",
-    p_schools: "Verfügbar für 5 Universitäten",
-    p_cta: "Pouls öffnen",
-    g_sub: "Android- und Webspiel · von Studiom",
-    g_p: "Finde den Ausgang eines stockdunklen Labyrinths. Deine Lampe leuchtet nur 60° nach vorn … und verrät dich den Jägern. Schalte sie aus, um dich zu verstecken, und wieder ein, um weiterzukommen: Du entscheidest.",
-    g_tag1: "Schleichen", g_tag2: "Labyrinth", g_tag3: "Kostenlos", g_tag4: "8 Sprachen",
-    g1_t: "Eine zweischneidige Lampe", g1_p: "Dein Licht weist dir den Weg, aber die Jäger sehen es von Weitem. Der Akku leert sich, solange sie an ist.",
-    g2_t: "3 Sterne pro Level", g2_p: "Finde den Ausgang, lass dich nie entdecken und schlage die Zielzeit. Ein neues Labyrinth in jeder Runde.",
-    g3_t: "Offline spielbar", g3_p: "Installiere es auf deinem Startbildschirm und spiele auch ohne Internet. Ohne Werbung, ohne Konto.",
-    g_cta: "Jetzt spielen", g_soon: "Bald bei Google Play",
-    about_h: "Das Studio",
-    about_p1: "Studiom ist ein kleines unabhängiges Studio mit Sitz in Ouagadougou, Burkina Faso. Wir konzipieren, entwickeln und veröffentlichen unsere Projekte selbst.",
-    about_p2: "Wir verbessern unsere Apps mit jeder Version, gestützt auf das Feedback der Nutzer.",
-    fact1_k: "Gegründet", fact1_v: "2026",
-    fact2_k: "Sitz", fact2_v: "Ouagadougou, Burkina Faso",
-    fact3_k: "Plattformen", fact3_v: "Android, Web",
-    fact4_k: "Projekte", fact4_v: "Merge it, Pouls, Glimmer Maze",
-    contact_h: "Eine Frage oder eine Idee?",
-    contact_p: "Schreib uns, wir lesen jede Nachricht.",
-    copy: "Adresse kopieren", copied: "Adresse kopiert",
-    privacy: "Datenschutz", delete: "Datenlöschung", lang_label: "Sprache"
-  },
-  ru: {
-    install: "Установить приложение",
-    privacy_full: "Политика конфиденциальности",
-    nav_home: "Главная", nav_projects: "Проекты", nav_about: "Студия", nav_contact: "Контакты",
-    eyebrow: "Студия мобильных приложений и игр · Уагадугу",
-    h1: "Легко начать, <em>трудно оторваться.</em>",
-    lead: "Studiom создаёт игры и приложения для Android и веба.",
-    cta_projects: "Наши проекты",
-    projects_h: "Наши проекты",
-    projects_sub: "Нажми на приложение, чтобы увидеть описание.",
-    back: "← Проекты",
-    m_sub: "Игра для Android · от Studiom",
-    m_p: "Сдвигай плитки, объединяй одинаковые числа и стремись к 2048 и дальше. Проходи уровень за уровнем, принимай ежедневный вызов и поднимайся в недельном рейтинге.",
-    m_tag1: "Головоломка", m_tag2: "Android", m_tag3: "Бесплатно", m_tag4: "11 языков",
-    m_cta: "Скачать в Google Play",
-    f1_t: "Ежедневный вызов", f1_p: "Новый вызов каждый день и награды, которые растут, если ты возвращаешься.",
-    f2_t: "Друзья и рейтинг", f2_p: "Добавляй друзей по коду, отправляй им подарки, вызывай на дуэль и стремись на вершину рейтинга.",
-    f3_t: "Бустеры", f3_p: "Отмени ход, убери плитку или используй второй шанс, когда партия кажется проигранной.",
-    p_sub: "Веб-приложение · от Studiom",
-    p_p: "Структурированные курсы и тесты с разбором, чтобы понемногу повторять каждый день, с дневной целью и серией дней. Выбери свой вуз и курс — программа подстроится.",
-    p_tag1: "Веб-приложение", p_tag2: "На французском", p_tag3: "Бесплатно",
-    p_schools: "Доступно для 5 университетов",
-    p_cta: "Открыть Pouls",
-    g_sub: "Игра для Android и веба · от Studiom",
-    g_p: "Найди выход из погружённого во тьму лабиринта. Твой фонарь светит лишь на 60° вперёд… и выдаёт тебя охотникам. Выключи его, чтобы спрятаться, включи, чтобы идти дальше: выбор за тобой.",
-    g_tag1: "Стелс", g_tag2: "Лабиринт", g_tag3: "Бесплатно", g_tag4: "8 языков",
-    g1_t: "Фонарь о двух концах", g1_p: "Свет ведёт тебя, но охотники видят его издалека. Батарея садится, пока фонарь включён.",
-    g2_t: "3 звезды за уровень", g2_p: "Найди выход, ни разу не попадись на глаза и уложись в контрольное время. Новый лабиринт в каждой игре.",
-    g3_t: "Без интернета", g3_p: "Установи игру на главный экран и играй даже без сети. Без рекламы и без аккаунта.",
-    g_cta: "Играть сейчас", g_soon: "Скоро в Google Play",
-    about_h: "Студия",
-    about_p1: "Studiom — небольшая независимая студия из Уагадугу, Буркина-Фасо. Мы сами придумываем, разрабатываем и публикуем свои проекты.",
-    about_p2: "Мы улучшаем наши приложения с каждой версией, опираясь на отзывы пользователей.",
-    fact1_k: "Основана", fact1_v: "2026",
-    fact2_k: "Находится в", fact2_v: "Уагадугу, Буркина-Фасо",
-    fact3_k: "Платформы", fact3_v: "Android, веб",
-    fact4_k: "Проекты", fact4_v: "Merge it, Pouls, Glimmer Maze",
-    contact_h: "Есть вопрос или идея?",
-    contact_p: "Напиши нам — мы читаем все сообщения.",
-    copy: "Скопировать адрес", copied: "Адрес скопирован",
-    privacy: "Конфиденциальность", delete: "Удаление данных", lang_label: "Язык"
-  },
-  zh: {
-    install: "安装应用",
-    privacy_full: "隐私政策",
-    nav_home: "首页", nav_projects: "项目", nav_about: "工作室", nav_contact: "联系我们",
-    eyebrow: "移动应用与游戏工作室 · 瓦加杜古",
-    h1: "上手简单，<em>欲罢不能。</em>",
-    lead: "Studiom 为 Android 和网页打造游戏与应用。",
-    cta_projects: "查看我们的项目",
-    projects_h: "我们的项目",
-    projects_sub: "点击应用查看介绍。",
-    back: "← 项目",
-    m_sub: "Android 游戏 · Studiom 出品",
-    m_p: "滑动方块，合并相同的数字，冲击 2048 甚至更高。逐关升级，挑战每日任务，在每周排行榜上不断攀升。",
-    m_tag1: "益智", m_tag2: "Android", m_tag3: "免费", m_tag4: "11 种语言",
-    m_cta: "在 Google Play 下载",
-    f1_t: "每日挑战", f1_p: "每天都有新挑战，回来得越勤，奖励越丰厚。",
-    f2_t: "好友与排行榜", f2_p: "用你的代码添加好友，给他们送礼物，发起对决，冲上榜首。",
-    f3_t: "道具", f3_p: "撤销一步、清除一个方块，或在看似要输时再获一次机会。",
-    p_sub: "网页应用 · Studiom 出品",
-    p_p: "结构化的课程和带解析的选择题，每天复习一点，设有每日目标和连续打卡。选择你的学校和年级，学习内容随之调整。",
-    p_tag1: "网页应用", p_tag2: "法语", p_tag3: "免费",
-    p_schools: "适用于 5 所大学",
-    p_cta: "打开 Pouls",
-    g_sub: "Android 与网页游戏 · Studiom 出品",
-    g_p: "在一片漆黑的迷宫中找到出口。你的手电只照亮前方 60°……同时也会向猎人暴露你的位置。关灯隐藏，开灯前进，由你决定。",
-    g_tag1: "潜行", g_tag2: "迷宫", g_tag3: "免费", g_tag4: "8 种语言",
-    g1_t: "双刃剑般的手电", g1_p: "光为你指路，但猎人从远处就能看见。手电开着时会持续耗电。",
-    g2_t: "每关 3 颗星", g2_p: "找到出口、从未被发现、在目标时间内完成。每局都是全新的迷宫。",
-    g3_t: "离线可玩", g3_p: "添加到主屏幕，没有网络也能玩。无广告，无需账号。",
-    g_cta: "立即开玩", g_soon: "即将登陆 Google Play",
-    about_h: "工作室",
-    about_p1: "Studiom 是一家位于布基纳法索瓦加杜古的小型独立工作室。我们自主设计、开发并发布自己的项目。",
-    about_p2: "我们根据用户反馈，在每个版本中持续改进我们的应用。",
-    fact1_k: "成立于", fact1_v: "2026",
-    fact2_k: "所在地", fact2_v: "布基纳法索 瓦加杜古",
-    fact3_k: "平台", fact3_v: "Android、网页",
-    fact4_k: "项目", fact4_v: "Merge it、Pouls、Glimmer Maze",
-    contact_h: "有问题或想法？",
-    contact_p: "给我们写信，每条消息我们都会阅读。",
-    copy: "复制地址", copied: "地址已复制",
-    privacy: "隐私政策", delete: "数据删除", lang_label: "语言"
-  },
-  mn: {
-    install: "Апп суулгах",
-    privacy_full: "Нууцлалын бодлого",
-    nav_home: "Нүүр", nav_projects: "Төслүүд", nav_about: "Студи", nav_contact: "Холбоо барих",
-    eyebrow: "Гар утасны апп, тоглоомын студи · Уагадугу",
-    h1: "Сурахад хялбар, <em>орхиход хэцүү.</em>",
-    lead: "Studiom нь Android болон вэбэд зориулсан тоглоом, апп бүтээдэг.",
-    cta_projects: "Төслүүдийг үзэх",
-    projects_h: "Манай төслүүд",
-    projects_sub: "Тайлбарыг харахын тулд апп дээр дар.",
-    back: "← Төслүүд",
-    m_sub: "Android тоглоом · Studiom",
-    m_p: "Хавтангуудыг гулсуулж, ижил тоонуудыг нийлүүлээд 2048, түүнээс ч цааш зорь. Түвшин ахиулж, өдрийн сорилтыг даван туулж, долоо хоногийн жагсаалтад өгс.",
-    m_tag1: "Оньсого", m_tag2: "Android", m_tag3: "Үнэгүй", m_tag4: "11 хэл",
-    m_cta: "Google Play-ээс татах",
-    f1_t: "Өдрийн сорилт", f1_p: "Өдөр бүр шинэ сорилт, эргэж ирэх тусам шагнал нэмэгдэнэ.",
-    f2_t: "Найзууд ба жагсаалт", f2_p: "Кодоороо найз нэмж, бэлэг илгээж, тулаан эхлүүлээд жагсаалтын оргилд хүр.",
-    f3_t: "Туслах хэрэгслүүд", f3_p: "Нүүдлээ буцаах, хавтан арилгах эсвэл тоглолт ялагдах шиг болоход дахин боломж ашигла.",
-    p_sub: "Вэб апп · Studiom",
-    p_p: "Өдөр бүр бага багаар давтахад зориулсан бүтэцтэй хичээл, тайлбартай сонгох тест, өдрийн зорилт, өдрийн цуваатай. Сургууль, курсээ сонго: хөтөлбөр тохируулагдана.",
-    p_tag1: "Вэб апп", p_tag2: "Франц хэлээр", p_tag3: "Үнэгүй",
-    p_schools: "5 их сургуульд зориулсан",
-    p_cta: "Pouls-г нээх",
-    g_sub: "Android ба вэб тоглоом · Studiom",
-    g_p: "Харанхуй төөрдөг байшингаас гарах гарцыг ол. Чийдэн чинь зөвхөн урд талаа 60° гэрэлтүүлдэг… бас анчдад байршлыг чинь илчилдэг. Нуугдахын тулд унтраа, урагшлахын тулд асаа: шийдвэр чинийх.",
-    g_tag1: "Нууцаар", g_tag2: "Төөрдөг байшин", g_tag3: "Үнэгүй", g_tag4: "8 хэл",
-    g1_t: "Хоёр иртэй чийдэн", g1_p: "Гэрэл чинь замыг чинь заадаг ч анчид холоос хардаг. Асаалттай үед цэнэг дуусдаг.",
-    g2_t: "Түвшин бүрт 3 од", g2_p: "Гарцаа ол, хэзээ ч бүү илэр, зорилтот хугацаанд багт. Тоглолт бүрт шинэ төөрдөг байшин.",
-    g3_t: "Интернэтгүй", g3_p: "Нүүр дэлгэцэндээ суулгаад интернэтгүй ч тогло. Зар сурталчилгаагүй, бүртгэлгүй.",
-    g_cta: "Одоо тоглох", g_soon: "Удахгүй Google Play-д",
-    about_h: "Студи",
-    about_p1: "Studiom бол Буркина Фасогийн Уагадугу хотод байрладаг жижиг бие даасан студи юм. Бид төслүүдээ өөрсдөө зохиож, хөгжүүлж, нийтэлдэг.",
-    about_p2: "Хэрэглэгчдийн санал хүсэлтэд тулгуурлан аппуудаа хувилбар бүрт сайжруулдаг.",
-    fact1_k: "Үүсгэн байгуулсан", fact1_v: "2026",
-    fact2_k: "Байршил", fact2_v: "Уагадугу, Буркина Фасо",
-    fact3_k: "Платформ", fact3_v: "Android, вэб",
-    fact4_k: "Төслүүд", fact4_v: "Merge it, Pouls, Glimmer Maze",
-    contact_h: "Асуулт эсвэл санаа байна уу?",
-    contact_p: "Бидэнд бичээрэй, бид бүх захидлыг уншдаг.",
-    copy: "Хаяг хуулах", copied: "Хаяг хуулагдлаа",
-    privacy: "Нууцлал", delete: "Өгөгдөл устгах", lang_label: "Хэл"
-  }
-};
 var lang = "fr";
 
 function setLang(l) {
@@ -686,6 +369,19 @@ document.getElementById("copy").onclick = function () {
   try { navigator.clipboard.writeText(CONTACT_EMAIL).then(ok, function () { sel(); }); } catch (e) { sel(); }
   function sel() { var r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 };
+// Contenu modifiable depuis l'appli admin (dernier contenu connu appliqué tout de suite)
+var FB = window.StudiomFB && window.StudiomFB.enabled ? window.StudiomFB : null;
+function applyContent(c) {
+  if (!c) return;
+  var tx = c.texts || {};
+  for (var l in tx) if (T[l]) for (var k in tx[l]) if (typeof tx[l][k] === "string" && tx[l][k]) T[l][k] = tx[l][k];
+  var url = typeof c.glimmerPlayUrl === "string" && /^https:\/\/play\.google\.com\//.test(c.glimmerPlayUrl) ? c.glimmerPlayUrl : "";
+  document.getElementById("g-play").hidden = !url;
+  document.getElementById("g-soon").hidden = !!url;
+  if (url) document.getElementById("g-play").href = url;
+}
+try { applyContent(JSON.parse(localStorage.getItem("studiom_content") || "null")); } catch (e) {}
+
 // Langue : choix enregistré, sinon celle du téléphone, sinon anglais
 var start = null;
 try { start = localStorage.getItem("studiom_lang"); } catch (e) {}
@@ -695,6 +391,33 @@ if (!T[start]) {
   for (var i = 0; i < prefs.length; i++) { var c = String(prefs[i]).slice(0, 2).toLowerCase(); if (T[c]) { start = c; break; } }
 }
 setLang(start);
+if (FB) FB.get("site/content").then(function (c) {
+  if (!c) return;
+  try { localStorage.setItem("studiom_content", JSON.stringify(c)); } catch (e) {}
+  applyContent(c); setLang(lang);
+});
+
+// Formulaire de contact (visible seulement si Firebase est configuré)
+var form = document.getElementById("cform");
+form.hidden = !FB;
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  var st = document.getElementById("f-status"), btn = document.getElementById("f-send");
+  var msg = document.getElementById("f-msg").value.trim();
+  if (!msg) { document.getElementById("f-msg").focus(); return; }
+  btn.disabled = true; btn.textContent = T[lang].form_sending; st.className = "fstatus"; st.textContent = "";
+  FB.send("messages", { name: document.getElementById("f-name").value.trim().slice(0, 100), email: document.getElementById("f-email").value.trim().slice(0, 200), text: msg.slice(0, 2000), lang: lang, read: false })
+    .then(function () { form.reset(); st.className = "fstatus ok"; st.textContent = T[lang].form_sent; })
+    .catch(function () { st.className = "fstatus err"; st.textContent = T[lang].form_err; })
+    .then(function () { btn.disabled = false; btn.textContent = T[lang].form_send; });
+});
+
+// Statistiques anonymes : compteurs du jour (aucun identifiant, aucune adresse IP enregistrée)
+if (FB) {
+  var first = {}; first["langs." + lang] = 1; first.visits = 1;
+  if (FB.firstToday("site")) first.visitors = 1;
+  FB.count("siteStats", first);
+}
 
 // Un écran par onglet, selon le #hash. Les fiches de projet gardent l'onglet « Projets » actif.
 var views = ["accueil", "projets", "projet-merge-it", "projet-pouls", "projet-glimmer-maze", "studio", "contact"];
@@ -707,6 +430,7 @@ function route() {
     if (a.getAttribute("data-tab") === tab) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
   window.scrollTo(0, 0);
+  if (window.StudiomFB && window.StudiomFB.enabled) { var v = {}; v["views." + h.replace(/-/g, "_")] = 1; window.StudiomFB.count("siteStats", v); }
 }
 window.addEventListener("hashchange", route);
 route();

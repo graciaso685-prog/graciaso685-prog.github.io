@@ -1,7 +1,7 @@
 // Studiom : met le site en cache pour qu'il s'ouvre même hors connexion.
 // Ne touche pas au jeu Glimmer Maze ni aux pages légales (/number--merge-privacy/), qui ont leurs propres règles.
-const CACHE = 'studiom-v2';
-const FILES = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png', '/icons/apple-touch-icon.png', '/icons/favicon-48.png', '/brand/logo-s.webp', '/brand/logo-studiom.webp',
+const CACHE = 'studiom-v3';
+const FILES = ['/', '/site-texts.js', '/studiom-fb.js', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png', '/icons/apple-touch-icon.png', '/icons/favicon-48.png', '/brand/logo-s.webp', '/brand/logo-studiom.webp',
   '/number--merge-privacy/glimmer-maze/icons/icon-192.png', '/number--merge-privacy/glimmer-maze/icons/icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -27,6 +27,13 @@ self.addEventListener('fetch', e => {
   // Page d'accueil : réseau d'abord (dernière version), cache si hors connexion
   if (req.mode === 'navigate' && (url.pathname === '/' || url.pathname === '/index.html')) {
     e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put('/', copy)); return r; }).catch(() => caches.match('/')));
+    return;
+  }
+  // Configuration Firebase : toujours la dernière version (pas de cache)
+  if (url.pathname === '/firebase-config.js') return;
+  // Textes, icônes et manifeste : réseau d'abord pour les scripts, cache d'abord pour le reste
+  if (url.pathname === '/site-texts.js' || url.pathname === '/studiom-fb.js') {
+    e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return r; }).catch(() => caches.match(req)));
     return;
   }
   // Icônes et manifeste : cache d'abord
