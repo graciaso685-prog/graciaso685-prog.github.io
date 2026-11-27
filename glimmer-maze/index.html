@@ -137,8 +137,8 @@ details .rules{margin-top:10px}
 #splash .s-by{margin:0;font:700 13px var(--display);letter-spacing:.34em}
 #splash .s-by .by{color:#ffd54f}
 #splash .s-by .st{color:#64b5f6}
-#splash .s-load{position:relative;width:min(72vw,300px);padding-top:30px;margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:8px}
-#s-walker{position:absolute;top:-6px;left:0;width:40px;height:40px;transform:translateX(-50%)}
+#splash .s-load{position:relative;width:min(72vw,300px);padding-top:14px;margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:8px}
+#s-walker{position:absolute;top:18.5px;left:0;width:40px;height:40px;transform:translate(-40%,-50%);z-index:1}
 #splash .s-bar{width:100%;height:9px;border-radius:5px;background:rgba(154,152,168,.18);overflow:hidden}
 #splash .s-bar i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,rgba(255,197,107,.55),var(--lamp));box-shadow:0 0 12px rgba(255,197,107,.6)}
 #s-pct{font:600 13px var(--body);color:var(--muted);font-variant-numeric:tabular-nums}
@@ -2097,8 +2097,8 @@ details .rules{margin-top:10px}
     const hide = () => { if (done) return; done = true; el.classList.add('out'); setTimeout(() => el.remove(), 520); };
     function drawWalker(now) {
       w.clearRect(0, 0, 40, 40);
-      const bob = reduceMotion ? 0 : Math.abs(Math.sin(now / 110)) * 2.2;
-      const cx = 16, cy = 26 - bob;
+      const bob = reduceMotion ? 0 : Math.abs(Math.sin(now / 110)) * 1.2;
+      const cx = 16, cy = 20 - bob;
       const g = w.createRadialGradient(cx, cy, 2, cx, cy, 22);
       g.addColorStop(0, rgba(C.lamp, 0.55)); g.addColorStop(1, rgba(C.lamp, 0));
       w.fillStyle = g; w.beginPath(); w.moveTo(cx, cy); w.arc(cx, cy, 22, -Math.PI / 6, Math.PI / 6); w.closePath(); w.fill();
@@ -2128,7 +2128,7 @@ details .rules{margin-top:10px}
 </script>
 
 <script>
-if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=181b5b1aa8').catch(() => {}));
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=190ce9ecf5').catch(() => {}));
 </script>
 </body>
 </html>
