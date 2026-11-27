@@ -7,6 +7,11 @@
 <meta name="description" content="Studiom, studio d'applications et de jeux mobiles à Ouagadougou : Merge it, Pouls et Glimmer Maze.">
 <title>Studiom</title>
 <link rel="canonical" href="https://graciaso685-prog.github.io/">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0d47a1">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Studiom">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
@@ -96,6 +101,7 @@ nav.tabs a[aria-current="page"] { background: var(--brand); color: var(--brand-i
 .legal { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; max-width: 60ch; }
 .legal a { color: var(--muted); }
 .legal a:hover { color: var(--ink); }
+#install { margin-left: 8px; background: var(--sun); color: var(--sun-ink); border: 0; border-radius: 999px; font: 600 13px var(--font-body); padding: 7px 14px; cursor: pointer; }
 .soon { display: inline-flex; align-items: center; gap: 8px; border: 1.5px dashed var(--line); color: var(--muted); font-weight: 600; padding: 11px 18px; border-radius: 12px; font-size: 15px; }
 .detail h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.02em; margin-bottom: 4px; }
 .detail .by { color: var(--muted); margin: 0 0 18px; }
@@ -181,6 +187,7 @@ footer a { color: var(--muted); }
           <option value="mn">Монгол</option>
         </select>
       </label>
+      <button type="button" id="install" hidden data-i="install"></button>
     </nav>
   </header>
 
@@ -315,6 +322,7 @@ var CONTACT_EMAIL = "studiom1276@gmail.com";
 
 var T = {
   fr: {
+    install: "Installer l'app",
     privacy_full: "Politique de confidentialité",
     nav_home: "Accueil", nav_projects: "Projets", nav_about: "Le studio", nav_contact: "Contact",
     eyebrow: "Studio d'applications et de jeux mobiles · Ouagadougou",
@@ -356,6 +364,7 @@ var T = {
     privacy: "Confidentialité", delete: "Suppression des données", lang_label: "Langue"
   },
   en: {
+    install: "Install app",
     privacy_full: "Privacy policy",
     nav_home: "Home", nav_projects: "Projects", nav_about: "Studio", nav_contact: "Contact",
     eyebrow: "Mobile app and game studio · Ouagadougou",
@@ -397,6 +406,7 @@ var T = {
     privacy: "Privacy", delete: "Data deletion", lang_label: "Language"
   },
   es: {
+    install: "Instalar la app",
     privacy_full: "Política de privacidad",
     nav_home: "Inicio", nav_projects: "Proyectos", nav_about: "El estudio", nav_contact: "Contacto",
     eyebrow: "Estudio de apps y juegos móviles · Uagadugú",
@@ -438,6 +448,7 @@ var T = {
     privacy: "Privacidad", delete: "Eliminación de datos", lang_label: "Idioma"
   },
   pt: {
+    install: "Instalar o app",
     privacy_full: "Política de privacidade",
     nav_home: "Início", nav_projects: "Projetos", nav_about: "O estúdio", nav_contact: "Contato",
     eyebrow: "Estúdio de apps e jogos para celular · Uagadugu",
@@ -479,6 +490,7 @@ var T = {
     privacy: "Privacidade", delete: "Exclusão de dados", lang_label: "Idioma"
   },
   de: {
+    install: "App installieren",
     privacy_full: "Datenschutzerklärung",
     nav_home: "Start", nav_projects: "Projekte", nav_about: "Das Studio", nav_contact: "Kontakt",
     eyebrow: "Studio für Mobile-Apps und -Spiele · Ouagadougou",
@@ -520,6 +532,7 @@ var T = {
     privacy: "Datenschutz", delete: "Datenlöschung", lang_label: "Sprache"
   },
   ru: {
+    install: "Установить приложение",
     privacy_full: "Политика конфиденциальности",
     nav_home: "Главная", nav_projects: "Проекты", nav_about: "Студия", nav_contact: "Контакты",
     eyebrow: "Студия мобильных приложений и игр · Уагадугу",
@@ -561,6 +574,7 @@ var T = {
     privacy: "Конфиденциальность", delete: "Удаление данных", lang_label: "Язык"
   },
   zh: {
+    install: "安装应用",
     privacy_full: "隐私政策",
     nav_home: "首页", nav_projects: "项目", nav_about: "工作室", nav_contact: "联系我们",
     eyebrow: "移动应用与游戏工作室 · 瓦加杜古",
@@ -602,6 +616,7 @@ var T = {
     privacy: "隐私政策", delete: "数据删除", lang_label: "语言"
   },
   mn: {
+    install: "Апп суулгах",
     privacy_full: "Нууцлалын бодлого",
     nav_home: "Нүүр", nav_projects: "Төслүүд", nav_about: "Студи", nav_contact: "Холбоо барих",
     eyebrow: "Гар утасны апп, тоглоомын студи · Уагадугу",
@@ -686,6 +701,56 @@ function route() {
 }
 window.addEventListener("hashchange", route);
 route();
+
+// Bouton Retour du téléphone : il parcourt le site écran par écran (fiche → Projets → Accueil)
+// au lieu de quitter. Sur l'accueil, Retour quitte normalement.
+function parentOf(h) { return h.indexOf("projet-") === 0 ? "projets" : "accueil"; }
+var historyReady = false;
+function prepareHistory() {
+  // Si on arrive directement sur une page intérieure, on reconstruit le chemin depuis l'accueil.
+  // Fait au premier toucher : Chrome ignore les entrées d'historique ajoutées sans geste de l'utilisateur.
+  if (historyReady) return;
+  historyReady = true;
+  var h = (location.hash || "#accueil").slice(1);
+  if (views.indexOf(h) < 0 || h === "accueil") return;
+  try {
+    history.replaceState({ v: "accueil" }, "", "#accueil");
+    if (parentOf(h) === "projets") history.pushState({ v: "projets" }, "", "#projets");
+    history.pushState({ v: h }, "", "#" + h);
+  } catch (e) {}
+}
+addEventListener("pointerdown", prepareHistory, true);
+addEventListener("keydown", prepareHistory, true);
+// Le lien « ← Projets » d'une fiche revient en arrière au lieu d'empiler une nouvelle page
+document.querySelectorAll("a.back").forEach(function (a) {
+  a.addEventListener("click", function (e) {
+    prepareHistory();
+    if (history.state && history.state.v && history.state.v.indexOf("projet-") === 0 && history.length > 1) { e.preventDefault(); history.back(); }
+  });
+});
+// Les clics sur les menus enregistrent la page dans l'historique
+document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+  if (a.classList.contains("back")) return;
+  a.addEventListener("click", function (e) {
+    var h = a.getAttribute("href").slice(1);
+    if (views.indexOf(h) < 0) return;
+    e.preventDefault();
+    prepareHistory();
+    if (("#" + h) !== location.hash) { history.pushState({ v: h }, "", "#" + h); route(); }
+  });
+});
+window.addEventListener("popstate", route);
+
+// Application installable
+var installEvt = null;
+window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); installEvt = e; document.getElementById("install").hidden = false; });
+document.getElementById("install").onclick = function () {
+  if (!installEvt) return;
+  installEvt.prompt();
+  installEvt.userChoice.then(function () { installEvt = null; document.getElementById("install").hidden = true; });
+};
+window.addEventListener("appinstalled", function () { document.getElementById("install").hidden = true; });
+if ("serviceWorker" in navigator) window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });
 
 // Plateau décoratif de l'accueil.
 var frames = [
