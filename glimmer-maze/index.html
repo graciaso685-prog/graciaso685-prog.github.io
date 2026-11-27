@@ -88,6 +88,8 @@ details .rules{margin-top:10px}
 #screen a.linkbtn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font:800 13px var(--display);letter-spacing:.04em;padding:11px 20px;border-radius:999px;background:transparent;color:var(--ink);border:1.5px solid var(--muted)}
 #screen a.linkbtn svg{width:15px;height:15px;flex:none}
 #screen a.linkbtn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.sharecard{display:block;width:100%;max-width:300px;height:auto;border-radius:18px;align-self:center;box-shadow:0 0 50px rgba(255,197,107,.15)}
+#shStatus{min-height:1.5em;word-break:break-all;user-select:text;-webkit-user-select:text}
 #screen button.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--muted);font-size:13px;padding:11px 20px}
 #screen .levels button{align-self:stretch;padding:10px 4px 8px;border-radius:12px;background:#17161d;color:var(--ink);border:1.5px solid #2c2b35;display:flex;flex-direction:column;align-items:center;gap:4px;font:800 16px var(--display)}
 #screen .levels button.cur{border-color:var(--lamp)}
@@ -254,6 +256,13 @@ details .rules{margin-top:10px}
   const plRu = (n, one, few, many) => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many; };
   const I18N = {
     fr: {
+      share: `Partager`,
+      share_hint: `Fais découvrir le jeu : un ami scanne ce code avec l'appareil photo de son téléphone, ou tu lui envoies le lien.`,
+      share_link: `Partager le lien`,
+      share_image: `Partager l'image`,
+      copy_link: `Copier le lien`,
+      copied_link: `Lien copié !`,
+      share_text: `Je joue à Glimmer Maze : trouve la sortie d'un labyrinthe dans le noir sans te faire repérer. Essaie !`,
       website: `Site Studiom`,
       close: `Fermer`,
       level: n => `Niveau ${n}`, tutorial: `Tutoriel`, spotted: `Repéré !`, lamp: `Lampe`, maze: `Labyrinthe`,
@@ -300,6 +309,13 @@ details .rules{margin-top:10px}
       ]
     },
     en: {
+      share: `Share`,
+      share_hint: `Show the game to a friend: they scan this code with their phone camera, or you send them the link.`,
+      share_link: `Share link`,
+      share_image: `Share image`,
+      copy_link: `Copy link`,
+      copied_link: `Link copied!`,
+      share_text: `I'm playing Glimmer Maze: find the way out of a dark maze without getting spotted. Try it!`,
       website: `Studiom website`,
       close: `Close`,
       level: n => `Level ${n}`, tutorial: `Tutorial`, spotted: `Spotted!`, lamp: `Lamp`, maze: `Maze`,
@@ -346,6 +362,13 @@ details .rules{margin-top:10px}
       ]
     },
     es: {
+      share: `Compartir`,
+      share_hint: `Dale a conocer el juego: un amigo escanea este código con la cámara del móvil, o le envías el enlace.`,
+      share_link: `Compartir enlace`,
+      share_image: `Compartir imagen`,
+      copy_link: `Copiar enlace`,
+      copied_link: `¡Enlace copiado!`,
+      share_text: `Estoy jugando a Glimmer Maze: encuentra la salida de un laberinto a oscuras sin que te descubran. ¡Pruébalo!`,
       website: `Sitio de Studiom`,
       close: `Cerrar`,
       level: n => `Nivel ${n}`, tutorial: `Tutorial`, spotted: `¡Descubierto!`, lamp: `Linterna`, maze: `Laberinto`,
@@ -392,6 +415,13 @@ details .rules{margin-top:10px}
       ]
     },
     pt: {
+      share: `Compartilhar`,
+      share_hint: `Mostre o jogo para um amigo: ele escaneia este código com a câmera do celular, ou você envia o link.`,
+      share_link: `Compartilhar link`,
+      share_image: `Compartilhar imagem`,
+      copy_link: `Copiar link`,
+      copied_link: `Link copiado!`,
+      share_text: `Estou jogando Glimmer Maze: encontre a saída de um labirinto no escuro sem ser descoberto. Experimente!`,
       website: `Site da Studiom`,
       close: `Fechar`,
       level: n => `Nível ${n}`, tutorial: `Tutorial`, spotted: `Descoberto!`, lamp: `Lanterna`, maze: `Labirinto`,
@@ -438,6 +468,13 @@ details .rules{margin-top:10px}
       ]
     },
     de: {
+      share: `Teilen`,
+      share_hint: `Zeig das Spiel einem Freund: Er scannt diesen Code mit der Handykamera, oder du schickst ihm den Link.`,
+      share_link: `Link teilen`,
+      share_image: `Bild teilen`,
+      copy_link: `Link kopieren`,
+      copied_link: `Link kopiert!`,
+      share_text: `Ich spiele Glimmer Maze: Finde den Ausgang eines dunklen Labyrinths, ohne entdeckt zu werden. Probier's aus!`,
       website: `Studiom-Website`,
       close: `Schließen`,
       level: n => `Level ${n}`, tutorial: `Tutorial`, spotted: `Entdeckt!`, lamp: `Lampe`, maze: `Labyrinth`,
@@ -484,6 +521,13 @@ details .rules{margin-top:10px}
       ]
     },
     ru: {
+      share: `Поделиться`,
+      share_hint: `Покажи игру другу: пусть отсканирует этот код камерой телефона, или отправь ему ссылку.`,
+      share_link: `Поделиться ссылкой`,
+      share_image: `Поделиться картинкой`,
+      copy_link: `Скопировать ссылку`,
+      copied_link: `Ссылка скопирована!`,
+      share_text: `Я играю в Glimmer Maze: найди выход из тёмного лабиринта и не попадись. Попробуй!`,
       website: `Сайт Studiom`,
       close: `Закрыть`,
       level: n => `Уровень ${n}`, tutorial: `Обучение`, spotted: `Замечен!`, lamp: `Фонарь`, maze: `Лабиринт`,
@@ -530,6 +574,13 @@ details .rules{margin-top:10px}
       ]
     },
     zh: {
+      share: `分享`,
+      share_hint: `把游戏分享给朋友：让他们用手机相机扫描这个二维码，或者直接发送链接给他们。`,
+      share_link: `分享链接`,
+      share_image: `分享图片`,
+      copy_link: `复制链接`,
+      copied_link: `链接已复制！`,
+      share_text: `我在玩 Glimmer Maze：在黑暗的迷宫中找到出口，别被发现。快来试试！`,
       website: `Studiom 官网`,
       close: `关闭`,
       level: n => `第 ${n} 关`, tutorial: `新手教程`, spotted: `被发现了！`, lamp: `手电`, maze: `迷宫`,
@@ -576,6 +627,13 @@ details .rules{margin-top:10px}
       ]
     },
     mn: {
+      share: `Хуваалцах`,
+      share_hint: `Тоглоомоо найздаа үзүүл: тэр энэ кодыг утасныхаа камераар уншуулна, эсвэл холбоосыг илгээгээрэй.`,
+      share_link: `Холбоос хуваалцах`,
+      share_image: `Зураг хуваалцах`,
+      copy_link: `Холбоос хуулах`,
+      copied_link: `Холбоос хуулагдлаа!`,
+      share_text: `Би Glimmer Maze тоглож байна: харанхуй төөрдөг байшингаас илрэлгүй гарах гарцыг ол. Туршаад үзээрэй!`,
       website: `Studiom сайт`,
       close: `Хаах`,
       level: n => `${n}-р түвшин`, tutorial: `Сургалт`, spotted: `Илэрлээ!`, lamp: `Чийдэн`, maze: `Төөрдөг байшин`,
@@ -1105,13 +1163,14 @@ details .rules{margin-top:10px}
     showScreen(`
       <h1>Glimmer Maze</h1>
       <p>${t('tagline')}</p>
-      <div class="row"><button type="button" id="play">${save.tutorial ? t('playLevel', save.unlocked) : t('play')}</button><button type="button" class="ghost" id="tutoBtn">${t('tutoBtn')}</button><button type="button" class="ghost" id="shopBtn">${t('shopBtn')}</button><button type="button" class="ghost ic" id="langBtn">${GLOBE}${t('language')}</button><button type="button" class="ghost" id="soundBtn">${soundLabel()}</button><a class="linkbtn" href="https://graciaso685-prog.github.io/" target="_blank" rel="noopener">${EXT}${t('website')}</a></div>
+      <div class="row"><button type="button" id="play">${save.tutorial ? t('playLevel', save.unlocked) : t('play')}</button><button type="button" class="ghost" id="tutoBtn">${t('tutoBtn')}</button><button type="button" class="ghost" id="shopBtn">${t('shopBtn')}</button><button type="button" class="ghost ic" id="langBtn">${GLOBE}${t('language')}</button><button type="button" class="ghost" id="soundBtn">${soundLabel()}</button><a class="linkbtn" href="https://graciaso685-prog.github.io/" target="_blank" rel="noopener">${EXT}${t('website')}</a><button type="button" class="ghost ic" id="shareBtn">${SHARE_IC}${t('share')}</button></div>
       ${annHTML()}
       <p class="muted">${t('summary', save.shards, total, save.unlocked * 3)}</p>
       <div class="levels">${cells}</div>
       <details><summary>${t('howTo')}</summary><dl class="rules">${rules}</dl></details>`);
     $('play').onclick = () => { if (!save.tutorial) startTutorial(); else { level = save.unlocked; startLevel(); } };
     $('tutoBtn').onclick = startTutorial;
+    $('shareBtn').onclick = shareScreen;
     if ($('annClose')) $('annClose').onclick = () => { try { localStorage.setItem('gm-ann-closed', String(announce.id)); } catch (e) {} $('annClose').parentNode.remove(); };
     $('shopBtn').onclick = shop;
     $('panel').querySelectorAll('[data-lvl]').forEach(b => b.onclick = () => { level = +b.dataset.lvl; startLevel(); });
@@ -1163,6 +1222,43 @@ details .rules{margin-top:10px}
     $('back').onclick = menu;
   }
   const EXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+  const SHARE_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+  const SHARE_URL = 'https://graciaso685-prog.github.io/glimmer-maze/';
+  function shareScreen() {
+    view = 'share';
+    showScreen(`
+      <h1>${t('share')}</h1>
+      <p class="muted">${t('share_hint')}</p>
+      <img class="sharecard" src="share-card.jpg" alt="Glimmer Maze, QR code" width="1080" height="1350">
+      <div class="row">
+        <button type="button" id="shLink">${t('share_link')}</button>
+        <button type="button" class="ghost" id="shImg" hidden>${t('share_image')}</button>
+        <button type="button" class="ghost" id="shCopy">${t('copy_link')}</button>
+      </div>
+      <p class="muted" id="shStatus" role="status"></p>
+      <div class="row"><button type="button" class="ghost" id="back">${t('back')}</button></div>`);
+    const status = txt => { $('shStatus').textContent = txt; };
+    const copyLink = () => {
+      const fallback = () => { status(SHARE_URL); const r = document.createRange(); r.selectNodeContents($('shStatus')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); };
+      try { navigator.clipboard.writeText(SHARE_URL).then(() => status(t('copied_link')), fallback); } catch (e) { fallback(); }
+    };
+    $('shCopy').onclick = copyLink;
+    $('shLink').onclick = () => {
+      if (!navigator.share) return copyLink();
+      navigator.share({ title: 'Glimmer Maze', text: t('share_text'), url: SHARE_URL }).catch(e => { if (!e || e.name !== 'AbortError') copyLink(); });
+    };
+    // Partage de l'image : seulement si le téléphone sait partager des fichiers
+    let canFiles = false;
+    try { canFiles = !!(navigator.canShare && navigator.canShare({ files: [new File([''], 'x.jpg', { type: 'image/jpeg' })] })); } catch (e) {}
+    $('shImg').hidden = !canFiles;
+    $('shImg').onclick = () => {
+      fetch('share-card.jpg').then(r => r.blob()).then(b => {
+        const f = new File([b], 'glimmer-maze.jpg', { type: 'image/jpeg' });
+        return navigator.share({ files: [f], text: t('share_text') + ' ' + SHARE_URL });
+      }).catch(e => { if (!e || e.name !== 'AbortError') status(t('share_text') + ' ' + SHARE_URL); });
+    };
+    $('back').onclick = menu;
+  }
   const GLOBE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>';
   function annHTML() {
     const a = announce;
@@ -1627,7 +1723,7 @@ details .rules{margin-top:10px}
 </script>
 
 <script>
-if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=b35b4496e8').catch(() => {}));
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=a8e72f5b41').catch(() => {}));
 </script>
 </body>
 </html>

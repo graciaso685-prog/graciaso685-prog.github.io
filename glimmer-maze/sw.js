@@ -1,7 +1,7 @@
 // Généré par build.py — ne pas modifier sw.js directement.
 // Met le jeu en cache pour qu'il marche hors connexion après la première ouverture.
-const CACHE = 'glimmer-maze-b35b4496e8';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png'];
+const CACHE = 'glimmer-maze-a8e72f5b41';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png', './share-card.jpg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
