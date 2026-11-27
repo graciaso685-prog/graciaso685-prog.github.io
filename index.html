@@ -9,6 +9,7 @@
 <link rel="canonical" href="https://graciaso685-prog.github.io/">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0d47a1">
+<link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Studiom">
@@ -53,6 +54,8 @@ h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; text-wrap: bala
 
 header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; padding-block: 16px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
 .logo { font-family: var(--font-display); font-weight: 700; font-size: 24px; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+.logo { display: inline-flex; align-items: center; gap: 8px; }
+.logo img { width: 34px; height: 34px; }
 .logo b { color: var(--brand); }
 nav.tabs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 nav.tabs a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; padding: 8px 14px; border-radius: 999px; }
@@ -125,6 +128,8 @@ nav.tabs a[aria-current="page"] { background: var(--brand); color: var(--brand-i
 .facts li span:first-child { color: var(--muted); }
 .facts li span:last-child { font-weight: 600; text-align: right; }
 
+.brandlogo img { display: block; width: 100%; max-width: 320px; height: auto; margin: 0 auto 24px; }
+
 /* Contact */
 .contact-card { background: var(--brand); color: var(--brand-ink); border-radius: 22px; padding: 36px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; max-width: 620px; }
 .contact-card p { margin: 0; opacity: .92; }
@@ -169,7 +174,7 @@ footer a { color: var(--muted); }
 
 <div class="wrap">
   <header class="top">
-    <a class="logo" href="#accueil">Studio<b>m</b></a>
+    <a class="logo" href="#accueil"><img src="/brand/logo-s.webp" alt="" width="34" height="34"><span>Studio<b>m</b></span></a>
     <nav class="tabs" aria-label="Menu">
       <a href="#accueil" data-tab="accueil" data-i="nav_home"></a>
       <a href="#projets" data-tab="projets" data-i="nav_projects"></a>
@@ -256,6 +261,7 @@ footer a { color: var(--muted); }
             <li><span>UFR/SDS Ouahigouya</span><span>Burkina Faso</span></li>
           </ul>
           <a class="btn" href="https://pouls-ca330.web.app" target="_blank" rel="noopener" data-i="p_cta"></a>
+          <nav class="legal" aria-label="Pouls"><a href="/pouls/privacy.html" data-i="privacy_full"></a></nav>
         </div>
       </div>
     </section>
@@ -292,12 +298,15 @@ footer a { color: var(--muted); }
           <p data-i="about_p1"></p>
           <p data-i="about_p2"></p>
         </div>
+        <div class="brandlogo">
+        <img src="/brand/logo-studiom.webp" alt="Studiom" width="720" height="745">
         <ul class="facts">
           <li><span data-i="fact1_k"></span><span data-i="fact1_v"></span></li>
           <li><span data-i="fact2_k"></span><span data-i="fact2_v"></span></li>
           <li><span data-i="fact3_k"></span><span data-i="fact3_v"></span></li>
           <li><span data-i="fact4_k"></span><span data-i="fact4_v"></span></li>
         </ul>
+        </div>
       </div>
     </section>
 

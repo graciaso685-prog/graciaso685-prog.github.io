@@ -8,3 +8,5 @@ Site du studio **Studiom** : https://graciaso685-prog.github.io/
 - `.nojekyll` : nécessaire pour que GitHub Pages publie le dossier `.well-known`
 
 Les pages légales et le jeu Glimmer Maze restent dans le dépôt `number--merge-privacy`.
+- `brand/` : logos Studiom (originaux PNG + versions WebP utilisées par le site)
+- `pouls/privacy.html` : politique de confidentialité de Pouls
