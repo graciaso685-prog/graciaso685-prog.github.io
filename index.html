@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="fr" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate">
+<meta name="description" content="Studiom, studio d'applications et de jeux mobiles à Ouagadougou : Merge it, Pouls et Glimmer Maze.">
+<title>Studiom</title>
+<link rel="canonical" href="https://graciaso685-prog.github.io/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: one screen per tab (Accueil, Projets, Le studio, Contact). Projets = grid of app icons; tapping one opens that project's own screen. */
+:root {
+  --bg: #f4f8fd; --surface: #ffffff; --ink: #0c2340; --muted: #4d6382; --line: #d5e1f0;
+  --brand: #0d47a1; --brand-ink: #ffffff; --sun: #ffd54f; --sun-ink: #3b2a00;
+  --board: #0d47a1; --cell: #5f93c6;
+  --t2: #bbdefb; --t2i: #0d47a1; --t4: #90caf9; --t4i: #0d47a1; --t8: #64b5f6; --t8i: #ffffff;
+  --t16: #42a5f5; --t16i: #ffffff; --t32: #2196f3; --t32i: #ffffff; --t64: #1e88e5; --t64i: #ffffff;
+  --font-display: "Space Grotesk", "Segoe UI", Arial, sans-serif;
+  --font-body: "Inter", "Segoe UI", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1626; --surface: #112038; --ink: #e8f0fb; --muted: #9bb0cc; --line: #223756;
+    --brand: #64b5f6; --brand-ink: #08203d; --board: #0b2a52; --cell: #1d4676;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a1626; --surface: #112038; --ink: #e8f0fb; --muted: #9bb0cc; --line: #223756;
+  --brand: #64b5f6; --brand-ink: #08203d; --board: #0b2a52; --cell: #1d4676;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  background: var(--bg); color: var(--ink); font: 16px/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+a { color: var(--brand); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+.wrap { max-width: 1040px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; min-width: 0; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; text-wrap: balance; margin: 0; }
+
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; padding-block: 16px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+.logo { font-family: var(--font-display); font-weight: 700; font-size: 24px; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+.logo b { color: var(--brand); }
+nav.tabs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+nav.tabs a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; padding: 8px 14px; border-radius: 999px; }
+nav.tabs a:hover { color: var(--ink); }
+nav.tabs a[aria-current="page"] { background: var(--brand); color: var(--brand-ink); }
+.lang { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; color: var(--muted); }
+.lang svg { width: 16px; height: 16px; flex: none; }
+.lang select { border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 600 13px var(--font-body); padding: 6px 10px; border-radius: 999px; cursor: pointer; max-width: 140px; }
+
+.view { padding-block: 40px 56px; }
+.eyebrow { font: 600 13px var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin-bottom: 14px; }
+.view > h2, .page-h { font-size: clamp(30px, 5vw, 46px); letter-spacing: -0.02em; margin-bottom: 12px; }
+.sub { color: var(--muted); max-width: 56ch; margin: 0 0 28px; }
+
+/* Accueil */
+.hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
+.hero h1 { font-size: clamp(38px, 6vw, 64px); letter-spacing: -0.03em; }
+.hero h1 em { font-style: normal; background: var(--sun); color: var(--sun-ink); padding: 0 10px; border-radius: 10px; }
+.hero p.lead { color: var(--muted); font-size: 18px; max-width: 46ch; margin: 20px 0 28px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; background: var(--brand); color: var(--brand-ink); text-decoration: none; font-weight: 600; padding: 13px 22px; border-radius: 12px; box-shadow: 0 4px 0 rgba(0,0,0,.22); transition: transform .1s, box-shadow .1s; border: 0; font-size: 16px; cursor: pointer; font-family: var(--font-body); }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.22); }
+.btn.sun { background: var(--sun); color: var(--sun-ink); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.board { background: var(--board); border-radius: 22px; padding: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 380px; margin-left: auto; width: 100%; box-shadow: 0 14px 0 -6px rgba(0,0,0,.18); }
+.cell { aspect-ratio: 1; border-radius: 12px; background: var(--cell); display: grid; place-items: center; font: 700 clamp(18px, 4vw, 28px) var(--font-display); }
+.cell.v2 { background: var(--t2); color: var(--t2i); } .cell.v4 { background: var(--t4); color: var(--t4i); }
+.cell.v8 { background: var(--t8); color: var(--t8i); } .cell.v16 { background: var(--t16); color: var(--t16i); }
+.cell.v32 { background: var(--t32); color: var(--t32i); } .cell.v64 { background: var(--t64); color: var(--t64i); }
+.cell.v128 { background: var(--sun); color: var(--sun-ink); }
+@media (prefers-reduced-motion: no-preference) { .cell.pop { animation: pop .35s ease; } }
+@keyframes pop { 0% { transform: scale(.6); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
+
+/* Projets : icônes */
+.icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 28px 20px; margin-top: 12px; }
+.icon-btn { display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); text-align: center; }
+.icon-btn svg, .icon-btn img { width: 104px; height: 104px; border-radius: 24px; box-shadow: 0 6px 0 rgba(0,0,0,.18); transition: transform .12s; }
+.icon-btn:hover svg, .icon-btn:hover img { transform: translateY(-3px); }
+.icon-btn:active svg, .icon-btn:active img { transform: translateY(2px); }
+.icon-btn span { font: 600 16px var(--font-display); }
+
+/* Détail projet */
+.back { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; margin-bottom: 24px; }
+.back:hover { color: var(--ink); }
+.detail { display: grid; grid-template-columns: 200px 1fr; gap: 36px; align-items: start; }
+.detail .big svg, .detail .big img { display: block; width: 100%; max-width: 200px; aspect-ratio: 1; height: auto; border-radius: 44px; box-shadow: 0 10px 0 rgba(0,0,0,.18); }
+.soon { display: inline-flex; align-items: center; gap: 8px; border: 1.5px dashed var(--line); color: var(--muted); font-weight: 600; padding: 11px 18px; border-radius: 12px; font-size: 15px; }
+.detail h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.02em; margin-bottom: 4px; }
+.detail .by { color: var(--muted); margin: 0 0 18px; }
+.detail p.desc { color: var(--ink); max-width: 60ch; margin: 0 0 18px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.tags span { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 13px; color: var(--muted); }
+.feat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 8px 0 28px; }
+.feat div { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; min-width: 0; }
+.feat h3 { font-size: 17px; margin-bottom: 6px; }
+.feat p { margin: 0; color: var(--muted); font-size: 15px; }
+.schools { list-style: none; padding: 0; margin: 0 0 28px; border-top: 1px solid var(--line); max-width: 520px; }
+.schools li { padding: 11px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; }
+.schools li span:last-child { color: var(--muted); font-size: 14px; text-align: right; }
+.h4 { font: 600 13px var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+
+/* Le studio */
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.about p { color: var(--muted); margin: 0 0 14px; max-width: 56ch; }
+.facts { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.facts li { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.facts li span:first-child { color: var(--muted); }
+.facts li span:last-child { font-weight: 600; text-align: right; }
+
+/* Contact */
+.contact-card { background: var(--brand); color: var(--brand-ink); border-radius: 22px; padding: 36px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; max-width: 620px; }
+.contact-card p { margin: 0; opacity: .92; }
+.contact-card code { font: 600 clamp(15px, 3.6vw, 20px) var(--font-body); background: rgba(255,255,255,.16); padding: 12px 18px; border-radius: 12px; user-select: all; word-break: break-all; }
+.contact-card button { background: var(--sun); color: var(--sun-ink); border: 0; border-radius: 10px; font: 600 15px var(--font-body); padding: 10px 16px; cursor: pointer; }
+
+footer { border-top: 1px solid var(--line); padding-block: 24px 36px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; color: var(--muted); font-size: 14px; }
+footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+footer a { color: var(--muted); }
+
+@media (max-width: 760px) {
+  .hero, .about { grid-template-columns: 1fr; }
+  .detail { grid-template-columns: 1fr; gap: 22px; }
+  .detail .big svg, .detail .big img { max-width: 120px; border-radius: 28px; }
+  .feat { grid-template-columns: 1fr; }
+  .board { margin: 0; max-width: 320px; }
+  .contact-card { padding: 24px; }
+  .view { padding-block: 28px 40px; }
+}
+</style>
+<style>body{margin:0}img,svg{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<!-- Icônes d'applications (SVG intégrés, remplaçables par les vraies icônes) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ico-merge" viewBox="0 0 100 100">
+      <defs><linearGradient id="gm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#90caf9"/><stop offset="1" stop-color="#1565c0"/></linearGradient></defs>
+      <rect width="100" height="100" fill="url(#gm)"/>
+      <rect x="14" y="14" width="34" height="34" rx="8" fill="#bbdefb"/><text x="31" y="38" font-family="Arial,sans-serif" font-weight="700" font-size="20" text-anchor="middle" fill="#0d47a1">2</text>
+      <rect x="52" y="14" width="34" height="34" rx="8" fill="#42a5f5"/><text x="69" y="38" font-family="Arial,sans-serif" font-weight="700" font-size="20" text-anchor="middle" fill="#fff">16</text>
+      <rect x="14" y="52" width="34" height="34" rx="8" fill="#2196f3"/><text x="31" y="76" font-family="Arial,sans-serif" font-weight="700" font-size="20" text-anchor="middle" fill="#fff">32</text>
+      <rect x="52" y="52" width="34" height="34" rx="8" fill="#ffd54f"/><text x="69" y="76" font-family="Arial,sans-serif" font-weight="700" font-size="17" text-anchor="middle" fill="#3b2a00">128</text>
+    </symbol>
+    <symbol id="ico-pouls" viewBox="0 0 100 100">
+      <defs><linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26a69a"/><stop offset="1" stop-color="#00695c"/></linearGradient></defs>
+      <rect width="100" height="100" fill="url(#gp)"/>
+      <polyline fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" points="10,54 32,54 40,54 49,24 60,80 69,44 75,54 90,54"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#accueil">Studio<b>m</b></a>
+    <nav class="tabs" aria-label="Menu">
+      <a href="#accueil" data-tab="accueil" data-i="nav_home"></a>
+      <a href="#projets" data-tab="projets" data-i="nav_projects"></a>
+      <a href="#studio" data-tab="studio" data-i="nav_about"></a>
+      <a href="#contact" data-tab="contact" data-i="nav_contact"></a>
+      <label class="lang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        <select id="lang-sel" aria-label="Langue / Language">
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+          <option value="de">Deutsch</option>
+          <option value="ru">Русский</option>
+          <option value="zh">中文</option>
+          <option value="mn">Монгол</option>
+        </select>
+      </label>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ACCUEIL -->
+    <section class="view" id="v-accueil">
+      <div class="hero">
+        <div>
+          <p class="eyebrow" data-i="eyebrow"></p>
+          <h1 data-i-html="h1"></h1>
+          <p class="lead" data-i="lead"></p>
+          <div class="actions"><a class="btn" href="#projets" data-i="cta_projects"></a></div>
+        </div>
+        <div class="board" id="board" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- PROJETS : icônes seulement -->
+    <section class="view" id="v-projets" hidden>
+      <h2 data-i="projects_h"></h2>
+      <p class="sub" data-i="projects_sub"></p>
+      <div class="icons">
+        <a class="icon-btn" href="#projet-merge-it"><svg viewBox="0 0 100 100" role="img" aria-label="Merge it"><use href="#ico-merge"/></svg><span>Merge it</span></a>
+        <a class="icon-btn" href="#projet-pouls"><svg viewBox="0 0 100 100" role="img" aria-label="Pouls"><use href="#ico-pouls"/></svg><span>Pouls</span></a>
+        <a class="icon-btn" href="#projet-glimmer-maze"><img src="/number--merge-privacy/glimmer-maze/icons/icon-192.png" alt="Glimmer Maze" width="104" height="104"><span>Glimmer Maze</span></a>
+      </div>
+    </section>
+
+    <!-- PROJET : Merge it -->
+    <section class="view" id="v-projet-merge-it" hidden>
+      <a class="back" href="#projets" data-i="back"></a>
+      <div class="detail">
+        <div class="big"><svg viewBox="0 0 100 100" role="img" aria-label="Merge it"><use href="#ico-merge"/></svg></div>
+        <div>
+          <h2>Merge it</h2>
+          <p class="by" data-i="m_sub"></p>
+          <p class="desc" data-i="m_p"></p>
+          <div class="tags"><span data-i="m_tag1"></span><span data-i="m_tag2"></span><span data-i="m_tag3"></span><span data-i="m_tag4"></span></div>
+          <div class="feat">
+            <div><h3 data-i="f1_t"></h3><p data-i="f1_p"></p></div>
+            <div><h3 data-i="f2_t"></h3><p data-i="f2_p"></p></div>
+            <div><h3 data-i="f3_t"></h3><p data-i="f3_p"></p></div>
+          </div>
+          <a class="btn" href="https://play.google.com/store/apps/details?id=com.studiom.numbermerge" target="_blank" rel="noopener" data-i="m_cta"></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJET : Pouls -->
+    <section class="view" id="v-projet-pouls" hidden>
+      <a class="back" href="#projets" data-i="back"></a>
+      <div class="detail">
+        <div class="big"><svg viewBox="0 0 100 100" role="img" aria-label="Pouls"><use href="#ico-pouls"/></svg></div>
+        <div>
+          <h2>Pouls</h2>
+          <p class="by" data-i="p_sub"></p>
+          <p class="desc" data-i="p_p"></p>
+          <div class="tags"><span data-i="p_tag1"></span><span data-i="p_tag2"></span><span data-i="p_tag3"></span></div>
+          <p class="h4" data-i="p_schools"></p>
+          <ul class="schools">
+            <li><span>FSS Cotonou</span><span>Bénin</span></li>
+            <li><span>FSS Lomé</span><span>Togo</span></li>
+            <li><span>UFR/SDS Ouagadougou</span><span>Burkina Faso</span></li>
+            <li><span>INSSA Bobo-Dioulasso</span><span>Burkina Faso</span></li>
+            <li><span>UFR/SDS Ouahigouya</span><span>Burkina Faso</span></li>
+          </ul>
+          <a class="btn" href="https://pouls-ca330.web.app" target="_blank" rel="noopener" data-i="p_cta"></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJET : Glimmer Maze -->
+    <section class="view" id="v-projet-glimmer-maze" hidden>
+      <a class="back" href="#projets" data-i="back"></a>
+      <div class="detail">
+        <div class="big"><img src="/number--merge-privacy/glimmer-maze/icons/icon-512.png" alt="Glimmer Maze" width="200" height="200"></div>
+        <div>
+          <h2>Glimmer Maze</h2>
+          <p class="by" data-i="g_sub"></p>
+          <p class="desc" data-i="g_p"></p>
+          <div class="tags"><span data-i="g_tag1"></span><span data-i="g_tag2"></span><span data-i="g_tag3"></span><span data-i="g_tag4"></span></div>
+          <div class="feat">
+            <div><h3 data-i="g1_t"></h3><p data-i="g1_p"></p></div>
+            <div><h3 data-i="g2_t"></h3><p data-i="g2_p"></p></div>
+            <div><h3 data-i="g3_t"></h3><p data-i="g3_p"></p></div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="/number--merge-privacy/glimmer-maze/" target="_blank" rel="noopener" data-i="g_cta"></a>
+            <span class="soon" data-i="g_soon"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LE STUDIO -->
+    <section class="view" id="v-studio" hidden>
+      <div class="about">
+        <div>
+          <h2 class="page-h" data-i="about_h"></h2>
+          <p data-i="about_p1"></p>
+          <p data-i="about_p2"></p>
+        </div>
+        <ul class="facts">
+          <li><span data-i="fact1_k"></span><span data-i="fact1_v"></span></li>
+          <li><span data-i="fact2_k"></span><span data-i="fact2_v"></span></li>
+          <li><span data-i="fact3_k"></span><span data-i="fact3_v"></span></li>
+          <li><span data-i="fact4_k"></span><span data-i="fact4_v"></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="view" id="v-contact" hidden>
+      <h2 class="page-h" data-i="contact_h"></h2>
+      <p class="sub" data-i="contact_p"></p>
+      <div class="contact-card">
+        <code id="mail"></code>
+        <button type="button" id="copy" data-i="copy"></button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Studiom</span>
+    <nav>
+      <a href="/number--merge-privacy/privacy-policy.html"><span data-i="privacy"></span> · Merge it</a>
+      <a href="/number--merge-privacy/delete-data.html"><span data-i="delete"></span> · Merge it</a>
+      <a href="/number--merge-privacy/glimmer-maze/privacy.html"><span data-i="privacy"></span> · Glimmer Maze</a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+var CONTACT_EMAIL = "studiom1276@gmail.com";
+
+var T = {
+  fr: {
+    nav_home: "Accueil", nav_projects: "Projets", nav_about: "Le studio", nav_contact: "Contact",
+    eyebrow: "Studio d'applications et de jeux mobiles · Ouagadougou",
+    h1: "Simples à prendre en main, <em>durs à lâcher.</em>",
+    lead: "Studiom crée des jeux et des applications pour Android et le web.",
+    cta_projects: "Voir nos projets",
+    projects_h: "Nos projets",
+    projects_sub: "Touche une application pour voir sa description.",
+    back: "← Projets",
+    m_sub: "Jeu Android · par Studiom",
+    m_p: "Glisse les tuiles, fusionne les nombres identiques et vise 2048, puis bien au-delà. Progresse de niveau en niveau, relève le défi du jour et grimpe dans le classement de la semaine.",
+    m_tag1: "Puzzle", m_tag2: "Android", m_tag3: "Gratuit", m_tag4: "11 langues",
+    m_cta: "Télécharger sur Google Play",
+    f1_t: "Défi du jour", f1_p: "Un nouveau défi chaque jour, avec des récompenses qui augmentent si tu reviens.",
+    f2_t: "Amis et classement", f2_p: "Ajoute des amis avec ton code, envoie-leur des cadeaux, lance un duel et vise le haut du classement.",
+    f3_t: "Boosters", f3_p: "Annule un coup, nettoie une tuile ou tente une seconde chance quand la partie semble perdue.",
+    p_sub: "Application web · par Studiom",
+    p_p: "Des cours structurés et des QCM corrigés pour réviser un peu chaque jour, avec un objectif quotidien et une série de jours. Choisis ton école et ton année : le programme s'adapte.",
+    p_tag1: "Application web", p_tag2: "Français", p_tag3: "Gratuit",
+    p_schools: "Disponible pour 5 universités",
+    p_cta: "Ouvrir Pouls",
+    g_sub: "Jeu Android et web · par Studiom",
+    g_p: "Trouve la sortie d'un labyrinthe plongé dans le noir. Ta lampe n'éclaire qu'à 60° devant toi… et révèle ta position aux chasseurs. Éteins-la pour te cacher, rallume-la pour avancer : à toi de choisir.",
+    g_tag1: "Infiltration", g_tag2: "Labyrinthe", g_tag3: "Gratuit", g_tag4: "8 langues",
+    g1_t: "Une lampe à double tranchant", g1_p: "Ta lumière te guide, mais les chasseurs la voient de loin. La batterie se vide quand elle est allumée.",
+    g2_t: "3 étoiles par niveau", g2_p: "Trouve la sortie, ne te fais jamais repérer et bats le temps cible. Un nouveau labyrinthe à chaque partie.",
+    g3_t: "Hors connexion", g3_p: "Installe-le sur ton écran d'accueil et joue même sans internet. Sans pub, sans compte.",
+    g_cta: "Jouer maintenant", g_soon: "Bientôt sur Google Play",
+    about_h: "Le studio",
+    about_p1: "Studiom est un petit studio indépendant basé à Ouagadougou, au Burkina Faso. Nous concevons, développons et publions nos projets nous-mêmes.",
+    about_p2: "Nous améliorons nos applications à chaque version, en nous appuyant sur les retours des utilisateurs.",
+    fact1_k: "Fondé", fact1_v: "2026",
+    fact2_k: "Basé à", fact2_v: "Ouagadougou, Burkina Faso",
+    fact3_k: "Plateformes", fact3_v: "Android, web",
+    fact4_k: "Projets", fact4_v: "Merge it, Pouls, Glimmer Maze",
+    contact_h: "Une question, une idée ?",
+    contact_p: "Écris-nous, nous lisons tous les messages.",
+    copy: "Copier l'adresse", copied: "Adresse copiée",
+    privacy: "Confidentialité", delete: "Suppression des données", lang_label: "Langue"
+  },
+  en: {
+    nav_home: "Home", nav_projects: "Projects", nav_about: "Studio", nav_contact: "Contact",
+    eyebrow: "Mobile app and game studio · Ouagadougou",
+    h1: "Easy to pick up, <em>hard to put down.</em>",
+    lead: "Studiom makes games and apps for Android and the web.",
+    cta_projects: "See our projects",
+    projects_h: "Our projects",
+    projects_sub: "Tap an app to see its description.",
+    back: "← Projects",
+    m_sub: "Android game · by Studiom",
+    m_p: "Swipe tiles, merge matching numbers and aim for 2048 and beyond. Level up, take on the daily challenge and climb the weekly leaderboard.",
+    m_tag1: "Puzzle", m_tag2: "Android", m_tag3: "Free", m_tag4: "11 languages",
+    m_cta: "Get it on Google Play",
+    f1_t: "Daily challenge", f1_p: "A new challenge every day, with rewards that grow when you come back.",
+    f2_t: "Friends and leaderboard", f2_p: "Add friends with your code, send them gifts, start a duel and aim for the top of the board.",
+    f3_t: "Boosters", f3_p: "Undo a move, clear a tile or take a second chance when the game looks lost.",
+    p_sub: "Web app · by Studiom",
+    p_p: "Structured courses and corrected multiple-choice questions to revise a little every day, with a daily goal and a day streak. Pick your school and year: the programme adapts.",
+    p_tag1: "Web app", p_tag2: "French", p_tag3: "Free",
+    p_schools: "Available for 5 universities",
+    p_cta: "Open Pouls",
+    g_sub: "Android and web game · by Studiom",
+    g_p: "Find the way out of a maze plunged in darkness. Your lamp lights only 60° ahead… and gives your position away to the hunters. Turn it off to hide, back on to move forward: your call.",
+    g_tag1: "Stealth", g_tag2: "Maze", g_tag3: "Free", g_tag4: "8 languages",
+    g1_t: "A double-edged lamp", g1_p: "Your light guides you, but hunters see it from afar. The battery drains while it's on.",
+    g2_t: "3 stars per level", g2_p: "Find the exit, never get spotted and beat the target time. A new maze every time you play.",
+    g3_t: "Plays offline", g3_p: "Add it to your home screen and play even without internet. No ads, no account.",
+    g_cta: "Play now", g_soon: "Coming soon to Google Play",
+    about_h: "The studio",
+    about_p1: "Studiom is a small independent studio based in Ouagadougou, Burkina Faso. We design, build and publish our projects ourselves.",
+    about_p2: "We improve our apps with every release, guided by user feedback.",
+    fact1_k: "Founded", fact1_v: "2026",
+    fact2_k: "Based in", fact2_v: "Ouagadougou, Burkina Faso",
+    fact3_k: "Platforms", fact3_v: "Android, web",
+    fact4_k: "Projects", fact4_v: "Merge it, Pouls, Glimmer Maze",
+    contact_h: "A question or an idea?",
+    contact_p: "Write to us, we read every message.",
+    copy: "Copy address", copied: "Address copied",
+    privacy: "Privacy", delete: "Data deletion", lang_label: "Language"
+  },
+  es: {
+    nav_home: "Inicio", nav_projects: "Proyectos", nav_about: "El estudio", nav_contact: "Contacto",
+    eyebrow: "Estudio de apps y juegos móviles · Uagadugú",
+    h1: "Fáciles de aprender, <em>difíciles de soltar.</em>",
+    lead: "Studiom crea juegos y aplicaciones para Android y la web.",
+    cta_projects: "Ver nuestros proyectos",
+    projects_h: "Nuestros proyectos",
+    projects_sub: "Toca una aplicación para ver su descripción.",
+    back: "← Proyectos",
+    m_sub: "Juego para Android · por Studiom",
+    m_p: "Desliza las fichas, fusiona los números iguales y apunta a 2048 y más allá. Sube de nivel, acepta el reto del día y escala en la clasificación semanal.",
+    m_tag1: "Puzle", m_tag2: "Android", m_tag3: "Gratis", m_tag4: "11 idiomas",
+    m_cta: "Disponible en Google Play",
+    f1_t: "Reto del día", f1_p: "Un reto nuevo cada día, con recompensas que aumentan si vuelves.",
+    f2_t: "Amigos y clasificación", f2_p: "Añade amigos con tu código, envíales regalos, lanza un duelo y apunta a lo más alto.",
+    f3_t: "Potenciadores", f3_p: "Deshaz un movimiento, elimina una ficha o usa una segunda oportunidad cuando la partida parece perdida.",
+    p_sub: "Aplicación web · por Studiom",
+    p_p: "Cursos estructurados y preguntas tipo test corregidas para repasar un poco cada día, con un objetivo diario y una racha de días. Elige tu facultad y tu curso: el programa se adapta.",
+    p_tag1: "Aplicación web", p_tag2: "En francés", p_tag3: "Gratis",
+    p_schools: "Disponible para 5 universidades",
+    p_cta: "Abrir Pouls",
+    g_sub: "Juego para Android y web · por Studiom",
+    g_p: "Encuentra la salida de un laberinto a oscuras. Tu linterna solo ilumina 60° al frente… y delata tu posición a los cazadores. Apágala para esconderte, enciéndela para avanzar: tú decides.",
+    g_tag1: "Sigilo", g_tag2: "Laberinto", g_tag3: "Gratis", g_tag4: "8 idiomas",
+    g1_t: "Una linterna de doble filo", g1_p: "Tu luz te guía, pero los cazadores la ven desde lejos. La batería se gasta mientras está encendida.",
+    g2_t: "3 estrellas por nivel", g2_p: "Encuentra la salida, que nunca te descubran y bate el tiempo objetivo. Un laberinto nuevo en cada partida.",
+    g3_t: "Sin conexión", g3_p: "Instálalo en tu pantalla de inicio y juega incluso sin internet. Sin anuncios y sin cuenta.",
+    g_cta: "Jugar ahora", g_soon: "Próximamente en Google Play",
+    about_h: "El estudio",
+    about_p1: "Studiom es un pequeño estudio independiente con sede en Uagadugú, Burkina Faso. Diseñamos, desarrollamos y publicamos nuestros proyectos nosotros mismos.",
+    about_p2: "Mejoramos nuestras aplicaciones en cada versión, gracias a los comentarios de los usuarios.",
+    fact1_k: "Fundado", fact1_v: "2026",
+    fact2_k: "Con sede en", fact2_v: "Uagadugú, Burkina Faso",
+    fact3_k: "Plataformas", fact3_v: "Android, web",
+    fact4_k: "Proyectos", fact4_v: "Merge it, Pouls, Glimmer Maze",
+    contact_h: "¿Una pregunta o una idea?",
+    contact_p: "Escríbenos, leemos todos los mensajes.",
+    copy: "Copiar la dirección", copied: "Dirección copiada",
+    privacy: "Privacidad", delete: "Eliminación de datos", lang_label: "Idioma"
+  },
+  pt: {
+    nav_home: "Início", nav_projects: "Projetos", nav_about: "O estúdio", nav_contact: "Contato",
+    eyebrow: "Estúdio de apps e jogos para celular · Uagadugu",
+    h1: "Fáceis de aprender, <em>difíceis de largar.</em>",
+    lead: "A Studiom cria jogos e aplicativos para Android e para a web.",
+    cta_projects: "Ver nossos projetos",
+    projects_h: "Nossos projetos",
+    projects_sub: "Toque em um aplicativo para ver a descrição.",
+    back: "← Projetos",
+    m_sub: "Jogo para Android · pela Studiom",
+    m_p: "Deslize as peças, junte os números iguais e mire em 2048 e além. Suba de nível, encare o desafio do dia e escale o ranking da semana.",
+    m_tag1: "Quebra-cabeça", m_tag2: "Android", m_tag3: "Grátis", m_tag4: "11 idiomas",
+    m_cta: "Baixar no Google Play",
+    f1_t: "Desafio do dia", f1_p: "Um novo desafio todo dia, com recompensas que aumentam quando você volta.",
+    f2_t: "Amigos e ranking", f2_p: "Adicione amigos com seu código, envie presentes, comece um duelo e mire no topo do ranking.",
+    f3_t: "Boosters", f3_p: "Desfaça uma jogada, limpe uma peça ou tente uma segunda chance quando a partida parecer perdida.",
+    p_sub: "Aplicativo web · pela Studiom",
+    p_p: "Aulas estruturadas e questões de múltipla escolha corrigidas para revisar um pouco todo dia, com uma meta diária e uma sequência de dias. Escolha sua faculdade e seu ano: o programa se adapta.",
+    p_tag1: "Aplicativo web", p_tag2: "Em francês", p_tag3: "Grátis",
+    p_schools: "Disponível para 5 universidades",
+    p_cta: "Abrir o Pouls",
+    g_sub: "Jogo para Android e web · pela Studiom",
+    g_p: "Encontre a saída de um labirinto no escuro. Sua lanterna só ilumina 60° à frente… e revela sua posição aos caçadores. Apague para se esconder, acenda para avançar: você decide.",
+    g_tag1: "Furtividade", g_tag2: "Labirinto", g_tag3: "Grátis", g_tag4: "8 idiomas",
+    g1_t: "Uma lanterna de dois gumes", g1_p: "Sua luz te guia, mas os caçadores a veem de longe. A bateria gasta enquanto ela está acesa.",
+    g2_t: "3 estrelas por nível", g2_p: "Encontre a saída, nunca seja descoberto e bata o tempo-alvo. Um labirinto novo a cada partida.",
+    g3_t: "Offline", g3_p: "Instale na tela inicial e jogue mesmo sem internet. Sem anúncios e sem conta.",
+    g_cta: "Jogar agora", g_soon: "Em breve no Google Play",
+    about_h: "O estúdio",
+    about_p1: "A Studiom é um pequeno estúdio independente sediado em Uagadugu, Burkina Faso. Criamos, desenvolvemos e publicamos nossos próprios projetos.",
+    about_p2: "Melhoramos nossos aplicativos a cada versão, com base no retorno dos usuários.",
+    fact1_k: "Fundado em", fact1_v: "2026",
+    fact2_k: "Sediado em", fact2_v: "Uagadugu, Burkina Faso",
+    fact3_k: "Plataformas", fact3_v: "Android, web",
+    fact4_k: "Projetos", fact4_v: "Merge it, Pouls, Glimmer Maze",
+    contact_h: "Uma pergunta ou uma ideia?",
+    contact_p: "Escreva para nós, lemos todas as mensagens.",
+    copy: "Copiar endereço", copied: "Endereço copiado",
+    privacy: "Privacidade", delete: "Exclusão de dados", lang_label: "Idioma"
+  },
+  de: {
+    nav_home: "Start", nav_projects: "Projekte", nav_about: "Das Studio", nav_contact: "Kontakt",
+    eyebrow: "Studio für Mobile-Apps und -Spiele · Ouagadougou",
+    h1: "Schnell gelernt, <em>schwer wieder weggelegt.</em>",
+    lead: "Studiom entwickelt Spiele und Apps für Android und das Web.",
+    cta_projects: "Unsere Projekte ansehen",
+    projects_h: "Unsere Projekte",
+    projects_sub: "Tippe auf eine App, um ihre Beschreibung zu sehen.",
+    back: "← Projekte",
+    m_sub: "Android-Spiel · von Studiom",
+    m_p: "Wische die Kacheln, verschmelze gleiche Zahlen und peile 2048 und mehr an. Steige Level für Level auf, nimm die Tagesherausforderung an und klettere in der Wochenrangliste nach oben.",
+    m_tag1: "Puzzle", m_tag2: "Android", m_tag3: "Kostenlos", m_tag4: "11 Sprachen",
+    m_cta: "Bei Google Play herunterladen",
+    f1_t: "Tagesherausforderung", f1_p: "Jeden Tag eine neue Herausforderung, mit Belohnungen, die wachsen, wenn du wiederkommst.",
+    f2_t: "Freunde und Rangliste", f2_p: "Füge Freunde mit deinem Code hinzu, schick ihnen Geschenke, starte ein Duell und ziel auf die Spitze.",
+    f3_t: "Booster", f3_p: "Mach einen Zug rückgängig, entferne eine Kachel oder nutze eine zweite Chance, wenn das Spiel verloren scheint.",
+    p_sub: "Web-App · von Studiom",
+    p_p: "Strukturierte Kurse und korrigierte Multiple-Choice-Fragen, um jeden Tag ein wenig zu lernen, mit Tagesziel und Lernserie. Wähle deine Hochschule und dein Studienjahr: Das Programm passt sich an.",
+    p_tag1: "Web-App", p_tag2: "Auf Französisch", p_tag3: "Kostenlos",
+    p_schools: "Verfügbar für 5 Universitäten",
+    p_cta: "Pouls öffnen",
+    g_sub: "Android- und Webspiel · von Studiom",
+    g_p: "Finde den Ausgang eines stockdunklen Labyrinths. Deine Lampe leuchtet nur 60° nach vorn … und verrät dich den Jägern. Schalte sie aus, um dich zu verstecken, und wieder ein, um weiterzukommen: Du entscheidest.",
+    g_tag1: "Schleichen", g_tag2: "Labyrinth", g_tag3: "Kostenlos", g_tag4: "8 Sprachen",
+    g1_t: "Eine zweischneidige Lampe", g1_p: "Dein Licht weist dir den Weg, aber die Jäger sehen es von Weitem. Der Akku leert sich, solange sie an ist.",
+    g2_t: "3 Sterne pro Level", g2_p: "Finde den Ausgang, lass dich nie entdecken und schlage die Zielzeit. Ein neues Labyrinth in jeder Runde.",
+    g3_t: "Offline spielbar", g3_p: "Installiere es auf deinem Startbildschirm und spiele auch ohne Internet. Ohne Werbung, ohne Konto.",
+    g_cta: "Jetzt spielen", g_soon: "Bald bei Google Play",
+    about_h: "Das Studio",
+    about_p1: "Studiom ist ein kleines unabhängiges Studio mit Sitz in Ouagadougou, Burkina Faso. Wir konzipieren, entwickeln und veröffentlichen unsere Projekte selbst.",
+    about_p2: "Wir verbessern unsere Apps mit jeder Version, gestützt auf das Feedback der Nutzer.",
+    fact1_k: "Gegründet", fact1_v: "2026",
+    fact2_k: "Sitz", fact2_v: "Ouagadougou, Burkina Faso",
+    fact3_k: "Plattformen", fact3_v: "Android, Web",
+    fact4_k: "Projekte", fact4_v: "Merge it, Pouls, Glimmer Maze",
+    contact_h: "Eine Frage oder eine Idee?",
+    contact_p: "Schreib uns, wir lesen jede Nachricht.",
+    copy: "Adresse kopieren", copied: "Adresse kopiert",
+    privacy: "Datenschutz", delete: "Datenlöschung", lang_label: "Sprache"
+  },
+  ru: {
+    nav_home: "Главная", nav_projects: "Проекты", nav_about: "Студия", nav_contact: "Контакты",
+    eyebrow: "Студия мобильных приложений и игр · Уагадугу",
+    h1: "Легко начать, <em>трудно оторваться.</em>",
+    lead: "Studiom создаёт игры и приложения для Android и веба.",
+    cta_projects: "Наши проекты",
+    projects_h: "Наши проекты",
+    projects_sub: "Нажми на приложение, чтобы увидеть описание.",
+    back: "← Проекты",
+    m_sub: "Игра для Android · от Studiom",
+    m_p: "Сдвигай плитки, объединяй одинаковые числа и стремись к 2048 и дальше. Проходи уровень за уровнем, принимай ежедневный вызов и поднимайся в недельном рейтинге.",
+    m_tag1: "Головоломка", m_tag2: "Android", m_tag3: "Бесплатно", m_tag4: "11 языков",
+    m_cta: "Скачать в Google Play",
+    f1_t: "Ежедневный вызов", f1_p: "Новый вызов каждый день и награды, которые растут, если ты возвращаешься.",
+    f2_t: "Друзья и рейтинг", f2_p: "Добавляй друзей по коду, отправляй им подарки, вызывай на дуэль и стремись на вершину рейтинга.",
+    f3_t: "Бустеры", f3_p: "Отмени ход, убери плитку или используй второй шанс, когда партия кажется проигранной.",
+    p_sub: "Веб-приложение · от Studiom",
+    p_p: "Структурированные курсы и тесты с разбором, чтобы понемногу повторять каждый день, с дневной целью и серией дней. Выбери свой вуз и курс — программа подстроится.",
+    p_tag1: "Веб-приложение", p_tag2: "На французском", p_tag3: "Бесплатно",
+    p_schools: "Доступно для 5 университетов",
+    p_cta: "Открыть Pouls",
+    g_sub: "Игра для Android и веба · от Studiom",
+    g_p: "Найди выход из погружённого во тьму лабиринта. Твой фонарь светит лишь на 60° вперёд… и выдаёт тебя охотникам. Выключи его, чтобы спрятаться, включи, чтобы идти дальше: выбор за тобой.",
+    g_tag1: "Стелс", g_tag2: "Лабиринт", g_tag3: "Бесплатно", g_tag4: "8 языков",
+    g1_t: "Фонарь о двух концах", g1_p: "Свет ведёт тебя, но охотники видят его издалека. Батарея садится, пока фонарь включён.",
+    g2_t: "3 звезды за уровень", g2_p: "Найди выход, ни разу не попадись на глаза и уложись в контрольное время. Новый лабиринт в каждой игре.",
+    g3_t: "Без интернета", g3_p: "Установи игру на главный экран и играй даже без сети. Без рекламы и без аккаунта.",
+    g_cta: "Играть сейчас", g_soon: "Скоро в Google Play",
+    about_h: "Студия",
+    about_p1: "Studiom — небольшая независимая студия из Уагадугу, Буркина-Фасо. Мы сами придумываем, разрабатываем и публикуем свои проекты.",
+    about_p2: "Мы улучшаем наши приложения с каждой версией, опираясь на отзывы пользователей.",
+    fact1_k: "Основана", fact1_v: "2026",
+    fact2_k: "Находится в", fact2_v: "Уагадугу, Буркина-Фасо",
+    fact3_k: "Платформы", fact3_v: "Android, веб",
+    fact4_k: "Проекты", fact4_v: "Merge it, Pouls, Glimmer Maze",
+    contact_h: "Есть вопрос или идея?",
+    contact_p: "Напиши нам — мы читаем все сообщения.",
+    copy: "Скопировать адрес", copied: "Адрес скопирован",
+    privacy: "Конфиденциальность", delete: "Удаление данных", lang_label: "Язык"
+  },
+  zh: {
+    nav_home: "首页", nav_projects: "项目", nav_about: "工作室", nav_contact: "联系我们",
+    eyebrow: "移动应用与游戏工作室 · 瓦加杜古",
+    h1: "上手简单，<em>欲罢不能。</em>",
+    lead: "Studiom 为 Android 和网页打造游戏与应用。",
+    cta_projects: "查看我们的项目",
+    projects_h: "我们的项目",
+    projects_sub: "点击应用查看介绍。",
+    back: "← 项目",
+    m_sub: "Android 游戏 · Studiom 出品",
+    m_p: "滑动方块，合并相同的数字，冲击 2048 甚至更高。逐关升级，挑战每日任务，在每周排行榜上不断攀升。",
+    m_tag1: "益智", m_tag2: "Android", m_tag3: "免费", m_tag4: "11 种语言",
+    m_cta: "在 Google Play 下载",
+    f1_t: "每日挑战", f1_p: "每天都有新挑战，回来得越勤，奖励越丰厚。",
+    f2_t: "好友与排行榜", f2_p: "用你的代码添加好友，给他们送礼物，发起对决，冲上榜首。",
+    f3_t: "道具", f3_p: "撤销一步、清除一个方块，或在看似要输时再获一次机会。",
+    p_sub: "网页应用 · Studiom 出品",
+    p_p: "结构化的课程和带解析的选择题，每天复习一点，设有每日目标和连续打卡。选择你的学校和年级，学习内容随之调整。",
+    p_tag1: "网页应用", p_tag2: "法语", p_tag3: "免费",
+    p_schools: "适用于 5 所大学",
+    p_cta: "打开 Pouls",
+    g_sub: "Android 与网页游戏 · Studiom 出品",
+    g_p: "在一片漆黑的迷宫中找到出口。你的手电只照亮前方 60°……同时也会向猎人暴露你的位置。关灯隐藏，开灯前进，由你决定。",
+    g_tag1: "潜行", g_tag2: "迷宫", g_tag3: "免费", g_tag4: "8 种语言",
+    g1_t: "双刃剑般的手电", g1_p: "光为你指路，但猎人从远处就能看见。手电开着时会持续耗电。",
+    g2_t: "每关 3 颗星", g2_p: "找到出口、从未被发现、在目标时间内完成。每局都是全新的迷宫。",
+    g3_t: "离线可玩", g3_p: "添加到主屏幕，没有网络也能玩。无广告，无需账号。",
+    g_cta: "立即开玩", g_soon: "即将登陆 Google Play",
+    about_h: "工作室",
+    about_p1: "Studiom 是一家位于布基纳法索瓦加杜古的小型独立工作室。我们自主设计、开发并发布自己的项目。",
+    about_p2: "我们根据用户反馈，在每个版本中持续改进我们的应用。",
+    fact1_k: "成立于", fact1_v: "2026",
+    fact2_k: "所在地", fact2_v: "布基纳法索 瓦加杜古",
+    fact3_k: "平台", fact3_v: "Android、网页",
+    fact4_k: "项目", fact4_v: "Merge it、Pouls、Glimmer Maze",
+    contact_h: "有问题或想法？",
+    contact_p: "给我们写信，每条消息我们都会阅读。",
+    copy: "复制地址", copied: "地址已复制",
+    privacy: "隐私政策", delete: "数据删除", lang_label: "语言"
+  },
+  mn: {
+    nav_home: "Нүүр", nav_projects: "Төслүүд", nav_about: "Студи", nav_contact: "Холбоо барих",
+    eyebrow: "Гар утасны апп, тоглоомын студи · Уагадугу",
+    h1: "Сурахад хялбар, <em>орхиход хэцүү.</em>",
+    lead: "Studiom нь Android болон вэбэд зориулсан тоглоом, апп бүтээдэг.",
+    cta_projects: "Төслүүдийг үзэх",
+    projects_h: "Манай төслүүд",
+    projects_sub: "Тайлбарыг харахын тулд апп дээр дар.",
+    back: "← Төслүүд",
+    m_sub: "Android тоглоом · Studiom",
+    m_p: "Хавтангуудыг гулсуулж, ижил тоонуудыг нийлүүлээд 2048, түүнээс ч цааш зорь. Түвшин ахиулж, өдрийн сорилтыг даван туулж, долоо хоногийн жагсаалтад өгс.",
+    m_tag1: "Оньсого", m_tag2: "Android", m_tag3: "Үнэгүй", m_tag4: "11 хэл",
+    m_cta: "Google Play-ээс татах",
+    f1_t: "Өдрийн сорилт", f1_p: "Өдөр бүр шинэ сорилт, эргэж ирэх тусам шагнал нэмэгдэнэ.",
+    f2_t: "Найзууд ба жагсаалт", f2_p: "Кодоороо найз нэмж, бэлэг илгээж, тулаан эхлүүлээд жагсаалтын оргилд хүр.",
+    f3_t: "Туслах хэрэгслүүд", f3_p: "Нүүдлээ буцаах, хавтан арилгах эсвэл тоглолт ялагдах шиг болоход дахин боломж ашигла.",
+    p_sub: "Вэб апп · Studiom",
+    p_p: "Өдөр бүр бага багаар давтахад зориулсан бүтэцтэй хичээл, тайлбартай сонгох тест, өдрийн зорилт, өдрийн цуваатай. Сургууль, курсээ сонго: хөтөлбөр тохируулагдана.",
+    p_tag1: "Вэб апп", p_tag2: "Франц хэлээр", p_tag3: "Үнэгүй",
+    p_schools: "5 их сургуульд зориулсан",
+    p_cta: "Pouls-г нээх",
+    g_sub: "Android ба вэб тоглоом · Studiom",
+    g_p: "Харанхуй төөрдөг байшингаас гарах гарцыг ол. Чийдэн чинь зөвхөн урд талаа 60° гэрэлтүүлдэг… бас анчдад байршлыг чинь илчилдэг. Нуугдахын тулд унтраа, урагшлахын тулд асаа: шийдвэр чинийх.",
+    g_tag1: "Нууцаар", g_tag2: "Төөрдөг байшин", g_tag3: "Үнэгүй", g_tag4: "8 хэл",
+    g1_t: "Хоёр иртэй чийдэн", g1_p: "Гэрэл чинь замыг чинь заадаг ч анчид холоос хардаг. Асаалттай үед цэнэг дуусдаг.",
+    g2_t: "Түвшин бүрт 3 од", g2_p: "Гарцаа ол, хэзээ ч бүү илэр, зорилтот хугацаанд багт. Тоглолт бүрт шинэ төөрдөг байшин.",
+    g3_t: "Интернэтгүй", g3_p: "Нүүр дэлгэцэндээ суулгаад интернэтгүй ч тогло. Зар сурталчилгаагүй, бүртгэлгүй.",
+    g_cta: "Одоо тоглох", g_soon: "Удахгүй Google Play-д",
+    about_h: "Студи",
+    about_p1: "Studiom бол Буркина Фасогийн Уагадугу хотод байрладаг жижиг бие даасан студи юм. Бид төслүүдээ өөрсдөө зохиож, хөгжүүлж, нийтэлдэг.",
+    about_p2: "Хэрэглэгчдийн санал хүсэлтэд тулгуурлан аппуудаа хувилбар бүрт сайжруулдаг.",
+    fact1_k: "Үүсгэн байгуулсан", fact1_v: "2026",
+    fact2_k: "Байршил", fact2_v: "Уагадугу, Буркина Фасо",
+    fact3_k: "Платформ", fact3_v: "Android, вэб",
+    fact4_k: "Төслүүд", fact4_v: "Merge it, Pouls, Glimmer Maze",
+    contact_h: "Асуулт эсвэл санаа байна уу?",
+    contact_p: "Бидэнд бичээрэй, бид бүх захидлыг уншдаг.",
+    copy: "Хаяг хуулах", copied: "Хаяг хуулагдлаа",
+    privacy: "Нууцлал", delete: "Өгөгдөл устгах", lang_label: "Хэл"
+  }
+};
+var lang = "fr";
+
+function setLang(l) {
+  lang = l;
+  var d = T[l];
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-i]").forEach(function (e) { e.textContent = d[e.getAttribute("data-i")]; });
+  document.querySelectorAll("[data-i-html]").forEach(function (e) { e.innerHTML = d[e.getAttribute("data-i-html")]; });
+  document.getElementById("mail").textContent = CONTACT_EMAIL;
+  document.getElementById("lang-sel").value = l;
+  document.getElementById("lang-sel").setAttribute("aria-label", d.lang_label);
+  try { localStorage.setItem("studiom_lang", l); } catch (e) {}
+}
+document.getElementById("lang-sel").onchange = function () { setLang(this.value); };
+document.getElementById("copy").onclick = function () {
+  var b = this, ok = function () { b.textContent = T[lang].copied; setTimeout(function () { b.textContent = T[lang].copy; }, 1800); };
+  try { navigator.clipboard.writeText(CONTACT_EMAIL).then(ok, function () { sel(); }); } catch (e) { sel(); }
+  function sel() { var r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+};
+// Langue : choix enregistré, sinon celle du téléphone, sinon anglais
+var start = null;
+try { start = localStorage.getItem("studiom_lang"); } catch (e) {}
+if (!T[start]) {
+  var prefs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || "en"];
+  start = "en";
+  for (var i = 0; i < prefs.length; i++) { var c = String(prefs[i]).slice(0, 2).toLowerCase(); if (T[c]) { start = c; break; } }
+}
+setLang(start);
+
+// Un écran par onglet, selon le #hash. Les fiches de projet gardent l'onglet « Projets » actif.
+var views = ["accueil", "projets", "projet-merge-it", "projet-pouls", "projet-glimmer-maze", "studio", "contact"];
+function route() {
+  var h = (location.hash || "#accueil").slice(1);
+  if (views.indexOf(h) < 0) h = "accueil";
+  views.forEach(function (v) { document.getElementById("v-" + v).hidden = v !== h; });
+  var tab = h.indexOf("projet-") === 0 ? "projets" : h;
+  document.querySelectorAll("nav.tabs a[data-tab]").forEach(function (a) {
+    if (a.getAttribute("data-tab") === tab) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+
+// Plateau décoratif de l'accueil.
+var frames = [
+  [2,4,0,8, 0,16,32,0, 4,0,64,128, 0,2,0,0],
+  [2,4,2,8, 0,16,32,0, 4,0,64,128, 0,0,0,2],
+  [2,4,0,8, 2,16,32,0, 4,0,64,128, 0,0,2,0]
+];
+var board = document.getElementById("board"), fi = 0;
+function draw() {
+  var f = frames[fi], html = "";
+  for (var i = 0; i < 16; i++) html += '<div class="cell' + (f[i] ? " v" + f[i] : "") + '">' + (f[i] || "") + "</div>";
+  board.innerHTML = html;
+  var prev = frames[(fi + frames.length - 1) % frames.length];
+  board.querySelectorAll(".cell").forEach(function (c, i) { if (f[i] && !prev[i]) c.classList.add("pop"); });
+}
+draw();
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  setInterval(function () { fi = (fi + 1) % frames.length; draw(); }, 1800);
+}
+</script>
+</body>
+</html>
