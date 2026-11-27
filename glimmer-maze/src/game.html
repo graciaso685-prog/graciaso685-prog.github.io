@@ -54,6 +54,7 @@ html,body{height:100%;margin:0;background:var(--void);color:var(--ink);font-fami
 .shop li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:#17161d;border:1.5px solid #2c2b35}
 .shop li.on{border-color:var(--lamp)}
 .swatch{width:26px;height:26px;border-radius:50%;flex:none}
+.shop .name .note{display:block;font-weight:400;font-size:12px;line-height:1.4;color:var(--muted);margin-top:2px}
 .shop .name{flex:1;min-width:0;font-weight:600}
 details{font-size:13px;color:var(--muted)}
 summary{cursor:pointer;color:var(--ink);font-weight:600}
@@ -111,6 +112,10 @@ details .rules{margin-top:10px}
 @keyframes splashIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes sload{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
 @media (prefers-reduced-motion:reduce){#splash img,#splash p,#splash .sbar i{animation:none}}
+.bat{position:relative}
+#spareBtn{position:absolute;top:calc(100% + 10px);right:0;pointer-events:auto;display:inline-flex;align-items:center;gap:3px;background:rgba(255,197,107,.15);border:1.5px solid var(--lamp);color:var(--lamp);border-radius:999px;padding:3px 9px 3px 6px;font:600 12px var(--body);cursor:pointer;touch-action:none}
+#spareBtn svg{width:14px;height:14px}
+#spareBtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 #hud .hs{color:#9fe8ff;margin-left:8px}
 #hud .time.late{text-decoration:line-through}
 #tip{position:fixed;top:calc(env(safe-area-inset-top,0px) + 80px);left:50%;translate:-50% 0;width:min(360px,calc(100% - 32px));box-sizing:border-box;padding:12px 14px;border-radius:14px;background:rgba(14,13,20,.9);border:1px solid #2c2b35;pointer-events:none;display:flex;flex-direction:column;gap:4px;transition:border-color .2s}
@@ -134,7 +139,7 @@ details .rules{margin-top:10px}
 <div id="hud" hidden>
   <div class="info"><button id="pauseBtn" type="button" aria-label="Pause"><span></span><span></span></button><span class="lvl" id="lvl">Niveau 1</span><span class="time" id="time">0:00</span><span class="hs" id="hudShards">◆ 0</span></div>
   <div id="alert">Repéré !</div>
-  <div class="bat"><span id="batLabel">Lampe</span><div class="bat-bar"><div class="bat-fill" id="batFill" style="width:100%"></div></div></div>
+  <div class="bat"><button type="button" id="spareBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="5" width="12" height="17" rx="2"/><path d="M10 2h4M12 9v6M9 12h6"/></svg><span id="spareN"></span></button><span id="batLabel">Lampe</span><div class="bat-bar"><div class="bat-fill" id="batFill" style="width:100%"></div></div></div>
 </div>
 
 <div id="snack" hidden role="status"></div>
@@ -205,12 +210,16 @@ details .rules{margin-top:10px}
       { id: 'tr-etincelles', price: 60, n: { fr: 'Étincelles', en: 'Sparks', es: 'Chispas', pt: 'Faíscas', de: 'Funken', ru: 'Искры', zh: '火花', mn: 'Оч' } },
       { id: 'tr-petales', price: 90, n: { fr: 'Pétales', en: 'Petals', es: 'Pétalos', pt: 'Pétalas', de: 'Blüten', ru: 'Лепестки', zh: '花瓣', mn: 'Дэлбээ' } },
       { id: 'tr-etoiles', price: 140, n: { fr: 'Étoiles', en: 'Stars', es: 'Estrellas', pt: 'Estrelas', de: 'Sterne', ru: 'Звёзды', zh: '星星', mn: 'Одод' } }
+    ],
+    gear: [
+      { id: 'gear-battery', price: 30, consumable: true, n: { fr: 'Pile de réserve', en: 'Spare battery', es: 'Pila de repuesto', pt: 'Pilha reserva', de: 'Ersatzbatterie', ru: 'Запасная батарейка', zh: '备用电池', mn: 'Нөөц зай' } }
     ]
   };
   const SLOT = { lamps: 'lamp', skins: 'skin', trails: 'trail' };
   const DEFAULTS = ['ambre', 'sk-classique', 'tr-aucune'];
   // Progression (sauvegardée dans le navigateur pour ce prototype)
-  let save = { unlocked: 1, stars: {}, shards: 0, collected: {}, owned: DEFAULTS.slice(), lamp: 'ambre', skin: 'sk-classique', trail: 'tr-aucune', lang: null, sound: true };
+  let save = { unlocked: 1, stars: {}, shards: 0, collected: {}, owned: DEFAULTS.slice(), lamp: 'ambre', skin: 'sk-classique', trail: 'tr-aucune', lang: null, sound: true, spares: 0 };
+  const SPARE_MAX = 3, SPARE_BOOST = 50;
   try {
     const raw = localStorage.getItem('lueur-save');
     if (raw) save = Object.assign(save, JSON.parse(raw));
@@ -239,6 +248,10 @@ details .rules{margin-top:10px}
   const plRu = (n, one, few, many) => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many; };
   const I18N = {
     fr: {
+      tab_gear: `Équipement`,
+      gear_bat_desc: `+50 % de batterie, à utiliser pendant une partie (bouton à côté de la jauge).`,
+      gear_use: `Utiliser une pile de réserve`,
+      gear_have: (n, m) => `Tu en as ${n} / ${m}.`,
       sugg: `Suggestions`,
       sugg_h: `Une idée&nbsp;? Un bug&nbsp;?`,
       sugg_hint: `Ton message nous aide à améliorer le jeu. Il est envoyé anonymement : n'y mets pas d'informations personnelles.`,
@@ -294,7 +307,7 @@ details .rules{margin-top:10px}
       loseTitle: `Attrapé`, loseText: (l, n) => `Un chasseur t'a eu au niveau ${l}.` + (n ? ` Tu perds ${n} éclat${n > 1 ? 's' : ''}.` : ''),
       loseTip: `Astuce : éteins ta lampe quand un faisceau rouge approche. Ta lueur se voit de loin.`,
       retry: `Réessayer`, pause: `Pause`, resume: `Reprendre`,
-      shopTitle: `Boutique`, shopIntro: n => `Tu as <span class="shards">◆ ${n}</span> éclats. Tout est décoratif : rien ne change en jeu, les chasseurs te voient pareil.`,
+      shopTitle: `Boutique`, shopIntro: n => `Tu as <span class="shards">◆ ${n}</span> éclats. Lampes, explorateurs et traînées sont décoratifs ; l'équipement t'aide pendant les parties.`,
       tab_lamps: `Lampes`, tab_skins: `Explorateurs`, tab_trails: `Traînées`, equipped: `Équipé`, equip: `Équiper`, back: `Retour`,
       steps: c => [
         c ? `Glisse ton doigt n'importe où sur l'écran pour avancer.` : `Avance avec ZQSD, WASD ou les flèches. La souris oriente ta lampe.`,
@@ -315,6 +328,10 @@ details .rules{margin-top:10px}
       ]
     },
     en: {
+      tab_gear: `Gear`,
+      gear_bat_desc: `+50% battery, to use during a level (button next to the gauge).`,
+      gear_use: `Use a spare battery`,
+      gear_have: (n, m) => `You have ${n} / ${m}.`,
       sugg: `Suggestions`,
       sugg_h: `An idea? A bug?`,
       sugg_hint: `Your message helps us improve the game. It is sent anonymously: please don't include personal information.`,
@@ -370,7 +387,7 @@ details .rules{margin-top:10px}
       loseTitle: `Caught`, loseText: (l, n) => `A hunter got you on level ${l}.` + (n ? ` You lose ${n} shard${n > 1 ? 's' : ''}.` : ''),
       loseTip: `Tip: turn off your lamp when a red beam comes close. Your glow can be seen from afar.`,
       retry: `Try again`, pause: `Paused`, resume: `Resume`,
-      shopTitle: `Shop`, shopIntro: n => `You have <span class="shards">◆ ${n}</span> shards. Everything here is cosmetic: nothing changes how the game plays, hunters see you just the same.`,
+      shopTitle: `Shop`, shopIntro: n => `You have <span class="shards">◆ ${n}</span> shards. Lamps, explorers and trails are cosmetic; gear helps you during a level.`,
       tab_lamps: `Lamps`, tab_skins: `Explorers`, tab_trails: `Trails`, equipped: `Equipped`, equip: `Equip`, back: `Back`,
       steps: c => [
         c ? `Slide your finger anywhere on the screen to move.` : `Move with WASD or the arrow keys. The mouse aims your lamp.`,
@@ -391,6 +408,10 @@ details .rules{margin-top:10px}
       ]
     },
     es: {
+      tab_gear: `Equipo`,
+      gear_bat_desc: `+50 % de batería, para usar durante una partida (botón junto al indicador).`,
+      gear_use: `Usar una pila de repuesto`,
+      gear_have: (n, m) => `Tienes ${n} / ${m}.`,
       sugg: `Sugerencias`,
       sugg_h: `¿Una idea? ¿Un error?`,
       sugg_hint: `Tu mensaje nos ayuda a mejorar el juego. Se envía de forma anónima: no incluyas datos personales.`,
@@ -446,7 +467,7 @@ details .rules{margin-top:10px}
       loseTitle: `Atrapado`, loseText: (l, n) => `Un cazador te atrapó en el nivel ${l}.` + (n ? ` Pierdes ${n} fragmento${n > 1 ? 's' : ''}.` : ''),
       loseTip: `Consejo: apaga la linterna cuando se acerque un haz rojo. Tu brillo se ve desde lejos.`,
       retry: `Reintentar`, pause: `Pausa`, resume: `Continuar`,
-      shopTitle: `Tienda`, shopIntro: n => `Tienes <span class="shards">◆ ${n}</span> fragmentos. Todo es decorativo: nada cambia el juego y los cazadores te ven igual.`,
+      shopTitle: `Tienda`, shopIntro: n => `Tienes <span class="shards">◆ ${n}</span> fragmentos. Linternas, exploradores y estelas son decorativos; el equipo te ayuda durante la partida.`,
       tab_lamps: `Linternas`, tab_skins: `Exploradores`, tab_trails: `Estelas`, equipped: `Equipado`, equip: `Equipar`, back: `Volver`,
       steps: c => [
         c ? `Desliza el dedo en cualquier parte de la pantalla para moverte.` : `Muévete con WASD o las flechas. El ratón orienta tu linterna.`,
@@ -467,6 +488,10 @@ details .rules{margin-top:10px}
       ]
     },
     pt: {
+      tab_gear: `Equipamento`,
+      gear_bat_desc: `+50% de bateria, para usar durante uma partida (botão ao lado do indicador).`,
+      gear_use: `Usar uma pilha reserva`,
+      gear_have: (n, m) => `Você tem ${n} / ${m}.`,
       sugg: `Sugestões`,
       sugg_h: `Uma ideia? Um bug?`,
       sugg_hint: `Sua mensagem nos ajuda a melhorar o jogo. Ela é enviada de forma anônima: não inclua informações pessoais.`,
@@ -522,7 +547,7 @@ details .rules{margin-top:10px}
       loseTitle: `Pego`, loseText: (l, n) => `Um caçador te pegou no nível ${l}.` + (n ? ` Você perde ${n} fragmento${n > 1 ? 's' : ''}.` : ''),
       loseTip: `Dica: apague a lanterna quando um feixe vermelho se aproximar. Seu brilho é visto de longe.`,
       retry: `Tentar de novo`, pause: `Pausa`, resume: `Continuar`,
-      shopTitle: `Loja`, shopIntro: n => `Você tem <span class="shards">◆ ${n}</span> fragmentos. Tudo é decorativo: nada muda o jogo e os caçadores te veem do mesmo jeito.`,
+      shopTitle: `Loja`, shopIntro: n => `Você tem <span class="shards">◆ ${n}</span> fragmentos. Lanternas, exploradores e rastros são decorativos; o equipamento ajuda durante a partida.`,
       tab_lamps: `Lanternas`, tab_skins: `Exploradores`, tab_trails: `Rastros`, equipped: `Equipado`, equip: `Equipar`, back: `Voltar`,
       steps: c => [
         c ? `Deslize o dedo em qualquer lugar da tela para andar.` : `Ande com WASD ou as setas. O mouse aponta a lanterna.`,
@@ -543,6 +568,10 @@ details .rules{margin-top:10px}
       ]
     },
     de: {
+      tab_gear: `Ausrüstung`,
+      gear_bat_desc: `+50 % Akku, während einer Runde einsetzbar (Taste neben der Anzeige).`,
+      gear_use: `Ersatzbatterie verwenden`,
+      gear_have: (n, m) => `Du hast ${n} / ${m}.`,
       sugg: `Vorschläge`,
       sugg_h: `Eine Idee? Ein Fehler?`,
       sugg_hint: `Deine Nachricht hilft uns, das Spiel zu verbessern. Sie wird anonym gesendet: Bitte keine persönlichen Daten angeben.`,
@@ -598,7 +627,7 @@ details .rules{margin-top:10px}
       loseTitle: `Erwischt`, loseText: (l, n) => `Ein Jäger hat dich in Level ${l} erwischt.` + (n ? ` Du verlierst ${n} Splitter.` : ''),
       loseTip: `Tipp: Schalte deine Lampe aus, wenn ein roter Lichtkegel näher kommt. Dein Schein ist von Weitem zu sehen.`,
       retry: `Nochmal`, pause: `Pause`, resume: `Weiter`,
-      shopTitle: `Shop`, shopIntro: n => `Du hast <span class="shards">◆ ${n}</span> Splitter. Alles hier ist nur Optik: Am Spiel ändert sich nichts, die Jäger sehen dich genauso.`,
+      shopTitle: `Shop`, shopIntro: n => `Du hast <span class="shards">◆ ${n}</span> Splitter. Lampen, Entdecker und Spuren sind nur Optik; Ausrüstung hilft dir während einer Runde.`,
       tab_lamps: `Lampen`, tab_skins: `Entdecker`, tab_trails: `Spuren`, equipped: `Ausgerüstet`, equip: `Ausrüsten`, back: `Zurück`,
       steps: c => [
         c ? `Wische irgendwo auf dem Bildschirm, um dich zu bewegen.` : `Bewege dich mit WASD oder den Pfeiltasten. Mit der Maus richtest du die Lampe aus.`,
@@ -619,6 +648,10 @@ details .rules{margin-top:10px}
       ]
     },
     ru: {
+      tab_gear: `Снаряжение`,
+      gear_bat_desc: `+50 % заряда, можно использовать во время игры (кнопка рядом с индикатором).`,
+      gear_use: `Использовать запасную батарейку`,
+      gear_have: (n, m) => `У тебя ${n} / ${m}.`,
       sugg: `Предложения`,
       sugg_h: `Есть идея? Нашёл ошибку?`,
       sugg_hint: `Твоё сообщение помогает нам улучшать игру. Оно отправляется анонимно: не пиши личные данные.`,
@@ -674,7 +707,7 @@ details .rules{margin-top:10px}
       loseTitle: `Пойман`, loseText: (l, n) => `Охотник поймал тебя на уровне ${l}.` + (n ? ` Ты теряешь ${n} ${plRu(n, 'осколок', 'осколка', 'осколков')}.` : ''),
       loseTip: `Совет: выключай фонарь, когда приближается красный луч. Твой свет видно издалека.`,
       retry: `Ещё раз`, pause: `Пауза`, resume: `Продолжить`,
-      shopTitle: `Магазин`, shopIntro: n => `У тебя <span class="shards">◆ ${n}</span> ${plRu(n, 'осколок', 'осколка', 'осколков')}. Всё здесь только для красоты: игра не меняется, охотники видят тебя так же.`,
+      shopTitle: `Магазин`, shopIntro: n => `У тебя <span class="shards">◆ ${n}</span> ${plRu(n, 'осколок', 'осколка', 'осколков')}. Фонари, исследователи и следы — только для красоты; снаряжение помогает во время игры.`,
       tab_lamps: `Фонари`, tab_skins: `Исследователи`, tab_trails: `Следы`, equipped: `Выбрано`, equip: `Выбрать`, back: `Назад`,
       steps: c => [
         c ? `Веди пальцем в любом месте экрана, чтобы идти.` : `Двигайся клавишами WASD или стрелками. Мышь направляет фонарь.`,
@@ -695,6 +728,10 @@ details .rules{margin-top:10px}
       ]
     },
     zh: {
+      tab_gear: `装备`,
+      gear_bat_desc: `电量 +50%，可在游戏中使用（电量条旁的按钮）。`,
+      gear_use: `使用备用电池`,
+      gear_have: (n, m) => `你有 ${n} / ${m} 个。`,
       sugg: `建议`,
       sugg_h: `有想法？发现问题？`,
       sugg_hint: `你的留言能帮助我们改进游戏。留言为匿名发送，请不要填写个人信息。`,
@@ -750,7 +787,7 @@ details .rules{margin-top:10px}
       loseTitle: `被抓住了`, loseText: (l, n) => `你在第 ${l} 关被猎人抓住了。` + (n ? `失去 ${n} 个碎片。` : ''),
       loseTip: `提示：红色光束靠近时关掉手电。你的光从远处就能看见。`,
       retry: `再试一次`, pause: `暂停`, resume: `继续`,
-      shopTitle: `商店`, shopIntro: n => `你有 <span class="shards">◆ ${n}</span> 个碎片。这里的物品都只是装饰：不影响玩法，猎人看你还是一样。`,
+      shopTitle: `商店`, shopIntro: n => `你有 <span class="shards">◆ ${n}</span> 个碎片。手电、探险者和拖尾只是装饰；装备能在游戏中帮助你。`,
       tab_lamps: `手电`, tab_skins: `探险者`, tab_trails: `拖尾`, equipped: `使用中`, equip: `使用`, back: `返回`,
       steps: c => [
         c ? `在屏幕任意位置滑动手指来移动。` : `用 WASD 或方向键移动，鼠标控制手电方向。`,
@@ -771,6 +808,10 @@ details .rules{margin-top:10px}
       ]
     },
     mn: {
+      tab_gear: `Хэрэгсэл`,
+      gear_bat_desc: `Цэнэг +50%, тоглолтын үеэр ашиглана (заалтын хажууд байгаа товч).`,
+      gear_use: `Нөөц зай ашиглах`,
+      gear_have: (n, m) => `Танд ${n} / ${m} байна.`,
       sugg: `Санал`,
       sugg_h: `Санаа байна уу? Алдаа олсон уу?`,
       sugg_hint: `Таны зурвас тоглоомыг сайжруулахад тусална. Нэргүйгээр илгээгддэг тул хувийн мэдээлэл бүү оруулаарай.`,
@@ -826,7 +867,7 @@ details .rules{margin-top:10px}
       loseTitle: `Баригдлаа`, loseText: (l, n) => `${l}-р түвшинд анчин чамайг барьлаа.` + (n ? ` Чи ${n} хэлтэрхий алдлаа.` : ''),
       loseTip: `Зөвлөгөө: улаан туяа ойртоход чийдэнгээ унтраа. Чиний гэрэл холоос харагддаг.`,
       retry: `Дахин оролдох`, pause: `Түр зогсоох`, resume: `Үргэлжлүүлэх`,
-      shopTitle: `Дэлгүүр`, shopIntro: n => `Чамд <span class="shards">◆ ${n}</span> хэлтэрхий байна. Энд байгаа бүх зүйл зөвхөн гоёл: тоглоомд нөлөөлөхгүй, анчид чамайг адилхан хардаг.`,
+      shopTitle: `Дэлгүүр`, shopIntro: n => `Танд <span class="shards">◆ ${n}</span> хэлтэрхий байна. Чийдэн, аялагчид, ул мөр зөвхөн гоёл; хэрэгсэл тоглолтын үеэр тусална.`,
       tab_lamps: `Чийдэн`, tab_skins: `Аялагчид`, tab_trails: `Ул мөр`, equipped: `Сонгосон`, equip: `Сонгох`, back: `Буцах`,
       steps: c => [
         c ? `Явахын тулд дэлгэцийн хаана ч хамаагүй хуруугаа гулсуул.` : `WASD эсвэл сумтай товчоор яв. Хулганаар чийдэнгээ чиглүүл.`,
@@ -1003,6 +1044,7 @@ details .rules{margin-top:10px}
   function startLevel() {
     view = 'game';
     tutorial = false; $('tip').hidden = true; lampBtn.classList.remove('hint');
+    updateSpareUI();
     const size = Math.min(7 + level * 2, 19);
     genMaze(size, size);
     player = { x: 1.5, y: 1.5, a: isWall(2, 1) ? Math.PI / 2 : 0, lamp: true, bat: 100 };
@@ -1068,6 +1110,7 @@ details .rules{margin-top:10px}
     keys.add(e.code);
     if (state === 'reveal' && !e.repeat) revealT = Math.min(revealT, REVEAL_ZOOM);
     if ((e.code === 'Space' || e.code === 'KeyE') && !e.repeat && state === 'play') { toggleLamp(); e.preventDefault(); }
+    if (e.code === 'KeyB' && !e.repeat && state === 'play') useSpare();
     if ((e.code === 'Escape' || e.code === 'KeyP') && state === 'play') pause();
     if (e.code === 'Enter' && state !== 'play') { const b = $('panel').querySelector('button'); if (b) b.click(); }
   });
@@ -1119,6 +1162,21 @@ details .rules{margin-top:10px}
   // Chrome ignore les entrées ajoutées sans geste du joueur : on (ré)arme à chaque toucher
   addEventListener('pointerdown', armBack, true);
   addEventListener('keydown', armBack, true);
+
+  function updateSpareUI() {
+    const b = $('spareBtn'); if (!b) return;
+    b.hidden = tutorial || !(save.spares > 0);
+    $('spareN').textContent = '×' + (save.spares || 0);
+    b.setAttribute('aria-label', t('gear_use'));
+  }
+  function useSpare() {
+    if (state !== 'play' || tutorial || !(save.spares > 0) || player.bat >= 99) return;
+    save.spares--; persist();
+    player.bat = Math.min(100, player.bat + SPARE_BOOST);
+    sfx('bat'); updateSpareUI();
+  }
+  $('spareBtn').addEventListener('pointerdown', e => { e.stopPropagation(); e.preventDefault(); useSpare(); });
+  $('spareBtn').addEventListener('click', e => { if (e.detail === 0) useSpare(); });
 
   function toggleLamp() {
     if (!player.lamp && player.bat < 15) { flashBattery(); return; }
@@ -1352,6 +1410,10 @@ details .rules{margin-top:10px}
     view = 'shop';
     const cat = CATALOG[shopTab], slot = SLOT[shopTab];
     const items = cat.map(it => {
+      if (it.consumable) {
+        const have = save.spares || 0, full = have >= SPARE_MAX;
+        return `<li><canvas class="pv" width="68" height="68" data-pv="${it.id}" aria-hidden="true"></canvas><span class="name">${it.n[lang] || it.n.en}<span class="note">${t('gear_bat_desc')} ${t('gear_have', have, SPARE_MAX)}</span></span><button type="button" data-buy="${it.id}"${save.shards < it.price || full ? ' disabled' : ''}>◆ ${it.price}</button></li>`;
+      }
       const owned = save.owned.includes(it.id), on = save[slot] === it.id;
       const btn = on ? `<button type="button" disabled>${t('equipped')}</button>`
         : owned ? `<button type="button" class="ghost" data-equip="${it.id}">${t('equip')}</button>`
@@ -1371,7 +1433,11 @@ details .rules{margin-top:10px}
     $('panel').querySelectorAll('canvas[data-pv]').forEach(cv => {
       const c = cv.getContext('2d'), id = cv.dataset.pv;
       c.scale(2, 2);
-      if (id.startsWith('sk-')) {
+      if (id === 'gear-battery') {
+        c.fillStyle = '#d9d4c4'; c.fillRect(14, 6, 6, 3);
+        c.strokeStyle = C.lamp; c.lineWidth = 2; c.strokeRect(10, 9, 14, 20);
+        c.fillStyle = C.lamp; c.fillRect(13, 18, 8, 8); c.fillRect(13, 12, 8, 4);
+      } else if (id.startsWith('sk-')) {
         drawSkin(c, 17, 17, 8, -0.5, id);
         c.fillStyle = C.lamp; c.beginPath(); c.arc(17 + Math.cos(-0.5) * 4.8, 17 + Math.sin(-0.5) * 4.8, 2.4, 0, Math.PI * 2); c.fill();
       } else if (id === 'tr-aucune') {
@@ -1384,6 +1450,12 @@ details .rules{margin-top:10px}
     $('panel').querySelectorAll('[data-buy]').forEach(b => b.onclick = () => {
       const it = cat.find(x => x.id === b.dataset.buy);
       if (!it || save.shards < it.price) return;
+      if (it.consumable) {
+        if ((save.spares || 0) >= SPARE_MAX) return;
+        save.shards -= it.price; save.spares = (save.spares || 0) + 1;
+        stat({ ['purchases.' + it.id]: 1 }); persist(); sfx('bat'); shop();
+        return;
+      }
       save.shards -= it.price; save.owned.push(it.id); save[slot] = it.id;
       stat({ ['purchases.' + it.id]: 1 });
       persist(); applyLamp(); shop();
@@ -1554,6 +1626,7 @@ details .rules{margin-top:10px}
     $('screen').hidden = true; $('hud').hidden = false; $('lampBtn').hidden = false;
     $('tip').hidden = true; $('tip').dataset.shown = '';
     $('lvl').textContent = t('tutorial'); $('hudShards').textContent = '◆ 0/1';
+    updateSpareUI();
     trail = [];
     updateLampUI();
   }
