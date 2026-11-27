@@ -94,6 +94,10 @@ details .rules{margin-top:10px}
 #screen textarea{width:100%;box-sizing:border-box;font:15px/1.5 var(--body);color:var(--ink);background:#17161d;border:1.5px solid #2c2b35;border-radius:12px;padding:12px;resize:vertical;user-select:text;-webkit-user-select:text;touch-action:auto}
 #screen textarea:focus{outline:2px solid var(--lamp);outline-offset:1px}
 #screen button:disabled{opacity:.5;cursor:default}
+.plinks{margin:0;order:99}
+#screen a.plink{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;text-decoration:underline;text-underline-offset:3px}
+#screen a.plink svg{width:14px;height:14px}
+#screen a.plink:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 #screen button.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--muted);font-size:13px;padding:11px 20px}
 #screen .levels button{align-self:stretch;padding:10px 4px 8px;border-radius:12px;background:#17161d;color:var(--ink);border:1.5px solid #2c2b35;display:flex;flex-direction:column;align-items:center;gap:4px;font:800 16px var(--display)}
 #screen .levels button.cur{border-color:var(--lamp)}
@@ -268,6 +272,7 @@ details .rules{margin-top:10px}
   const plRu = (n, one, few, many) => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many; };
   const I18N = {
     fr: {
+      privacy: `Confidentialité`,
       tab_gear: `Équipement`,
       gear_bat_desc: `+50 % de batterie, à utiliser pendant une partie (bouton à côté de la jauge).`,
       gear_use: `Utiliser une pile de réserve`,
@@ -348,6 +353,7 @@ details .rules{margin-top:10px}
       ]
     },
     en: {
+      privacy: `Privacy`,
       tab_gear: `Gear`,
       gear_bat_desc: `+50% battery, to use during a level (button next to the gauge).`,
       gear_use: `Use a spare battery`,
@@ -428,6 +434,7 @@ details .rules{margin-top:10px}
       ]
     },
     es: {
+      privacy: `Privacidad`,
       tab_gear: `Equipo`,
       gear_bat_desc: `+50 % de batería, para usar durante una partida (botón junto al indicador).`,
       gear_use: `Usar una pila de repuesto`,
@@ -508,6 +515,7 @@ details .rules{margin-top:10px}
       ]
     },
     pt: {
+      privacy: `Privacidade`,
       tab_gear: `Equipamento`,
       gear_bat_desc: `+50% de bateria, para usar durante uma partida (botão ao lado do indicador).`,
       gear_use: `Usar uma pilha reserva`,
@@ -588,6 +596,7 @@ details .rules{margin-top:10px}
       ]
     },
     de: {
+      privacy: `Datenschutz`,
       tab_gear: `Ausrüstung`,
       gear_bat_desc: `+50 % Akku, während einer Runde einsetzbar (Taste neben der Anzeige).`,
       gear_use: `Ersatzbatterie verwenden`,
@@ -668,6 +677,7 @@ details .rules{margin-top:10px}
       ]
     },
     ru: {
+      privacy: `Конфиденциальность`,
       tab_gear: `Снаряжение`,
       gear_bat_desc: `+50 % заряда, можно использовать во время игры (кнопка рядом с индикатором).`,
       gear_use: `Использовать запасную батарейку`,
@@ -748,6 +758,7 @@ details .rules{margin-top:10px}
       ]
     },
     zh: {
+      privacy: `隐私政策`,
       tab_gear: `装备`,
       gear_bat_desc: `电量 +50%，可在游戏中使用（电量条旁的按钮）。`,
       gear_use: `使用备用电池`,
@@ -828,6 +839,7 @@ details .rules{margin-top:10px}
       ]
     },
     mn: {
+      privacy: `Нууцлал`,
       tab_gear: `Хэрэгсэл`,
       gear_bat_desc: `Цэнэг +50%, тоглолтын үеэр ашиглана (заалтын хажууд байгаа товч).`,
       gear_use: `Нөөц зай ашиглах`,
@@ -1422,6 +1434,7 @@ details .rules{margin-top:10px}
       ${annHTML()}
       <p class="muted">${t('summary', save.shards, total, save.unlocked * 3)}</p>
       <div class="levels">${cells}</div>
+      <p class="plinks"><a class="plink" href="https://graciaso685-prog.github.io/glimmer-maze/privacy.html?lang=${lang}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${t('privacy')}</a></p>
       <details><summary>${t('howTo')}</summary><dl class="rules">${rules}</dl></details>`);
     $('play').onclick = () => { if (!save.tutorial) startTutorial(); else { level = save.unlocked; startLevel(); } };
     $('tutoBtn').onclick = startTutorial;
@@ -2062,7 +2075,7 @@ details .rules{margin-top:10px}
 </script>
 
 <script>
-if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=d90af958a7').catch(() => {}));
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=8272d75cff').catch(() => {}));
 </script>
 </body>
 </html>
