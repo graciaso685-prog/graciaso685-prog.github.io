@@ -93,6 +93,9 @@ nav.tabs a[aria-current="page"] { background: var(--brand); color: var(--brand-i
 .back:hover { color: var(--ink); }
 .detail { display: grid; grid-template-columns: 200px 1fr; gap: 36px; align-items: start; }
 .detail .big svg, .detail .big img { display: block; width: 100%; max-width: 200px; aspect-ratio: 1; height: auto; border-radius: 44px; box-shadow: 0 10px 0 rgba(0,0,0,.18); }
+.legal { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; max-width: 60ch; }
+.legal a { color: var(--muted); }
+.legal a:hover { color: var(--ink); }
 .soon { display: inline-flex; align-items: center; gap: 8px; border: 1.5px dashed var(--line); color: var(--muted); font-weight: 600; padding: 11px 18px; border-radius: 12px; font-size: 15px; }
 .detail h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.02em; margin-bottom: 4px; }
 .detail .by { color: var(--muted); margin: 0 0 18px; }
@@ -222,6 +225,7 @@ footer a { color: var(--muted); }
             <div><h3 data-i="f3_t"></h3><p data-i="f3_p"></p></div>
           </div>
           <a class="btn" href="https://play.google.com/store/apps/details?id=com.studiom.numbermerge" target="_blank" rel="noopener" data-i="m_cta"></a>
+          <nav class="legal" aria-label="Merge it"><a href="/number--merge-privacy/privacy-policy.html" data-i="privacy_full"></a><a href="/number--merge-privacy/delete-data.html" data-i="delete"></a></nav>
         </div>
       </div>
     </section>
@@ -268,6 +272,7 @@ footer a { color: var(--muted); }
             <a class="btn" href="/number--merge-privacy/glimmer-maze/" target="_blank" rel="noopener" data-i="g_cta"></a>
             <span class="soon" data-i="g_soon"></span>
           </div>
+          <nav class="legal" aria-label="Glimmer Maze"><a href="/number--merge-privacy/glimmer-maze/privacy.html" data-i="privacy_full"></a></nav>
         </div>
       </div>
     </section>
@@ -302,11 +307,6 @@ footer a { color: var(--muted); }
 
   <footer>
     <span>© 2026 Studiom</span>
-    <nav>
-      <a href="/number--merge-privacy/privacy-policy.html"><span data-i="privacy"></span> · Merge it</a>
-      <a href="/number--merge-privacy/delete-data.html"><span data-i="delete"></span> · Merge it</a>
-      <a href="/number--merge-privacy/glimmer-maze/privacy.html"><span data-i="privacy"></span> · Glimmer Maze</a>
-    </nav>
   </footer>
 </div>
 
@@ -315,6 +315,7 @@ var CONTACT_EMAIL = "studiom1276@gmail.com";
 
 var T = {
   fr: {
+    privacy_full: "Politique de confidentialité",
     nav_home: "Accueil", nav_projects: "Projets", nav_about: "Le studio", nav_contact: "Contact",
     eyebrow: "Studio d'applications et de jeux mobiles · Ouagadougou",
     h1: "Simples à prendre en main, <em>durs à lâcher.</em>",
@@ -355,6 +356,7 @@ var T = {
     privacy: "Confidentialité", delete: "Suppression des données", lang_label: "Langue"
   },
   en: {
+    privacy_full: "Privacy policy",
     nav_home: "Home", nav_projects: "Projects", nav_about: "Studio", nav_contact: "Contact",
     eyebrow: "Mobile app and game studio · Ouagadougou",
     h1: "Easy to pick up, <em>hard to put down.</em>",
@@ -395,6 +397,7 @@ var T = {
     privacy: "Privacy", delete: "Data deletion", lang_label: "Language"
   },
   es: {
+    privacy_full: "Política de privacidad",
     nav_home: "Inicio", nav_projects: "Proyectos", nav_about: "El estudio", nav_contact: "Contacto",
     eyebrow: "Estudio de apps y juegos móviles · Uagadugú",
     h1: "Fáciles de aprender, <em>difíciles de soltar.</em>",
@@ -435,6 +438,7 @@ var T = {
     privacy: "Privacidad", delete: "Eliminación de datos", lang_label: "Idioma"
   },
   pt: {
+    privacy_full: "Política de privacidade",
     nav_home: "Início", nav_projects: "Projetos", nav_about: "O estúdio", nav_contact: "Contato",
     eyebrow: "Estúdio de apps e jogos para celular · Uagadugu",
     h1: "Fáceis de aprender, <em>difíceis de largar.</em>",
@@ -475,6 +479,7 @@ var T = {
     privacy: "Privacidade", delete: "Exclusão de dados", lang_label: "Idioma"
   },
   de: {
+    privacy_full: "Datenschutzerklärung",
     nav_home: "Start", nav_projects: "Projekte", nav_about: "Das Studio", nav_contact: "Kontakt",
     eyebrow: "Studio für Mobile-Apps und -Spiele · Ouagadougou",
     h1: "Schnell gelernt, <em>schwer wieder weggelegt.</em>",
@@ -515,6 +520,7 @@ var T = {
     privacy: "Datenschutz", delete: "Datenlöschung", lang_label: "Sprache"
   },
   ru: {
+    privacy_full: "Политика конфиденциальности",
     nav_home: "Главная", nav_projects: "Проекты", nav_about: "Студия", nav_contact: "Контакты",
     eyebrow: "Студия мобильных приложений и игр · Уагадугу",
     h1: "Легко начать, <em>трудно оторваться.</em>",
@@ -555,6 +561,7 @@ var T = {
     privacy: "Конфиденциальность", delete: "Удаление данных", lang_label: "Язык"
   },
   zh: {
+    privacy_full: "隐私政策",
     nav_home: "首页", nav_projects: "项目", nav_about: "工作室", nav_contact: "联系我们",
     eyebrow: "移动应用与游戏工作室 · 瓦加杜古",
     h1: "上手简单，<em>欲罢不能。</em>",
@@ -595,6 +602,7 @@ var T = {
     privacy: "隐私政策", delete: "数据删除", lang_label: "语言"
   },
   mn: {
+    privacy_full: "Нууцлалын бодлого",
     nav_home: "Нүүр", nav_projects: "Төслүүд", nav_about: "Студи", nav_contact: "Холбоо барих",
     eyebrow: "Гар утасны апп, тоглоомын студи · Уагадугу",
     h1: "Сурахад хялбар, <em>орхиход хэцүү.</em>",
