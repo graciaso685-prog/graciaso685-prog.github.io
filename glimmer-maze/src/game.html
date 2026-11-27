@@ -111,7 +111,8 @@ details .rules{margin-top:10px}
 #screen .ann-x{position:absolute;top:6px;right:6px;padding:4px 12px;background:transparent;color:var(--ink);font:400 22px/1 var(--body)}
 #splash{position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse at 50% 42%,rgba(255,197,107,.12),transparent 58%),var(--void);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 24px) 24px calc(env(safe-area-inset-bottom,0px) + 28px);transition:opacity .5s ease}
 #splash.out{opacity:0;pointer-events:none}
-#splash .s-title{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font:800 clamp(46px,15vw,88px)/.95 var(--display);letter-spacing:-.02em;color:var(--lamp);text-shadow:0 0 34px rgba(255,197,107,.45);opacity:0;transition:opacity .5s ease}
+#splash .s-title{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;opacity:0;transition:opacity .5s ease}
+#splash .s-name{font:800 clamp(46px,15vw,88px)/.95 var(--display);letter-spacing:-.02em;color:var(--lamp);text-shadow:0 0 34px rgba(255,197,107,.45)}
 #splash.fonts .s-title{opacity:1}
 #splash .s-bottom{display:flex;flex-direction:column;align-items:center;gap:10px}
 #splash .s-bottom img{width:min(30vw,130px);height:auto;margin-top:18px}
@@ -138,9 +139,11 @@ details .rules{margin-top:10px}
 <canvas id="game" aria-label="Labyrinthe"></canvas>
 
 <div id="splash" role="img" aria-label="Glimmer Maze, by Studiom">
-  <div class="s-title">Glimmer<br>Maze</div>
-  <div class="s-bottom">
+  <div class="s-title">
+    <div class="s-name">Glimmer<br>Maze</div>
     <p class="s-by"><span class="by">BY</span> <span class="st">STUDIOM</span></p>
+  </div>
+  <div class="s-bottom">
     <div class="s-load" aria-hidden="true">
       <canvas id="s-walker" width="80" height="80"></canvas>
       <div class="s-bar"><i id="s-fill"></i></div>
