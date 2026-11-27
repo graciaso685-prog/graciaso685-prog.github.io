@@ -7,7 +7,6 @@
 <meta name="description" content="Studiom, studio d'applications et de jeux mobiles à Ouagadougou : Merge it, Pouls et Glimmer Maze.">
 <title>Studiom</title>
 <link rel="canonical" href="https://graciaso685-prog.github.io/">
-<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0d47a1">
 <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -104,7 +103,7 @@ nav.tabs a[aria-current="page"] { background: var(--brand); color: var(--brand-i
 .legal { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; max-width: 60ch; }
 .legal a { color: var(--muted); }
 .legal a:hover { color: var(--ink); }
-#install { margin-left: 8px; background: var(--sun); color: var(--sun-ink); border: 0; border-radius: 999px; font: 600 13px var(--font-body); padding: 7px 14px; cursor: pointer; }
+#install { display: inline-block; text-decoration: none; margin-left: 8px; background: var(--sun); color: var(--sun-ink); border: 0; border-radius: 999px; font: 600 13px var(--font-body); padding: 7px 14px; cursor: pointer; }
 .soon { display: inline-flex; align-items: center; gap: 8px; border: 1.5px dashed var(--line); color: var(--muted); font-weight: 600; padding: 11px 18px; border-radius: 12px; font-size: 15px; }
 .detail h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.02em; margin-bottom: 4px; }
 .detail .by { color: var(--muted); margin: 0 0 18px; }
@@ -200,7 +199,7 @@ footer a { color: var(--muted); }
           <option value="mn">Монгол</option>
         </select>
       </label>
-      <button type="button" id="install" hidden data-i="install"></button>
+      <a id="install" class="install-link" href="/app/" data-i="install"></a>
     </nav>
   </header>
 
@@ -344,6 +343,7 @@ footer a { color: var(--muted); }
   </footer>
 </div>
 
+<!-- APP_FLAG -->
 <script src="/site-texts.js"></script>
 <script src="/firebase-config.js"></script>
 <script src="/studiom-fb.js"></script>
@@ -476,6 +476,7 @@ window.addEventListener("popstate", route);
 
 // Application installable
 var installEvt = null;
+if (window.matchMedia && matchMedia("(display-mode: standalone)").matches && document.getElementById("install").tagName === "A") document.getElementById("install").hidden = true;
 window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); installEvt = e; document.getElementById("install").hidden = false; });
 document.getElementById("install").onclick = function () {
   if (!installEvt) return;

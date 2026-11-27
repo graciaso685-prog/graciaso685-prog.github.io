@@ -5,7 +5,9 @@ Appli d'administration : https://studiom-admin.github.io/ (dépôt studiom-admin
 
 | Fichier | Rôle |
 |---|---|
-| `index.html`, `site-texts.js` | Le site (8 langues), installable comme une appli |
+| `index.html`, `site-texts.js` | Le site (8 langues) |
+| `app/index.html` | L'appli Studiom installable, **générée** par `python3 build-app.py` à partir de `index.html` (à relancer après chaque modification du site) |
+| `glimmer-maze/` | Le jeu Glimmer Maze (source : `glimmer-maze/src/game.html`, puis `python3 build.py`) |
 | `privacy.html` | Confidentialité du site |
 | `pouls/privacy.html` | Politique de confidentialité de Pouls |
 | `admin/` | Redirection vers l'appli admin (studiom-admin.github.io) |
