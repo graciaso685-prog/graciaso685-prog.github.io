@@ -20,7 +20,7 @@
 }
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;background:var(--void);color:var(--ink);font-family:var(--body);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-#game{position:fixed;inset:0;width:100%;height:100%;display:block}
+#game{cursor:crosshair;position:fixed;inset:0;width:100%;height:100%;display:block}
 #hud{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;align-items:center;gap:12px;pointer-events:none;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-variant-numeric:tabular-nums}
 #hud .lvl{font-family:var(--display);font-weight:500;letter-spacing:.04em}
 #hud .time{color:var(--muted);margin-left:8px}
@@ -293,7 +293,7 @@ details .rules{margin-top:10px}
       howTo: `Comment jouer`, language: `Langue`, soundOn: `Son : activé`, soundOff: `Son : coupé`, exitHint: `Appuie encore sur Retour pour quitter`,
       rules: [
         [`Mobile`, `Glisse le doigt pour avancer, interrupteur en bas à droite pour la lampe.`],
-        [`Clavier`, `ZQSD / WASD ou flèches, souris pour viser, Espace pour la lampe.`],
+        [`Clavier`, `Souris pour viser, Z (ou W, ↑) pour avancer vers le pointeur, S pour reculer, Q et D pour te décaler. Clic gauche ou Espace pour la lampe.`],
         [`Chasseurs`, `Faisceaux rouges. S'ils te voient, ils foncent sur toi.`],
         [`Batterie`, `Se vide allumée, se recharge éteinte. Les piles donnent +40 %.`],
         [`Éclats`, `Cachés dans le noir, souvent au fond des impasses. Chaque niveau en a un nombre limité : une fois ramassés, ils ne reviennent pas. Perdus si tu te fais attraper.`],
@@ -310,9 +310,9 @@ details .rules{margin-top:10px}
       shopTitle: `Boutique`, shopIntro: n => `Tu as <span class="shards">◆ ${n}</span> éclats. Lampes, explorateurs et traînées sont décoratifs ; l'équipement t'aide pendant les parties.`,
       tab_lamps: `Lampes`, tab_skins: `Explorateurs`, tab_trails: `Traînées`, equipped: `Équipé`, equip: `Équiper`, back: `Retour`,
       steps: c => [
-        c ? `Glisse ton doigt n'importe où sur l'écran pour avancer.` : `Avance avec ZQSD, WASD ou les flèches. La souris oriente ta lampe.`,
+        c ? `Glisse ton doigt n'importe où sur l'écran pour avancer.` : `Vise avec la souris et avance avec Z (ou W, ou ↑) : tu marches vers le pointeur.`,
         `Ta lampe n'éclaire qu'à 60° devant toi. Va ramasser l'éclat ◆ au bout du couloir.`,
-        `Un chasseur patrouille plus bas : regarde sa lumière rouge. Ta lampe te trahit aussi. ` + (c ? `Éteins-la avec l'interrupteur en bas à droite.` : `Éteins-la avec Espace.`),
+        `Un chasseur patrouille plus bas : regarde sa lumière rouge. Ta lampe te trahit aussi. ` + (c ? `Éteins-la avec l'interrupteur en bas à droite.` : `Éteins-la avec un clic gauche (ou Espace).`),
         `Dans le noir, il ne te voit que si tu entres dans son faisceau. Attends qu'il te tourne le dos, puis traverse le couloir.`,
         `Bravo ! Rallume si tu veux et rejoins la sortie verte.`
       ],
@@ -373,7 +373,7 @@ details .rules{margin-top:10px}
       howTo: `How to play`, language: `Language`, soundOn: `Sound: on`, soundOff: `Sound: off`, exitHint: `Press back again to exit`,
       rules: [
         [`Mobile`, `Slide your finger to move, switch at the bottom right for the lamp.`],
-        [`Keyboard`, `WASD or arrow keys, mouse to aim, Space for the lamp.`],
+        [`Keyboard`, `Mouse to aim, W (or ↑) to walk toward the pointer, S to back up, A and D to sidestep. Left click or Space for the lamp.`],
         [`Hunters`, `Red beams. If they see you, they rush at you.`],
         [`Battery`, `Drains while on, recharges while off. Batteries give +40%.`],
         [`Shards`, `Hidden in the dark, often at the end of dead ends. Each level has a limited number: once collected, they don't come back. Lost if you get caught.`],
@@ -390,9 +390,9 @@ details .rules{margin-top:10px}
       shopTitle: `Shop`, shopIntro: n => `You have <span class="shards">◆ ${n}</span> shards. Lamps, explorers and trails are cosmetic; gear helps you during a level.`,
       tab_lamps: `Lamps`, tab_skins: `Explorers`, tab_trails: `Trails`, equipped: `Equipped`, equip: `Equip`, back: `Back`,
       steps: c => [
-        c ? `Slide your finger anywhere on the screen to move.` : `Move with WASD or the arrow keys. The mouse aims your lamp.`,
+        c ? `Slide your finger anywhere on the screen to move.` : `Aim with the mouse and press W (or ↑) to walk toward the pointer.`,
         `Your lamp only lights up 60° ahead. Go grab the shard ◆ at the end of the corridor.`,
-        `A hunter patrols below: look at its red light. Your lamp gives you away too. ` + (c ? `Turn it off with the switch at the bottom right.` : `Turn it off with Space.`),
+        `A hunter patrols below: look at its red light. Your lamp gives you away too. ` + (c ? `Turn it off with the switch at the bottom right.` : `Turn it off with a left click (or Space).`),
         `In the dark, it only sees you if you step into its beam. Wait until it turns its back, then cross the corridor.`,
         `Well done! Turn your lamp back on if you like and head for the green exit.`
       ],
@@ -453,7 +453,7 @@ details .rules{margin-top:10px}
       howTo: `Cómo jugar`, language: `Idioma`, soundOn: `Sonido: sí`, soundOff: `Sonido: no`, exitHint: `Pulsa atrás otra vez para salir`,
       rules: [
         [`Móvil`, `Desliza el dedo para moverte; interruptor abajo a la derecha para la linterna.`],
-        [`Teclado`, `WASD o flechas, ratón para apuntar, Espacio para la linterna.`],
+        [`Teclado`, `Ratón para apuntar, W (o ↑) para avanzar hacia el puntero, S para retroceder, A y D para desplazarte. Clic izquierdo o Espacio para la linterna.`],
         [`Cazadores`, `Haces rojos. Si te ven, van a por ti.`],
         [`Batería`, `Se gasta encendida y se recarga apagada. Las pilas dan +40 %.`],
         [`Fragmentos`, `Escondidos en la oscuridad, a menudo al fondo de los callejones sin salida. Cada nivel tiene un número limitado: una vez recogidos, no vuelven. Los pierdes si te atrapan.`],
@@ -470,9 +470,9 @@ details .rules{margin-top:10px}
       shopTitle: `Tienda`, shopIntro: n => `Tienes <span class="shards">◆ ${n}</span> fragmentos. Linternas, exploradores y estelas son decorativos; el equipo te ayuda durante la partida.`,
       tab_lamps: `Linternas`, tab_skins: `Exploradores`, tab_trails: `Estelas`, equipped: `Equipado`, equip: `Equipar`, back: `Volver`,
       steps: c => [
-        c ? `Desliza el dedo en cualquier parte de la pantalla para moverte.` : `Muévete con WASD o las flechas. El ratón orienta tu linterna.`,
+        c ? `Desliza el dedo en cualquier parte de la pantalla para moverte.` : `Apunta con el ratón y pulsa W (o ↑) para avanzar hacia el puntero.`,
         `Tu linterna solo ilumina 60° al frente. Ve a por el fragmento ◆ al final del pasillo.`,
-        `Un cazador patrulla más abajo: mira su luz roja. Tu linterna también te delata. ` + (c ? `Apágala con el interruptor de abajo a la derecha.` : `Apágala con Espacio.`),
+        `Un cazador patrulla más abajo: mira su luz roja. Tu linterna también te delata. ` + (c ? `Apágala con el interruptor de abajo a la derecha.` : `Apágala con un clic izquierdo (o Espacio).`),
         `En la oscuridad, solo te ve si entras en su haz. Espera a que te dé la espalda y cruza el pasillo.`,
         `¡Bien hecho! Vuelve a encenderla si quieres y llega a la salida verde.`
       ],
@@ -533,7 +533,7 @@ details .rules{margin-top:10px}
       howTo: `Como jogar`, language: `Idioma`, soundOn: `Som: ligado`, soundOff: `Som: desligado`, exitHint: `Toque em voltar de novo para sair`,
       rules: [
         [`Celular`, `Deslize o dedo para andar; interruptor no canto inferior direito para a lanterna.`],
-        [`Teclado`, `WASD ou setas, mouse para mirar, Espaço para a lanterna.`],
+        [`Teclado`, `Mouse para mirar, W (ou ↑) para andar até o ponteiro, S para recuar, A e D para ir de lado. Clique esquerdo ou Espaço para a lanterna.`],
         [`Caçadores`, `Feixes vermelhos. Se te virem, vêm direto em você.`],
         [`Bateria`, `Gasta acesa e recarrega apagada. As pilhas dão +40%.`],
         [`Fragmentos`, `Escondidos no escuro, muitas vezes no fundo dos becos sem saída. Cada nível tem um número limitado: depois de coletados, não voltam. Perdidos se você for pego.`],
@@ -550,9 +550,9 @@ details .rules{margin-top:10px}
       shopTitle: `Loja`, shopIntro: n => `Você tem <span class="shards">◆ ${n}</span> fragmentos. Lanternas, exploradores e rastros são decorativos; o equipamento ajuda durante a partida.`,
       tab_lamps: `Lanternas`, tab_skins: `Exploradores`, tab_trails: `Rastros`, equipped: `Equipado`, equip: `Equipar`, back: `Voltar`,
       steps: c => [
-        c ? `Deslize o dedo em qualquer lugar da tela para andar.` : `Ande com WASD ou as setas. O mouse aponta a lanterna.`,
+        c ? `Deslize o dedo em qualquer lugar da tela para andar.` : `Mire com o mouse e aperte W (ou ↑) para andar até o ponteiro.`,
         `Sua lanterna só ilumina 60° à frente. Vá pegar o fragmento ◆ no fim do corredor.`,
-        `Um caçador patrulha mais abaixo: veja a luz vermelha dele. Sua lanterna também te denuncia. ` + (c ? `Apague-a com o interruptor no canto inferior direito.` : `Apague-a com Espaço.`),
+        `Um caçador patrulha mais abaixo: veja a luz vermelha dele. Sua lanterna também te denuncia. ` + (c ? `Apague-a com o interruptor no canto inferior direito.` : `Apague-a com um clique esquerdo (ou Espaço).`),
         `No escuro, ele só te vê se você entrar no feixe dele. Espere ele virar de costas e atravesse o corredor.`,
         `Muito bem! Acenda de novo se quiser e vá até a saída verde.`
       ],
@@ -613,7 +613,7 @@ details .rules{margin-top:10px}
       howTo: `So wird gespielt`, language: `Sprache`, soundOn: `Ton: an`, soundOff: `Ton: aus`, exitHint: `Nochmal Zurück drücken zum Beenden`,
       rules: [
         [`Handy`, `Wischen zum Bewegen, Schalter unten rechts für die Lampe.`],
-        [`Tastatur`, `WASD oder Pfeiltasten, Maus zum Zielen, Leertaste für die Lampe.`],
+        [`Tastatur`, `Maus zum Zielen, W (oder ↑) geht zum Mauszeiger, S zurück, A und D seitwärts. Linksklick oder Leertaste für die Lampe.`],
         [`Jäger`, `Rote Lichtkegel. Wenn sie dich sehen, stürmen sie auf dich zu.`],
         [`Akku`, `Leert sich eingeschaltet, lädt sich ausgeschaltet auf. Batterien geben +40 %.`],
         [`Splitter`, `Im Dunkeln versteckt, oft am Ende von Sackgassen. Jedes Level hat nur eine begrenzte Zahl: Einmal gesammelt, kommen sie nicht zurück. Weg, wenn du erwischt wirst.`],
@@ -630,9 +630,9 @@ details .rules{margin-top:10px}
       shopTitle: `Shop`, shopIntro: n => `Du hast <span class="shards">◆ ${n}</span> Splitter. Lampen, Entdecker und Spuren sind nur Optik; Ausrüstung hilft dir während einer Runde.`,
       tab_lamps: `Lampen`, tab_skins: `Entdecker`, tab_trails: `Spuren`, equipped: `Ausgerüstet`, equip: `Ausrüsten`, back: `Zurück`,
       steps: c => [
-        c ? `Wische irgendwo auf dem Bildschirm, um dich zu bewegen.` : `Bewege dich mit WASD oder den Pfeiltasten. Mit der Maus richtest du die Lampe aus.`,
+        c ? `Wische irgendwo auf dem Bildschirm, um dich zu bewegen.` : `Ziele mit der Maus und drück W (oder ↑), um zum Mauszeiger zu gehen.`,
         `Deine Lampe leuchtet nur 60° nach vorn. Hol dir den Splitter ◆ am Ende des Gangs.`,
-        `Unten patrouilliert ein Jäger: Achte auf sein rotes Licht. Auch deine Lampe verrät dich. ` + (c ? `Schalte sie mit dem Schalter unten rechts aus.` : `Schalte sie mit der Leertaste aus.`),
+        `Unten patrouilliert ein Jäger: Achte auf sein rotes Licht. Auch deine Lampe verrät dich. ` + (c ? `Schalte sie mit dem Schalter unten rechts aus.` : `Schalte sie mit einem Linksklick (oder der Leertaste) aus.`),
         `Im Dunkeln sieht er dich nur, wenn du in seinen Lichtkegel gerätst. Warte, bis er dir den Rücken zudreht, und überquere dann den Gang.`,
         `Gut gemacht! Schalte die Lampe wieder ein, wenn du willst, und lauf zum grünen Ausgang.`
       ],
@@ -693,7 +693,7 @@ details .rules{margin-top:10px}
       howTo: `Как играть`, language: `Язык`, soundOn: `Звук: вкл.`, soundOff: `Звук: выкл.`, exitHint: `Нажми «Назад» ещё раз, чтобы выйти`,
       rules: [
         [`Телефон`, `Веди пальцем по экрану, чтобы идти; переключатель внизу справа включает фонарь.`],
-        [`Клавиатура`, `WASD или стрелки, мышь — направление, пробел — фонарь.`],
+        [`Клавиатура`, `Мышь — направление, W (или ↑) — идти к указателю, S — назад, A и D — шаг в сторону. Левый клик или пробел — фонарь.`],
         [`Охотники`, `Красные лучи. Если они тебя увидят, то бросятся к тебе.`],
         [`Батарея`, `Разряжается, когда фонарь включён, и заряжается, когда выключен. Батарейки дают +40 %.`],
         [`Осколки`, `Спрятаны в темноте, часто в конце тупиков. На каждом уровне их ограниченное число: собранные больше не появляются. Если тебя поймают, ты их теряешь.`],
@@ -710,9 +710,9 @@ details .rules{margin-top:10px}
       shopTitle: `Магазин`, shopIntro: n => `У тебя <span class="shards">◆ ${n}</span> ${plRu(n, 'осколок', 'осколка', 'осколков')}. Фонари, исследователи и следы — только для красоты; снаряжение помогает во время игры.`,
       tab_lamps: `Фонари`, tab_skins: `Исследователи`, tab_trails: `Следы`, equipped: `Выбрано`, equip: `Выбрать`, back: `Назад`,
       steps: c => [
-        c ? `Веди пальцем в любом месте экрана, чтобы идти.` : `Двигайся клавишами WASD или стрелками. Мышь направляет фонарь.`,
+        c ? `Веди пальцем в любом месте экрана, чтобы идти.` : `Целься мышью и нажми W (или ↑), чтобы идти к указателю.`,
         `Фонарь светит только на 60° вперёд. Подбери осколок ◆ в конце коридора.`,
-        `Внизу патрулирует охотник: видишь его красный свет? Твой фонарь тоже тебя выдаёт. ` + (c ? `Выключи его переключателем внизу справа.` : `Выключи его пробелом.`),
+        `Внизу патрулирует охотник: видишь его красный свет? Твой фонарь тоже тебя выдаёт. ` + (c ? `Выключи его переключателем внизу справа.` : `Выключи его левым кликом (или пробелом).`),
         `В темноте он видит тебя, только если ты попадёшь в его луч. Дождись, когда он отвернётся, и перейди коридор.`,
         `Отлично! Включи фонарь, если хочешь, и иди к зелёному выходу.`
       ],
@@ -773,7 +773,7 @@ details .rules{margin-top:10px}
       howTo: `玩法说明`, language: `语言`, soundOn: `声音：开`, soundOff: `声音：关`, exitHint: `再按一次返回键退出`,
       rules: [
         [`手机`, `在屏幕上滑动手指移动，右下角的开关控制手电。`],
-        [`键盘`, `WASD 或方向键移动，鼠标瞄准，空格键开关手电。`],
+        [`键盘`, `鼠标瞄准，W（或 ↑）朝指针前进，S 后退，A 和 D 侧移。鼠标左键或空格键开关手电。`],
         [`猎人`, `红色光束。一旦看到你，他们就会冲过来。`],
         [`电量`, `手电打开时耗电，关闭时充电。电池可恢复 40% 电量。`],
         [`碎片`, `藏在黑暗中，常在死胡同尽头。每关数量有限：捡过的不会再出现。被抓住就会丢失。`],
@@ -790,9 +790,9 @@ details .rules{margin-top:10px}
       shopTitle: `商店`, shopIntro: n => `你有 <span class="shards">◆ ${n}</span> 个碎片。手电、探险者和拖尾只是装饰；装备能在游戏中帮助你。`,
       tab_lamps: `手电`, tab_skins: `探险者`, tab_trails: `拖尾`, equipped: `使用中`, equip: `使用`, back: `返回`,
       steps: c => [
-        c ? `在屏幕任意位置滑动手指来移动。` : `用 WASD 或方向键移动，鼠标控制手电方向。`,
+        c ? `在屏幕任意位置滑动手指来移动。` : `用鼠标瞄准，按 W（或 ↑）朝指针前进。`,
         `手电只照亮前方 60°。去走廊尽头捡起碎片 ◆。`,
-        `下方有猎人在巡逻：看到他的红光了吗？你的手电也会暴露你。` + (c ? `用右下角的开关把它关掉。` : `按空格键把它关掉。`),
+        `下方有猎人在巡逻：看到他的红光了吗？你的手电也会暴露你。` + (c ? `用右下角的开关把它关掉。` : `点击鼠标左键（或按空格键）把它关掉。`),
         `在黑暗中，只有你走进他的光束，他才能看到你。等他背对你，再穿过走廊。`,
         `干得好！想开手电就打开，然后前往绿色出口。`
       ],
@@ -853,7 +853,7 @@ details .rules{margin-top:10px}
       howTo: `Хэрхэн тоглох вэ`, language: `Хэл`, soundOn: `Дуу: асаалттай`, soundOff: `Дуу: унтраалттай`, exitHint: `Гарахын тулд буцах товчийг дахин дар`,
       rules: [
         [`Гар утас`, `Хуруугаа гулсуулж явна; баруун доод буланд байгаа унтраалгаар чийдэнгээ асаана.`],
-        [`Гар`, `WASD эсвэл сумтай товч, хулганаар чиглүүлнэ, Space товчоор чийдэн.`],
+        [`Гар`, `Хулганаар чиглүүл, W (эсвэл ↑) заагч руу явна, S ухарна, A ба D хажуу тийш. Зүүн товшилт эсвэл Space — чийдэн.`],
         [`Анчид`, `Улаан гэрлийн туяа. Чамайг харвал чам руу гүйнэ.`],
         [`Цэнэг`, `Чийдэн асаалттай үед дуусдаг, унтраалттай үед цэнэглэгддэг. Зай +40% өгнө.`],
         [`Хэлтэрхий`, `Харанхуйд, ихэвчлэн мухар замын төгсгөлд нуугдсан. Түвшин бүрт хязгаартай: түүсэн хэлтэрхий дахин гарахгүй. Баригдвал алдана.`],
@@ -870,9 +870,9 @@ details .rules{margin-top:10px}
       shopTitle: `Дэлгүүр`, shopIntro: n => `Танд <span class="shards">◆ ${n}</span> хэлтэрхий байна. Чийдэн, аялагчид, ул мөр зөвхөн гоёл; хэрэгсэл тоглолтын үеэр тусална.`,
       tab_lamps: `Чийдэн`, tab_skins: `Аялагчид`, tab_trails: `Ул мөр`, equipped: `Сонгосон`, equip: `Сонгох`, back: `Буцах`,
       steps: c => [
-        c ? `Явахын тулд дэлгэцийн хаана ч хамаагүй хуруугаа гулсуул.` : `WASD эсвэл сумтай товчоор яв. Хулганаар чийдэнгээ чиглүүл.`,
+        c ? `Явахын тулд дэлгэцийн хаана ч хамаагүй хуруугаа гулсуул.` : `Хулганаар чиглүүлээд W (эсвэл ↑) дарж заагч руу яв.`,
         `Чийдэн чинь зөвхөн урд талаа 60° гэрэлтүүлдэг. Коридорын төгсгөлд байгаа хэлтэрхийг ◆ ав.`,
-        `Доор анчин эргүүл хийж байна: түүний улаан гэрлийг хар. Чиний чийдэн ч бас чамайг илчилдэг. ` + (c ? `Баруун доод буланд байгаа унтраалгаар унтраа.` : `Space товчоор унтраа.`),
+        `Доор анчин эргүүл хийж байна: түүний улаан гэрлийг хар. Чиний чийдэн ч бас чамайг илчилдэг. ` + (c ? `Баруун доод буланд байгаа унтраалгаар унтраа.` : `Хулганы зүүн товшилтоор (эсвэл Space) унтраа.`),
         `Харанхуйд тэр чамайг зөвхөн туяандаа орвол хардаг. Тэр нуруугаа харуулах хүртэл хүлээгээд коридорыг гатал.`,
         `Сайн байна! Хүсвэл чийдэнгээ асаагаад ногоон гарц руу яв.`
       ],
@@ -1124,7 +1124,8 @@ details .rules{margin-top:10px}
   });
   cvs.addEventListener('pointerdown', e => {
     if (state === 'reveal') revealT = Math.min(revealT, REVEAL_ZOOM);
-    if (e.pointerType === 'mouse' || joy) return;
+    if (e.pointerType === 'mouse') { if (e.button === 0 && state === 'play') toggleLamp(); return; }
+    if (joy) return;
     joy = { id: e.pointerId, ox: e.clientX, oy: e.clientY, x: e.clientX, y: e.clientY };
     try { cvs.setPointerCapture(e.pointerId); } catch (_) {}
   });
@@ -1265,11 +1266,19 @@ details .rules{margin-top:10px}
   // ---------- Boucle ----------
   function update(dt) {
     time += dt;
-    const v = inputVector();
+    let v = inputVector(), aim = null;
+    if (mouse && !joy) {
+      // Ordinateur : la souris oriente le personnage, Z/W/↑ avance vers le pointeur, S/↓ recule, Q/A et D décalent
+      const dxm = mouse.x - W / 2, dym = mouse.y - H / 2;
+      if (dxm * dxm + dym * dym > 144) player.a = turn(player.a, Math.atan2(dym, dxm), 1 - Math.exp(-dt * 14));
+      const fwd = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0) - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0);
+      const side = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0);
+      const a = player.a;
+      let x = Math.cos(a) * fwd - Math.sin(a) * side, y = Math.sin(a) * fwd + Math.cos(a) * side;
+      const l = Math.hypot(x, y); if (l > 1) { x /= l; y /= l; }
+      v = { x, y };
+    } else if (v.x || v.y) aim = Math.atan2(v.y, v.x);
     move(player, v.x * P_SPEED * dt, v.y * P_SPEED * dt);
-    let aim = null;
-    if (mouse) aim = Math.atan2(mouse.y - H / 2, mouse.x - W / 2);
-    else if (v.x || v.y) aim = Math.atan2(v.y, v.x);
     if (aim !== null) player.a = turn(player.a, aim, 1 - Math.exp(-dt * 14));
 
     // Traînée (décorative, visible seulement dans la lumière)
