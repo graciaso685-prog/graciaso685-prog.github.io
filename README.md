@@ -1,14 +1,14 @@
 # graciaso685-prog.github.io
 
 Site du studio **Studiom** : https://graciaso685-prog.github.io/
-Appli d'administration : https://graciaso685-prog.github.io/admin/
+Appli d'administration : https://studiom-admin.github.io/ (dépôt studiom-admin/studiom-admin.github.io)
 
 | Fichier | Rôle |
 |---|---|
 | `index.html`, `site-texts.js` | Le site (8 langues), installable comme une appli |
 | `privacy.html` | Confidentialité du site |
 | `pouls/privacy.html` | Politique de confidentialité de Pouls |
-| `admin/` | Appli admin (site + Glimmer Maze), installable |
+| `admin/` | Redirection vers l'appli admin (studiom-admin.github.io) |
 | `firebase-config.js` | Configuration Firebase (vide = rien n'est envoyé) |
 | `studiom-fb.js` | Passerelle légère vers Firestore, utilisée par le site et Glimmer Maze |
 | `firestore.rules` | Règles de sécurité à publier dans la console Firebase |
@@ -25,4 +25,4 @@ Les pages légales de Merge it et le jeu Glimmer Maze sont dans le dépôt `numb
 4. **Build → Authentication** → Commencer → activer **Google**.
 5. **Authentication → Paramètres → Domaines autorisés** → ajouter `graciaso685-prog.github.io`.
 6. **Paramètres du projet → Vos applications → Web (</>)** → copier `apiKey`, `authDomain`, `projectId`, `appId` dans `firebase-config.js`.
-7. Ouvrir `/admin/`, se connecter : l'écran affiche ton UID. Dans Firestore, créer la collection `admins` avec un document dont l'ID est cet UID (aucun champ nécessaire).
+7. Ouvrir https://studiom-admin.github.io/, se connecter : l'écran affiche ton UID. Dans Firestore, créer la collection `admins` avec un document dont l'ID est cet UID (aucun champ nécessaire).
