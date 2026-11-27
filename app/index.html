@@ -364,6 +364,10 @@ function setLang(l) {
   document.getElementById("lang-sel").value = l;
   document.getElementById("lang-sel").setAttribute("aria-label", d.lang_label);
   try { localStorage.setItem("studiom_lang", l); } catch (e) {}
+  // Les pages juridiques s'ouvrent dans la langue choisie
+  document.querySelectorAll('a[href*="privacy"], a[href*="delete-data"]').forEach(function (a) {
+    try { var u = new URL(a.getAttribute("href"), location.href); u.searchParams.set("lang", l); a.setAttribute("href", u.pathname + u.search); } catch (e) {}
+  });
 }
 document.getElementById("lang-sel").onchange = function () { setLang(this.value); };
 document.getElementById("copy").onclick = function () {
