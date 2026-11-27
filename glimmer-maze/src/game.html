@@ -1469,6 +1469,14 @@ details .rules{margin-top:10px}
 
   // ---------- Suggestions (anonymes, lues dans l'appli admin) ----------
   let lastSugg = 0;
+  // Code secret du développeur : seule son empreinte SHA-256 est dans le jeu (le code lui-même n'apparaît nulle part)
+  const DEV_CODE_HASH = '5d60e8350c6cefaf9854f0349723df969eea899e6511bdb2803fda17358b0ac1', DEV_CODE_REWARD = 100;
+  async function isDevCode(txt) {
+    try {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('') === DEV_CODE_HASH;
+    } catch (e) { return false; }
+  }
   function suggestScreen() {
     view = 'suggest';
     showScreen(`
@@ -1479,10 +1487,15 @@ details .rules{margin-top:10px}
       <p class="muted" id="sgStatus" role="status"></p>`);
     const st = $('sgStatus'), btn = $('sgSend');
     $('back').onclick = menu;
-    if (!FBX) { st.textContent = t('sugg_off'); btn.disabled = true; return; }
-    btn.onclick = () => {
+    btn.onclick = async () => {
       const txt = $('sgText').value.trim();
       if (!txt) { $('sgText').focus(); return; }
+      if (txt.length < 40 && await isDevCode(txt)) {
+        save.shards += DEV_CODE_REWARD; persist(); sfx('win');
+        $('sgText').value = ''; st.textContent = '◆ +' + DEV_CODE_REWARD;
+        return;
+      }
+      if (!FBX) { st.textContent = t('sugg_off'); return; }
       const lastSent = Math.max(lastSugg, lsGet('gm-sugg-last') || 0);
       if (Date.now() - lastSent < 60000) { st.textContent = t('sugg_wait'); return; }
       btn.disabled = true; btn.textContent = t('sugg_sending'); st.textContent = '';
