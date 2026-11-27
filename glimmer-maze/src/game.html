@@ -72,6 +72,9 @@ details .rules{margin-top:10px}
 #screen a.linkbtn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .sharecard{display:block;width:100%;max-width:300px;height:auto;border-radius:18px;align-self:center;box-shadow:0 0 50px rgba(255,197,107,.15)}
 #shStatus{min-height:1.5em;word-break:break-all;user-select:text;-webkit-user-select:text}
+#screen textarea{width:100%;box-sizing:border-box;font:15px/1.5 var(--body);color:var(--ink);background:#17161d;border:1.5px solid #2c2b35;border-radius:12px;padding:12px;resize:vertical;user-select:text;-webkit-user-select:text;touch-action:auto}
+#screen textarea:focus{outline:2px solid var(--lamp);outline-offset:1px}
+#screen button:disabled{opacity:.5;cursor:default}
 #screen button.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--muted);font-size:13px;padding:11px 20px}
 #screen .levels button{align-self:stretch;padding:10px 4px 8px;border-radius:12px;background:#17161d;color:var(--ink);border:1.5px solid #2c2b35;display:flex;flex-direction:column;align-items:center;gap:4px;font:800 16px var(--display)}
 #screen .levels button.cur{border-color:var(--lamp)}
@@ -236,6 +239,29 @@ details .rules{margin-top:10px}
   const plRu = (n, one, few, many) => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many; };
   const I18N = {
     fr: {
+      sugg: `Suggestions`,
+      sugg_h: `Une idée&nbsp;? Un bug&nbsp;?`,
+      sugg_hint: `Ton message nous aide à améliorer le jeu. Il est envoyé anonymement : n'y mets pas d'informations personnelles.`,
+      sugg_ph: `Écris ta suggestion…`,
+      sugg_send: `Envoyer`,
+      sugg_sending: `Envoi…`,
+      sugg_sent: `Merci ! Ta suggestion a bien été envoyée.`,
+      sugg_err: `L'envoi a échoué. Vérifie ta connexion et réessaie.`,
+      sugg_wait: `Attends une minute avant d'envoyer une autre suggestion.`,
+      sugg_off: `L'envoi de suggestions n'est pas disponible ici.`,
+      install: `Installer l'app`,
+      inst_h: `Installe Glimmer Maze`,
+      inst_list: [
+        `Une icône sur ton écran d'accueil, comme une vraie appli.`,
+        `Le jeu s'ouvre en plein écran, sans barre de navigateur.`,
+        `Il fonctionne même sans internet.`,
+        `Très léger, gratuit, et ta progression est conservée.`,
+      ],
+      inst_go: `Installer maintenant`,
+      inst_android: `Dans Chrome : touche le menu ⋮ en haut à droite, puis « Installer l'application » ou « Ajouter à l'écran d'accueil ».`,
+      inst_ios: `Dans Safari : touche le bouton Partager, puis « Sur l'écran d'accueil ».`,
+      inst_desktop: `Clique sur l'icône d'installation dans la barre d'adresse de ton navigateur, ou dans son menu : « Installer Glimmer Maze ».`,
+      inst_done: `C'est installé ! Tu trouveras Glimmer Maze sur ton écran d'accueil.`,
       share: `Partager`,
       share_hint: `Fais découvrir le jeu : un ami scanne ce code avec l'appareil photo de son téléphone, ou tu lui envoies le lien.`,
       share_link: `Partager le lien`,
@@ -289,6 +315,29 @@ details .rules{margin-top:10px}
       ]
     },
     en: {
+      sugg: `Suggestions`,
+      sugg_h: `An idea? A bug?`,
+      sugg_hint: `Your message helps us improve the game. It is sent anonymously: please don't include personal information.`,
+      sugg_ph: `Write your suggestion…`,
+      sugg_send: `Send`,
+      sugg_sending: `Sending…`,
+      sugg_sent: `Thanks! Your suggestion has been sent.`,
+      sugg_err: `Sending failed. Check your connection and try again.`,
+      sugg_wait: `Please wait a minute before sending another suggestion.`,
+      sugg_off: `Sending suggestions isn't available here.`,
+      install: `Install app`,
+      inst_h: `Install Glimmer Maze`,
+      inst_list: [
+        `An icon on your home screen, like a real app.`,
+        `The game opens full screen, with no browser bar.`,
+        `It works even without internet.`,
+        `Very light, free, and your progress is kept.`,
+      ],
+      inst_go: `Install now`,
+      inst_android: `In Chrome: tap the ⋮ menu at the top right, then “Install app” or “Add to Home screen”.`,
+      inst_ios: `In Safari: tap the Share button, then “Add to Home Screen”.`,
+      inst_desktop: `Click the install icon in your browser's address bar, or choose “Install Glimmer Maze” in its menu.`,
+      inst_done: `Installed! You'll find Glimmer Maze on your home screen.`,
       share: `Share`,
       share_hint: `Show the game to a friend: they scan this code with their phone camera, or you send them the link.`,
       share_link: `Share link`,
@@ -342,6 +391,29 @@ details .rules{margin-top:10px}
       ]
     },
     es: {
+      sugg: `Sugerencias`,
+      sugg_h: `¿Una idea? ¿Un error?`,
+      sugg_hint: `Tu mensaje nos ayuda a mejorar el juego. Se envía de forma anónima: no incluyas datos personales.`,
+      sugg_ph: `Escribe tu sugerencia…`,
+      sugg_send: `Enviar`,
+      sugg_sending: `Enviando…`,
+      sugg_sent: `¡Gracias! Tu sugerencia se ha enviado.`,
+      sugg_err: `No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.`,
+      sugg_wait: `Espera un minuto antes de enviar otra sugerencia.`,
+      sugg_off: `El envío de sugerencias no está disponible aquí.`,
+      install: `Instalar la app`,
+      inst_h: `Instala Glimmer Maze`,
+      inst_list: [
+        `Un icono en tu pantalla de inicio, como una app de verdad.`,
+        `El juego se abre a pantalla completa, sin barra del navegador.`,
+        `Funciona incluso sin internet.`,
+        `Muy ligero, gratis, y tu progreso se conserva.`,
+      ],
+      inst_go: `Instalar ahora`,
+      inst_android: `En Chrome: toca el menú ⋮ arriba a la derecha y luego «Instalar aplicación» o «Añadir a pantalla de inicio».`,
+      inst_ios: `En Safari: toca el botón Compartir y luego «Añadir a pantalla de inicio».`,
+      inst_desktop: `Haz clic en el icono de instalación de la barra de direcciones o elige «Instalar Glimmer Maze» en el menú del navegador.`,
+      inst_done: `¡Instalado! Encontrarás Glimmer Maze en tu pantalla de inicio.`,
       share: `Compartir`,
       share_hint: `Dale a conocer el juego: un amigo escanea este código con la cámara del móvil, o le envías el enlace.`,
       share_link: `Compartir enlace`,
@@ -395,6 +467,29 @@ details .rules{margin-top:10px}
       ]
     },
     pt: {
+      sugg: `Sugestões`,
+      sugg_h: `Uma ideia? Um bug?`,
+      sugg_hint: `Sua mensagem nos ajuda a melhorar o jogo. Ela é enviada de forma anônima: não inclua informações pessoais.`,
+      sugg_ph: `Escreva sua sugestão…`,
+      sugg_send: `Enviar`,
+      sugg_sending: `Enviando…`,
+      sugg_sent: `Obrigado! Sua sugestão foi enviada.`,
+      sugg_err: `O envio falhou. Verifique sua conexão e tente de novo.`,
+      sugg_wait: `Espere um minuto antes de enviar outra sugestão.`,
+      sugg_off: `O envio de sugestões não está disponível aqui.`,
+      install: `Instalar o app`,
+      inst_h: `Instale o Glimmer Maze`,
+      inst_list: [
+        `Um ícone na tela inicial, como um app de verdade.`,
+        `O jogo abre em tela cheia, sem barra do navegador.`,
+        `Funciona até sem internet.`,
+        `Muito leve, grátis, e seu progresso é mantido.`,
+      ],
+      inst_go: `Instalar agora`,
+      inst_android: `No Chrome: toque no menu ⋮ no canto superior direito e depois em “Instalar app” ou “Adicionar à tela inicial”.`,
+      inst_ios: `No Safari: toque no botão Compartilhar e depois em “Adicionar à Tela de Início”.`,
+      inst_desktop: `Clique no ícone de instalação na barra de endereço do navegador ou escolha “Instalar Glimmer Maze” no menu.`,
+      inst_done: `Instalado! Você vai encontrar o Glimmer Maze na tela inicial.`,
       share: `Compartilhar`,
       share_hint: `Mostre o jogo para um amigo: ele escaneia este código com a câmera do celular, ou você envia o link.`,
       share_link: `Compartilhar link`,
@@ -448,6 +543,29 @@ details .rules{margin-top:10px}
       ]
     },
     de: {
+      sugg: `Vorschläge`,
+      sugg_h: `Eine Idee? Ein Fehler?`,
+      sugg_hint: `Deine Nachricht hilft uns, das Spiel zu verbessern. Sie wird anonym gesendet: Bitte keine persönlichen Daten angeben.`,
+      sugg_ph: `Schreib deinen Vorschlag …`,
+      sugg_send: `Senden`,
+      sugg_sending: `Wird gesendet …`,
+      sugg_sent: `Danke! Dein Vorschlag wurde gesendet.`,
+      sugg_err: `Senden fehlgeschlagen. Prüfe deine Verbindung und versuch es erneut.`,
+      sugg_wait: `Warte bitte eine Minute, bevor du einen weiteren Vorschlag sendest.`,
+      sugg_off: `Vorschläge können hier nicht gesendet werden.`,
+      install: `App installieren`,
+      inst_h: `Installiere Glimmer Maze`,
+      inst_list: [
+        `Ein Symbol auf deinem Startbildschirm, wie eine echte App.`,
+        `Das Spiel öffnet sich im Vollbild, ohne Browserleiste.`,
+        `Es funktioniert sogar ohne Internet.`,
+        `Sehr leicht, kostenlos, und dein Fortschritt bleibt erhalten.`,
+      ],
+      inst_go: `Jetzt installieren`,
+      inst_android: `In Chrome: Tippe oben rechts auf das Menü ⋮ und dann auf „App installieren“ oder „Zum Startbildschirm hinzufügen“.`,
+      inst_ios: `In Safari: Tippe auf die Teilen-Taste und dann auf „Zum Home-Bildschirm“.`,
+      inst_desktop: `Klicke auf das Installationssymbol in der Adressleiste oder wähle im Browsermenü „Glimmer Maze installieren“.`,
+      inst_done: `Installiert! Du findest Glimmer Maze auf deinem Startbildschirm.`,
       share: `Teilen`,
       share_hint: `Zeig das Spiel einem Freund: Er scannt diesen Code mit der Handykamera, oder du schickst ihm den Link.`,
       share_link: `Link teilen`,
@@ -501,6 +619,29 @@ details .rules{margin-top:10px}
       ]
     },
     ru: {
+      sugg: `Предложения`,
+      sugg_h: `Есть идея? Нашёл ошибку?`,
+      sugg_hint: `Твоё сообщение помогает нам улучшать игру. Оно отправляется анонимно: не пиши личные данные.`,
+      sugg_ph: `Напиши своё предложение…`,
+      sugg_send: `Отправить`,
+      sugg_sending: `Отправка…`,
+      sugg_sent: `Спасибо! Предложение отправлено.`,
+      sugg_err: `Не удалось отправить. Проверь подключение и попробуй ещё раз.`,
+      sugg_wait: `Подожди минуту, прежде чем отправить ещё одно предложение.`,
+      sugg_off: `Отправка предложений здесь недоступна.`,
+      install: `Установить приложение`,
+      inst_h: `Установи Glimmer Maze`,
+      inst_list: [
+        `Значок на главном экране, как у настоящего приложения.`,
+        `Игра открывается на весь экран, без панели браузера.`,
+        `Работает даже без интернета.`,
+        `Очень лёгкая, бесплатная, а прогресс сохраняется.`,
+      ],
+      inst_go: `Установить сейчас`,
+      inst_android: `В Chrome: нажми меню ⋮ вверху справа, затем «Установить приложение» или «Добавить на главный экран».`,
+      inst_ios: `В Safari: нажми кнопку «Поделиться», затем «На экран «Домой»».`,
+      inst_desktop: `Нажми значок установки в адресной строке браузера или выбери «Установить Glimmer Maze» в его меню.`,
+      inst_done: `Готово! Glimmer Maze теперь на главном экране.`,
       share: `Поделиться`,
       share_hint: `Покажи игру другу: пусть отсканирует этот код камерой телефона, или отправь ему ссылку.`,
       share_link: `Поделиться ссылкой`,
@@ -554,6 +695,29 @@ details .rules{margin-top:10px}
       ]
     },
     zh: {
+      sugg: `建议`,
+      sugg_h: `有想法？发现问题？`,
+      sugg_hint: `你的留言能帮助我们改进游戏。留言为匿名发送，请不要填写个人信息。`,
+      sugg_ph: `写下你的建议…`,
+      sugg_send: `发送`,
+      sugg_sending: `发送中…`,
+      sugg_sent: `谢谢！你的建议已发送。`,
+      sugg_err: `发送失败。请检查网络后重试。`,
+      sugg_wait: `请等一分钟再发送下一条建议。`,
+      sugg_off: `此处无法发送建议。`,
+      install: `安装应用`,
+      inst_h: `安装 Glimmer Maze`,
+      inst_list: [
+        `主屏幕上有图标，和真正的应用一样。`,
+        `全屏打开游戏，没有浏览器地址栏。`,
+        `没有网络也能玩。`,
+        `非常小巧、免费，进度会保留。`,
+      ],
+      inst_go: `立即安装`,
+      inst_android: `在 Chrome 中：点右上角的 ⋮ 菜单，然后选择“安装应用”或“添加到主屏幕”。`,
+      inst_ios: `在 Safari 中：点分享按钮，然后选择“添加到主屏幕”。`,
+      inst_desktop: `点击浏览器地址栏中的安装图标，或在浏览器菜单中选择“安装 Glimmer Maze”。`,
+      inst_done: `安装完成！你可以在主屏幕上找到 Glimmer Maze。`,
       share: `分享`,
       share_hint: `把游戏分享给朋友：让他们用手机相机扫描这个二维码，或者直接发送链接给他们。`,
       share_link: `分享链接`,
@@ -607,6 +771,29 @@ details .rules{margin-top:10px}
       ]
     },
     mn: {
+      sugg: `Санал`,
+      sugg_h: `Санаа байна уу? Алдаа олсон уу?`,
+      sugg_hint: `Таны зурвас тоглоомыг сайжруулахад тусална. Нэргүйгээр илгээгддэг тул хувийн мэдээлэл бүү оруулаарай.`,
+      sugg_ph: `Саналаа бичнэ үү…`,
+      sugg_send: `Илгээх`,
+      sugg_sending: `Илгээж байна…`,
+      sugg_sent: `Баярлалаа! Таны санал илгээгдлээ.`,
+      sugg_err: `Илгээж чадсангүй. Холболтоо шалгаад дахин оролдоно уу.`,
+      sugg_wait: `Дараагийн саналаа илгээхээс өмнө нэг минут хүлээнэ үү.`,
+      sugg_off: `Энд санал илгээх боломжгүй.`,
+      install: `Апп суулгах`,
+      inst_h: `Glimmer Maze-г суулгах`,
+      inst_list: [
+        `Жинхэнэ апп шиг нүүр дэлгэц дээр дүрс тэмдэгтэй.`,
+        `Тоглоом хөтчийн мөргүйгээр бүтэн дэлгэцээр нээгдэнэ.`,
+        `Интернэтгүй ч ажиллана.`,
+        `Маш хөнгөн, үнэгүй, ахиц тань хадгалагдана.`,
+      ],
+      inst_go: `Одоо суулгах`,
+      inst_android: `Chrome-д: баруун дээд буланд байгаа ⋮ цэсийг дараад «Апп суулгах» эсвэл «Нүүр дэлгэцэд нэмэх»-ийг сонгоно уу.`,
+      inst_ios: `Safari-д: Хуваалцах товчийг дараад «Нүүр дэлгэцэд нэмэх»-ийг сонгоно уу.`,
+      inst_desktop: `Хөтчийн хаягийн мөрөнд байгаа суулгах дүрсийг дарах эсвэл цэснээс «Glimmer Maze суулгах»-ыг сонгоно уу.`,
+      inst_done: `Суулгалаа! Glimmer Maze-г нүүр дэлгэцээсээ олно.`,
       share: `Хуваалцах`,
       share_hint: `Тоглоомоо найздаа үзүүл: тэр энэ кодыг утасныхаа камераар уншуулна, эсвэл холбоосыг илгээгээрэй.`,
       share_link: `Холбоос хуваалцах`,
@@ -877,6 +1064,7 @@ details .rules{margin-top:10px}
   const keys = new Set();
   let mouse = null, joy = null;
   addEventListener('keydown', e => {
+    if (e.target && /^(TEXTAREA|INPUT)$/.test(e.target.tagName)) return;
     keys.add(e.code);
     if (state === 'reveal' && !e.repeat) revealT = Math.min(revealT, REVEAL_ZOOM);
     if ((e.code === 'Space' || e.code === 'KeyE') && !e.repeat && state === 'play') { toggleLamp(); e.preventDefault(); }
@@ -1143,7 +1331,7 @@ details .rules{margin-top:10px}
     showScreen(`
       <h1>Glimmer Maze</h1>
       <p>${t('tagline')}</p>
-      <div class="row"><button type="button" id="play">${save.tutorial ? t('playLevel', save.unlocked) : t('play')}</button><button type="button" class="ghost" id="tutoBtn">${t('tutoBtn')}</button><button type="button" class="ghost" id="shopBtn">${t('shopBtn')}</button><button type="button" class="ghost ic" id="langBtn">${GLOBE}${t('language')}</button><button type="button" class="ghost" id="soundBtn">${soundLabel()}</button><a class="linkbtn" href="https://graciaso685-prog.github.io/" target="_blank" rel="noopener">${EXT}${t('website')}</a><button type="button" class="ghost ic" id="shareBtn">${SHARE_IC}${t('share')}</button></div>
+      <div class="row"><button type="button" id="play">${save.tutorial ? t('playLevel', save.unlocked) : t('play')}</button><button type="button" class="ghost" id="tutoBtn">${t('tutoBtn')}</button><button type="button" class="ghost" id="shopBtn">${t('shopBtn')}</button><button type="button" class="ghost ic" id="langBtn">${GLOBE}${t('language')}</button><button type="button" class="ghost" id="soundBtn">${soundLabel()}</button><a class="linkbtn" href="https://graciaso685-prog.github.io/" target="_blank" rel="noopener">${EXT}${t('website')}</a><button type="button" class="ghost ic" id="shareBtn">${SHARE_IC}${t('share')}</button><button type="button" class="ghost ic" id="suggBtn">${SUGG_IC}${t('sugg')}</button>${isInstalled() ? '' : `<button type="button" class="ghost ic" id="installBtn">${DL_IC}${t('install')}</button>`}</div>
       ${annHTML()}
       <p class="muted">${t('summary', save.shards, total, save.unlocked * 3)}</p>
       <div class="levels">${cells}</div>
@@ -1151,6 +1339,8 @@ details .rules{margin-top:10px}
     $('play').onclick = () => { if (!save.tutorial) startTutorial(); else { level = save.unlocked; startLevel(); } };
     $('tutoBtn').onclick = startTutorial;
     $('shareBtn').onclick = shareScreen;
+    $('suggBtn').onclick = suggestScreen;
+    if ($('installBtn')) $('installBtn').onclick = installScreen;
     if ($('annClose')) $('annClose').onclick = () => { try { localStorage.setItem('gm-ann-closed', String(announce.id)); } catch (e) {} $('annClose').parentNode.remove(); };
     $('shopBtn').onclick = shop;
     $('panel').querySelectorAll('[data-lvl]').forEach(b => b.onclick = () => { level = +b.dataset.lvl; startLevel(); });
@@ -1202,6 +1392,60 @@ details .rules{margin-top:10px}
     $('back').onclick = menu;
   }
   const EXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+  const SUGG_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  const DL_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>';
+
+  // ---------- Suggestions (anonymes, lues dans l'appli admin) ----------
+  let lastSugg = 0;
+  function suggestScreen() {
+    view = 'suggest';
+    showScreen(`
+      <h1>${t('sugg_h')}</h1>
+      <p class="muted">${t('sugg_hint')}</p>
+      <textarea id="sgText" maxlength="1000" rows="6" placeholder="${t('sugg_ph')}" aria-label="${t('sugg')}"></textarea>
+      <div class="row"><button type="button" id="sgSend">${t('sugg_send')}</button><button type="button" class="ghost" id="back">${t('back')}</button></div>
+      <p class="muted" id="sgStatus" role="status"></p>`);
+    const st = $('sgStatus'), btn = $('sgSend');
+    $('back').onclick = menu;
+    if (!FBX) { st.textContent = t('sugg_off'); btn.disabled = true; return; }
+    btn.onclick = () => {
+      const txt = $('sgText').value.trim();
+      if (!txt) { $('sgText').focus(); return; }
+      const lastSent = Math.max(lastSugg, lsGet('gm-sugg-last') || 0);
+      if (Date.now() - lastSent < 60000) { st.textContent = t('sugg_wait'); return; }
+      btn.disabled = true; btn.textContent = t('sugg_sending'); st.textContent = '';
+      FBX.send('suggestions', { text: txt.slice(0, 1000), lang: lang, level: save.unlocked, read: false })
+        .then(() => { lastSugg = Date.now(); lsSet('gm-sugg-last', lastSugg); $('sgText').value = ''; st.textContent = t('sugg_sent'); })
+        .catch(() => { st.textContent = t('sugg_err'); })
+        .then(() => { btn.disabled = false; btn.textContent = t('sugg_send'); });
+    };
+  }
+
+  // ---------- Installation de l'appli web ----------
+  let installEvt = null, fromPlayStore = false;
+  try { fromPlayStore = document.referrer.startsWith('android-app://') || sessionStorage.getItem('gm-twa') === '1'; if (fromPlayStore) sessionStorage.setItem('gm-twa', '1'); } catch (e) {}
+  function isInstalled() {
+    try { return fromPlayStore || navigator.standalone === true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches; } catch (e) { return false; }
+  }
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; });
+  addEventListener('appinstalled', () => { installEvt = null; if ($('installBtn')) $('installBtn').remove(); });
+  function installScreen() {
+    view = 'install';
+    const ua = navigator.userAgent;
+    const manual = /iPhone|iPad|iPod/.test(ua) ? t('inst_ios') : /Android/.test(ua) ? t('inst_android') : t('inst_desktop');
+    showScreen(`
+      <h1>${t('inst_h')}</h1>
+      <ul class="checks">${t('inst_list').map(x => `<li><span class="ok">✓</span>${x}</li>`).join('')}</ul>
+      <div class="row"><button type="button" id="instGo">${t('inst_go')}</button><button type="button" class="ghost" id="back">${t('back')}</button></div>
+      <p class="muted" id="instMsg" role="status"></p>`);
+    $('back').onclick = menu;
+    $('instGo').onclick = () => {
+      if (!installEvt) { $('instMsg').textContent = manual; return; }
+      installEvt.prompt();
+      installEvt.userChoice.then(c => { if (c && c.outcome === 'accepted') $('instMsg').textContent = t('inst_done'); installEvt = null; }).catch(() => {});
+    };
+  }
+
   const SHARE_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
   const SHARE_URL = 'https://graciaso685-prog.github.io/glimmer-maze/';
   function shareScreen() {
