@@ -25,7 +25,10 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin) return;
   // Page du jeu : réseau d'abord (pour avoir la dernière version), cache si hors connexion
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); return r; }).catch(() => caches.match('./index.html')));
+    // Seule la page du jeu sert de page hors connexion ; les autres pages (politique…) passent normalement
+    const isGame = /\/glimmer-maze\/(index\.html)?$/.test(url.pathname);
+    if (!isGame) return;
+    e.respondWith(fetch(req).then(r => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); } return r; }).catch(() => caches.match('./index.html')));
     return;
   }
   e.respondWith(caches.match(req).then(hit => hit || fetch(req)));

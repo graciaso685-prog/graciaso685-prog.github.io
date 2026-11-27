@@ -1,6 +1,6 @@
 // Généré par build.py — ne pas modifier sw.js directement.
 // Met le jeu en cache pour qu'il marche hors connexion après la première ouverture.
-const CACHE = 'glimmer-maze-8272d75cff';
+const CACHE = 'glimmer-maze-2b9af71edd';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png', './share-card.jpg'];
 
 self.addEventListener('install', e => {
@@ -25,7 +25,10 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin) return;
   // Page du jeu : réseau d'abord (pour avoir la dernière version), cache si hors connexion
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); return r; }).catch(() => caches.match('./index.html')));
+    // Seule la page du jeu sert de page hors connexion ; les autres pages (politique…) passent normalement
+    const isGame = /\/glimmer-maze\/(index\.html)?$/.test(url.pathname);
+    if (!isGame) return;
+    e.respondWith(fetch(req).then(r => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); } return r; }).catch(() => caches.match('./index.html')));
     return;
   }
   e.respondWith(caches.match(req).then(hit => hit || fetch(req)));

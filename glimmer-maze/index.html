@@ -98,6 +98,8 @@ details .rules{margin-top:10px}
 #screen a.plink{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;text-decoration:underline;text-underline-offset:3px}
 #screen a.plink svg{width:14px;height:14px}
 #screen a.plink:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+#screen.wide .panel{max-width:760px;height:100%;padding-block:16px;box-sizing:border-box}
+.privframe{flex:1;width:100%;min-height:60vh;border:1px solid #2c2b35;border-radius:14px;background:#07070b}
 #screen button.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--muted);font-size:13px;padding:11px 20px}
 #screen .levels button{align-self:stretch;padding:10px 4px 8px;border-radius:12px;background:#17161d;color:var(--ink);border:1.5px solid #2c2b35;display:flex;flex-direction:column;align-items:center;gap:4px;font:800 16px var(--display)}
 #screen .levels button.cur{border-color:var(--lamp)}
@@ -1434,11 +1436,13 @@ details .rules{margin-top:10px}
       ${annHTML()}
       <p class="muted">${t('summary', save.shards, total, save.unlocked * 3)}</p>
       <div class="levels">${cells}</div>
-      <p class="plinks"><a class="plink" href="https://graciaso685-prog.github.io/glimmer-maze/privacy.html?lang=${lang}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${t('privacy')}</a></p>
+      <p class="plinks"><a class="plink" id="privLink" href="https://graciaso685-prog.github.io/glimmer-maze/privacy.html?lang=${lang}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${t('privacy')}</a></p>
       <details><summary>${t('howTo')}</summary><dl class="rules">${rules}</dl></details>`);
     $('play').onclick = () => { if (!save.tutorial) startTutorial(); else { level = save.unlocked; startLevel(); } };
     $('tutoBtn').onclick = startTutorial;
     $('shareBtn').onclick = shareScreen;
+    // Sur le site du jeu, la politique s'ouvre dans un écran du jeu (pas de nouvelle fenêtre)
+    if (location.hostname === 'graciaso685-prog.github.io') $('privLink').onclick = e => { e.preventDefault(); privacyScreen(); };
     $('suggBtn').onclick = suggestScreen;
     if ($('installBtn')) $('installBtn').onclick = installScreen;
     if ($('annClose')) $('annClose').onclick = () => { try { localStorage.setItem('gm-ann-closed', String(announce.id)); } catch (e) {} $('annClose').parentNode.remove(); };
@@ -1508,6 +1512,16 @@ details .rules{margin-top:10px}
   const EXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
   const SUGG_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
   const DL_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>';
+
+  // ---------- Politique de confidentialité, affichée dans le jeu ----------
+  function privacyScreen() {
+    view = 'privacy';
+    showScreen(`
+      <div class="row"><button type="button" class="ghost" id="back">${t('back')}</button></div>
+      <iframe class="privframe" src="/glimmer-maze/privacy.html?lang=${lang}&embed=1" title="${t('privacy')}"></iframe>`);
+    $('screen').classList.add('wide');
+    $('back').onclick = menu;
+  }
 
   // ---------- Suggestions (anonymes, lues dans l'appli admin) ----------
   let lastSugg = 0;
@@ -1636,6 +1650,7 @@ details .rules{margin-top:10px}
     if (master) master.gain.setTargetAtTime(save.sound ? 0.9 : 0, actx.currentTime, 0.05);
   }
   function showScreen(html) {
+    $('screen').classList.remove('wide');
     $('panel').innerHTML = html;
     $('screen').hidden = false;
     $('hud').hidden = true; $('lampBtn').hidden = true; $('tip').hidden = true;
@@ -2075,7 +2090,7 @@ details .rules{margin-top:10px}
 </script>
 
 <script>
-if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=8272d75cff').catch(() => {}));
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=2b9af71edd').catch(() => {}));
 </script>
 </body>
 </html>
