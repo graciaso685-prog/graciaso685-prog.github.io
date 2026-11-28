@@ -125,10 +125,15 @@ details .rules{margin-top:10px}
 #splash .s-bar i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,rgba(255,197,107,.55),var(--lamp));box-shadow:0 0 12px rgba(255,197,107,.6)}
 #s-pct{font:600 13px var(--body);color:var(--muted);font-variant-numeric:tabular-nums}
 .bat{position:relative}
-#spareBtn{position:absolute;top:calc(100% + 12px);right:0;pointer-events:auto;display:inline-flex;align-items:center;gap:5px;min-height:40px;background:rgba(255,197,107,.16);border:1.5px solid var(--lamp);color:var(--lamp);border-radius:999px;padding:6px 14px 6px 10px;font:700 15px var(--body);cursor:pointer;touch-action:none;box-shadow:0 0 14px rgba(255,197,107,.25)}
-#spareBtn svg{width:18px;height:18px}
-#spareBtn:active{transform:scale(.95)}
-#spareBtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#gadgets{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 26px);display:flex;gap:10px;flex-wrap:wrap;max-width:calc(100% - 150px);z-index:4}
+#gadgets button{position:relative;width:50px;height:50px;border-radius:14px;border:1.5px solid var(--lamp);background:rgba(20,18,26,.82);color:var(--lamp);display:grid;place-items:center;padding:0;cursor:pointer;touch-action:none}
+#gadgets button svg{width:24px;height:24px}
+#gadgets button b{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;border-radius:10px;background:var(--lamp);color:#1a1408;font:700 11px/20px var(--body);text-align:center}
+#gadgets button.on{background:rgba(255,197,107,.3);box-shadow:0 0 16px rgba(255,197,107,.55)}
+#gadgets button:active{transform:scale(.94)}
+#gadgets button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.gicon{width:34px;height:34px;flex:none;border-radius:50%;background:#0d0c12;color:var(--lamp);display:grid;place-items:center}
+.gicon svg{width:20px;height:20px}
 #hud .hs{color:#9fe8ff;margin-left:8px}
 #hud .time.late{text-decoration:line-through}
 #tip{position:fixed;top:calc(env(safe-area-inset-top,0px) + 80px);left:50%;translate:-50% 0;width:min(360px,calc(100% - 32px));box-sizing:border-box;padding:12px 14px;border-radius:14px;background:rgba(14,13,20,.9);border:1px solid #2c2b35;pointer-events:none;display:flex;flex-direction:column;gap:4px;transition:border-color .2s}
@@ -161,9 +166,10 @@ details .rules{margin-top:10px}
 <div id="hud" hidden>
   <div class="info"><button id="pauseBtn" type="button" aria-label="Pause"><span></span><span></span></button><span class="lvl" id="lvl">Niveau 1</span><span class="time" id="time">0:00</span><span class="hs" id="hudShards">◆ 0</span></div>
   <div id="alert">Repéré !</div>
-  <div class="bat"><button type="button" id="spareBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="5" width="12" height="17" rx="2"/><path d="M10 2h4M12 9v6M9 12h6"/></svg><span id="spareN"></span></button><span id="batLabel">Lampe</span><div class="bat-bar"><div class="bat-fill" id="batFill" style="width:100%"></div></div></div>
+  <div class="bat"><span id="batLabel">Lampe</span><div class="bat-bar"><div class="bat-fill" id="batFill" style="width:100%"></div></div></div>
 </div>
 
+<div id="gadgets" hidden></div>
 <div id="snack" hidden role="status"></div>
 <div id="tip" hidden><span id="tipStep"></span><p id="tipText"></p></div>
 
@@ -234,20 +240,27 @@ details .rules{margin-top:10px}
       { id: 'tr-etoiles', price: 140, n: { fr: 'Étoiles', en: 'Stars', es: 'Estrellas', pt: 'Estrelas', de: 'Sterne', ru: 'Звёзды', zh: '星星', mn: 'Одод' } }
     ],
     gear: [
-      { id: 'gear-battery', price: 30, consumable: true, n: { fr: 'Pile de réserve', en: 'Spare battery', es: 'Pila de repuesto', pt: 'Pilha reserva', de: 'Ersatzbatterie', ru: 'Запасная батарейка', zh: '备用电池', mn: 'Нөөц зай' } }
+      { id: 'gear-battery', price: 30, consumable: true, n: { fr: 'Pile de réserve', en: 'Spare battery', es: 'Pila de repuesto', pt: 'Pilha reserva', de: 'Ersatzbatterie', ru: 'Запасная батарейка', zh: '备用电池', mn: 'Нөөц зай' } },
+      { id: 'gear-compass', price: 25, consumable: true, n: { fr: 'Boussole', en: 'Compass', es: 'Brújula', pt: 'Bússola', de: 'Kompass', ru: 'Компас', zh: '指南针', mn: 'Луужин' } },
+      { id: 'gear-decoy', price: 40, consumable: true, n: { fr: 'Leurre lumineux', en: 'Light decoy', es: 'Señuelo luminoso', pt: 'Isca luminosa', de: 'Lichtköder', ru: 'Световая приманка', zh: '诱饵灯', mn: 'Гэрэлт өгөөш' } },
+      { id: 'gear-cloak', price: 70, consumable: true, n: { fr: "Cape d'invisibilité", en: 'Invisibility cloak', es: 'Capa de invisibilidad', pt: 'Capa da invisibilidade', de: 'Tarnumhang', ru: 'Плащ-невидимка', zh: '隐身斗篷', mn: 'Үл үзэгдэх нөмрөг' } },
+      { id: 'gear-phase', price: 90, consumable: true, n: { fr: 'Passe-muraille', en: 'Wall walker', es: 'Atravesador de muros', pt: 'Atravessa-paredes', de: 'Wandläufer', ru: 'Сквозь стены', zh: '穿墙器', mn: 'Хана нэвтлэгч' } }
     ]
   };
   const SLOT = { lamps: 'lamp', skins: 'skin', trails: 'trail' };
   const DEFAULTS = ['ambre', 'sk-classique', 'tr-aucune'];
   // Progression (sauvegardée dans le navigateur pour ce prototype)
-  let save = { unlocked: 1, stars: {}, shards: 0, collected: {}, owned: DEFAULTS.slice(), lamp: 'ambre', skin: 'sk-classique', trail: 'tr-aucune', lang: null, sound: true, spares: 0 };
-  const SPARE_MAX = 3, SPARE_BOOST = 50;
+  let save = { unlocked: 1, stars: {}, shards: 0, collected: {}, owned: DEFAULTS.slice(), lamp: 'ambre', skin: 'sk-classique', trail: 'tr-aucune', lang: null, sound: true, spares: 0, gear: {} };
+  const GEAR_MAX = 3, SPARE_BOOST = 50, GEAR_ORDER = ['gear-battery', 'gear-compass', 'gear-decoy', 'gear-cloak', 'gear-phase'];
+  const gearCount = id => (save.gear && save.gear[id]) || 0;
   try {
     const raw = localStorage.getItem('lueur-save');
     if (raw) save = Object.assign(save, JSON.parse(raw));
     else { const b = parseInt(localStorage.getItem('lueur-best') || '1', 10); if (b > 1) save.unlocked = b; }
   } catch (e) {}
   for (const id of DEFAULTS) if (!save.owned.includes(id)) save.owned.push(id);
+  if (!save.gear || typeof save.gear !== 'object') save.gear = {};
+  if (save.spares > 0) { save.gear['gear-battery'] = (save.gear['gear-battery'] || 0) + save.spares; save.spares = 0; }
   function persist() { try { localStorage.setItem('lueur-save', JSON.stringify(save)); } catch (e) {} }
   let prismOn = false, prismAcc = 0;
   function applyLamp() {
@@ -270,6 +283,13 @@ details .rules{margin-top:10px}
   const plRu = (n, one, few, many) => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many; };
   const I18N = {
     fr: {
+      gd_battery: `+50 % de batterie.`,
+      gd_compass: `Une flèche montre la direction de la sortie pendant 8 secondes.`,
+      gd_decoy: `Lance une lumière devant toi qui attire les chasseurs proches pendant 7 secondes.`,
+      gd_cloak: `Les chasseurs ne te voient plus pendant 6 secondes, même lampe allumée.`,
+      gd_phase: `Traverse le mur juste devant toi (un mur d'épaisseur).`,
+      gear_hint: `Les gadgets s'utilisent pendant une partie avec les boutons en bas à gauche (touches 1 à 5 sur ordinateur). 3 maximum de chaque.`,
+      nowall: `Pas de mur à traverser juste devant toi.`,
       privacy: `Confidentialité`,
       tab_gear: `Équipement`,
       gear_bat_desc: `+50 % de batterie, à utiliser pendant une partie (bouton à côté de la jauge).`,
@@ -351,6 +371,13 @@ details .rules{margin-top:10px}
       ]
     },
     en: {
+      gd_battery: `+50% battery.`,
+      gd_compass: `An arrow points toward the exit for 8 seconds.`,
+      gd_decoy: `Throws a light ahead of you that lures nearby hunters for 7 seconds.`,
+      gd_cloak: `Hunters can't see you for 6 seconds, even with your lamp on.`,
+      gd_phase: `Walk through the wall right in front of you (one wall thick).`,
+      gear_hint: `Use gadgets during a level with the buttons at the bottom left (keys 1–5 on a computer). Up to 3 of each.`,
+      nowall: `No wall to walk through right in front of you.`,
       privacy: `Privacy`,
       tab_gear: `Gear`,
       gear_bat_desc: `+50% battery, to use during a level (button next to the gauge).`,
@@ -432,6 +459,13 @@ details .rules{margin-top:10px}
       ]
     },
     es: {
+      gd_battery: `+50 % de batería.`,
+      gd_compass: `Una flecha señala la dirección de la salida durante 8 segundos.`,
+      gd_decoy: `Lanza una luz delante de ti que atrae a los cazadores cercanos durante 7 segundos.`,
+      gd_cloak: `Los cazadores no te ven durante 6 segundos, aunque lleves la linterna encendida.`,
+      gd_phase: `Atraviesa el muro que tienes justo delante (un muro de grosor).`,
+      gear_hint: `Los gadgets se usan durante la partida con los botones de abajo a la izquierda (teclas 1 a 5 en ordenador). Máximo 3 de cada uno.`,
+      nowall: `No hay ningún muro que atravesar justo delante.`,
       privacy: `Privacidad`,
       tab_gear: `Equipo`,
       gear_bat_desc: `+50 % de batería, para usar durante una partida (botón junto al indicador).`,
@@ -513,6 +547,13 @@ details .rules{margin-top:10px}
       ]
     },
     pt: {
+      gd_battery: `+50% de bateria.`,
+      gd_compass: `Uma seta aponta a direção da saída por 8 segundos.`,
+      gd_decoy: `Lança uma luz à sua frente que atrai os caçadores próximos por 7 segundos.`,
+      gd_cloak: `Os caçadores não te veem por 6 segundos, mesmo com a lanterna acesa.`,
+      gd_phase: `Atravesse a parede logo à sua frente (uma parede de espessura).`,
+      gear_hint: `Os gadgets são usados durante a partida com os botões no canto inferior esquerdo (teclas 1 a 5 no computador). Máximo de 3 de cada.`,
+      nowall: `Não há parede para atravessar logo à sua frente.`,
       privacy: `Privacidade`,
       tab_gear: `Equipamento`,
       gear_bat_desc: `+50% de bateria, para usar durante uma partida (botão ao lado do indicador).`,
@@ -594,6 +635,13 @@ details .rules{margin-top:10px}
       ]
     },
     de: {
+      gd_battery: `+50 % Akku.`,
+      gd_compass: `Ein Pfeil zeigt 8 Sekunden lang die Richtung zum Ausgang.`,
+      gd_decoy: `Wirft ein Licht vor dich, das nahe Jäger 7 Sekunden lang anlockt.`,
+      gd_cloak: `Jäger sehen dich 6 Sekunden lang nicht, selbst mit eingeschalteter Lampe.`,
+      gd_phase: `Geh durch die Wand direkt vor dir (eine Wand dick).`,
+      gear_hint: `Gadgets setzt du während einer Runde mit den Tasten unten links ein (Tasten 1–5 am Computer). Höchstens 3 von jedem.`,
+      nowall: `Direkt vor dir ist keine Wand zum Durchqueren.`,
       privacy: `Datenschutz`,
       tab_gear: `Ausrüstung`,
       gear_bat_desc: `+50 % Akku, während einer Runde einsetzbar (Taste neben der Anzeige).`,
@@ -675,6 +723,13 @@ details .rules{margin-top:10px}
       ]
     },
     ru: {
+      gd_battery: `+50 % заряда.`,
+      gd_compass: `Стрелка 8 секунд показывает направление к выходу.`,
+      gd_decoy: `Бросает перед тобой свет, который 7 секунд приманивает ближайших охотников.`,
+      gd_cloak: `Охотники не видят тебя 6 секунд, даже с включённым фонарём.`,
+      gd_phase: `Пройди сквозь стену прямо перед тобой (толщиной в одну стену).`,
+      gear_hint: `Гаджеты используются во время игры кнопками внизу слева (клавиши 1–5 на компьютере). Не больше 3 каждого.`,
+      nowall: `Прямо перед тобой нет стены, через которую можно пройти.`,
       privacy: `Конфиденциальность`,
       tab_gear: `Снаряжение`,
       gear_bat_desc: `+50 % заряда, можно использовать во время игры (кнопка рядом с индикатором).`,
@@ -756,6 +811,13 @@ details .rules{margin-top:10px}
       ]
     },
     zh: {
+      gd_battery: `电量 +50%。`,
+      gd_compass: `箭头在 8 秒内指向出口方向。`,
+      gd_decoy: `向前抛出一束光，在 7 秒内吸引附近的猎人。`,
+      gd_cloak: `6 秒内猎人看不到你，即使手电开着。`,
+      gd_phase: `穿过你正前方的墙（一堵墙的厚度）。`,
+      gear_hint: `游戏中用左下角的按钮使用道具（电脑上按 1–5 键）。每种最多 3 个。`,
+      nowall: `正前方没有可以穿过的墙。`,
       privacy: `隐私政策`,
       tab_gear: `装备`,
       gear_bat_desc: `电量 +50%，可在游戏中使用（电量条旁的按钮）。`,
@@ -837,6 +899,13 @@ details .rules{margin-top:10px}
       ]
     },
     mn: {
+      gd_battery: `Цэнэг +50%.`,
+      gd_compass: `Сум 8 секундийн турш гарцын чиглэлийг заана.`,
+      gd_decoy: `Урд тань гэрэл шидэж, ойролцоох анчдыг 7 секунд татна.`,
+      gd_cloak: `Чийдэн асаалттай байсан ч анчид чамайг 6 секунд харахгүй.`,
+      gd_phase: `Яг урд байгаа ханаар нэвт гар (нэг ханын зузаан).`,
+      gear_hint: `Хэрэгслийг тоглолтын үеэр зүүн доод буланд байгаа товчоор ашиглана (компьютер дээр 1–5 товч). Тус бүр 3 хүртэл.`,
+      nowall: `Яг урд тань нэвтрэх хана алга.`,
       privacy: `Нууцлал`,
       tab_gear: `Хэрэгсэл`,
       gear_bat_desc: `Цэнэг +50%, тоглолтын үеэр ашиглана (заалтын хажууд байгаа товч).`,
@@ -1074,7 +1143,7 @@ details .rules{margin-top:10px}
   function startLevel() {
     view = 'game';
     tutorial = false; $('tip').hidden = true; lampBtn.classList.remove('hint');
-    updateSpareUI();
+    fx = { compass: 0, cloak: 0, decoy: null, lastAct: -1 }; updateGadgetUI();
     const size = Math.min(7 + level * 2, 19);
     genMaze(size, size);
     player = { x: 1.5, y: 1.5, a: isWall(2, 1) ? Math.PI / 2 : 0, lamp: true, bat: 100 };
@@ -1140,7 +1209,9 @@ details .rules{margin-top:10px}
     keys.add(e.code);
     if (state === 'reveal' && !e.repeat) revealT = Math.min(revealT, REVEAL_ZOOM);
     if ((e.code === 'Space' || e.code === 'KeyE') && !e.repeat && state === 'play') { toggleLamp(); e.preventDefault(); }
-    if (e.code === 'KeyB' && !e.repeat && state === 'play') useSpare();
+    if (e.code === 'KeyB' && !e.repeat && state === 'play') useGadget('gear-battery');
+    const gi = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5'].indexOf(e.code);
+    if (gi >= 0 && !e.repeat && state === 'play') useGadget(GEAR_ORDER[gi]);
     if ((e.code === 'Escape' || e.code === 'KeyP') && state === 'play') pause();
     if (e.code === 'Enter' && state !== 'play') { const b = $('panel').querySelector('button'); if (b) b.click(); }
   });
@@ -1194,20 +1265,57 @@ details .rules{margin-top:10px}
   addEventListener('pointerdown', armBack, true);
   addEventListener('keydown', armBack, true);
 
-  function updateSpareUI() {
-    const b = $('spareBtn'); if (!b) return;
-    b.hidden = tutorial || !(save.spares > 0);
-    $('spareN').textContent = '×' + (save.spares || 0);
-    b.setAttribute('aria-label', t('gear_use'));
+  // ---------- Gadgets (achetés en boutique, utilisés pendant une partie) ----------
+  const GSVG = d => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
+  const GEAR_IC = {
+    'gear-battery': GSVG('<rect x="6" y="5" width="12" height="17" rx="2"/><path d="M10 2h4M12 9v6M9 12h6"/>'),
+    'gear-compass': GSVG('<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'),
+    'gear-decoy': GSVG('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>'),
+    'gear-cloak': GSVG('<path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4 9.5 6a13 13 0 0 1-3 3.6M6.6 6.6A13.5 13.5 0 0 0 2.5 12c1 2 4.5 6 9.5 6a9.6 9.6 0 0 0 4.4-1"/>'),
+    'gear-phase': GSVG('<path d="M10 4v16M14 4v16M3 12h18M17 8l4 4-4 4"/>')
+  };
+  let fx = { compass: 0, cloak: 0, decoy: null, lastAct: -1 };
+  const gearActive = id => (id === 'gear-compass' && fx.compass > time) || (id === 'gear-cloak' && fx.cloak > time) || (id === 'gear-decoy' && !!fx.decoy && fx.decoy.until > time);
+  function updateGadgetUI() {
+    const box = $('gadgets'); if (!box) return;
+    const list = GEAR_ORDER.filter(id => gearCount(id) > 0);
+    box.hidden = tutorial || !list.length;
+    box.innerHTML = list.map(id => {
+      const it = CATALOG.gear.find(x => x.id === id), on = gearActive(id);
+      return `<button type="button" data-g="${id}" class="${on ? 'on' : ''}" aria-label="${it.n[lang] || it.n.en}"${on ? ' disabled' : ''}>${GEAR_IC[id]}<b>${gearCount(id)}</b></button>`;
+    }).join('');
+    box.querySelectorAll('[data-g]').forEach(b => {
+      b.addEventListener('pointerdown', e => { e.stopPropagation(); e.preventDefault(); useGadget(b.dataset.g); });
+      b.addEventListener('click', e => { if (e.detail === 0) useGadget(b.dataset.g); });
+    });
   }
-  function useSpare() {
-    if (state !== 'play' || tutorial || !(save.spares > 0) || player.bat >= 99) return;
-    save.spares--; persist();
-    player.bat = Math.min(100, player.bat + SPARE_BOOST);
-    sfx('bat'); updateSpareUI();
+  function useGadget(id) {
+    if (state !== 'play' || tutorial || gearCount(id) <= 0 || gearActive(id)) return;
+    if (id === 'gear-battery') {
+      if (player.bat >= 99) return;
+      player.bat = Math.min(100, player.bat + SPARE_BOOST); sfx('bat');
+    } else if (id === 'gear-compass') {
+      fx.compass = time + 8; sfx('shard');
+    } else if (id === 'gear-cloak') {
+      fx.cloak = time + 6;
+      for (const h of hunters) if (h.state === 'chase') { h.state = 'search'; h.timer = 2.5; h.path = []; h.lured = false; }
+      sfx('lamp');
+    } else if (id === 'gear-decoy') {
+      const d = Math.max(0, Math.min(castRay(player.x, player.y, player.a, 4) - 0.4, 4));
+      fx.decoy = { x: player.x + Math.cos(player.a) * d, y: player.y + Math.sin(player.a) * d, until: time + 7, next: 0 };
+      sfx('shard');
+    } else if (id === 'gear-phase') {
+      const ax = Math.cos(player.a), ay = Math.sin(player.a);
+      const dx = Math.abs(ax) >= Math.abs(ay) ? Math.sign(ax) : 0, dy = dx ? 0 : Math.sign(ay);
+      const tx = fl(player.x), ty = fl(player.y), nx = tx + 2 * dx, ny = ty + 2 * dy;
+      if (!isWall(tx + dx, ty + dy) || isWall(nx, ny) || nx <= 0 || ny <= 0 || nx >= gw - 1 || ny >= gh - 1) { snack(t('nowall')); return; }
+      player.x = nx + 0.5; player.y = ny + 0.5;
+      shake = reduceMotion ? 0 : 0.25; sfx('bat');
+    }
+    save.gear[id] = gearCount(id) - 1; persist();
+    updateGadgetUI();
   }
-  $('spareBtn').addEventListener('pointerdown', e => { e.stopPropagation(); e.preventDefault(); useSpare(); });
-  $('spareBtn').addEventListener('click', e => { if (e.detail === 0) useSpare(); });
+  const updateSpareUI = updateGadgetUI;
 
   function toggleLamp() {
     if (!player.lamp && player.bat < 15) { flashBattery(); return; }
@@ -1239,6 +1347,7 @@ details .rules{margin-top:10px}
 
   // ---------- Chasseurs ----------
   function hunterSees(h) {
+    if (fx.cloak > time) return false;                                                 // cape d'invisibilité
     const dx = player.x - h.x, dy = player.y - h.y, d = Math.hypot(dx, dy);
     if (!los(h.x, h.y, player.x, player.y)) return false;
     if (d < 0.9) return true;                                                          // il t'entend
@@ -1259,8 +1368,8 @@ details .rules{margin-top:10px}
   function updateHunter(h, dt) {
     const sees = hunterSees(h);
     if (sees) {
-      if (h.state !== 'chase') { if (alertFlash < 0.3) sfx('spotted'); alertFlash = 1; spotted = true; try { navigator.vibrate && navigator.vibrate(70); } catch (_) {} }
-      h.state = 'chase'; h.last = { x: player.x, y: player.y };
+      if (h.state !== 'chase' || h.lured) { if (alertFlash < 0.3) sfx('spotted'); alertFlash = 1; spotted = true; try { navigator.vibrate && navigator.vibrate(70); } catch (_) {} }
+      h.state = 'chase'; h.lured = false; h.last = { x: player.x, y: player.y };
     }
     if (h.state === 'chase') {
       const toPlayer = Math.atan2(player.y - h.y, player.x - h.x);
@@ -1273,7 +1382,7 @@ details .rules{margin-top:10px}
       } else {
         followPath(h, chaseSpeed(), dt, sees ? toPlayer : undefined);
       }
-      if (!sees && !h.path.length && h.repath < 0.2) { h.state = 'search'; h.timer = 3.5; }
+      if (!sees && !h.path.length && h.repath < 0.2) { h.state = 'search'; h.timer = 3.5; h.lured = false; }
     } else if (h.state === 'search') {
       h.a += dt * 2.2;
       h.timer -= dt;
@@ -1334,9 +1443,13 @@ details .rules{margin-top:10px}
       try { navigator.vibrate && navigator.vibrate(20); } catch (_) {}
     }
 
+    if (fx.decoy && fx.decoy.until > time && time >= fx.decoy.next) {
+      fx.decoy.next = time + 1;
+      for (const h of hunters) if (Math.hypot(h.x - fx.decoy.x, h.y - fx.decoy.y) < 9 && !hunterSees(h)) { h.state = 'chase'; h.lured = true; h.last = { x: fx.decoy.x, y: fx.decoy.y }; h.repath = 0; }
+    }
     for (const h of hunters) {
       updateHunter(h, dt);
-      if (Math.hypot(h.x - player.x, h.y - player.y) < 0.55) return tutorial ? tutorialCaught() : lose();
+      if (fx.cloak <= time && Math.hypot(h.x - player.x, h.y - player.y) < 0.55) return tutorial ? tutorialCaught() : lose();
     }
     if (fl(player.x) === exit.x && fl(player.y) === exit.y) return tutorial ? tutorialDone() : win();
 
@@ -1348,7 +1461,9 @@ details .rules{margin-top:10px}
     const s = fl(time);
     $('time').textContent = tutorial ? fmt(s) : fmt(s) + ' / ' + fmt(par);
     $('time').classList.toggle('late', time > par);
-    const chasing = hunters.some(h => h.state === 'chase');
+    const chasing = hunters.some(h => h.state === 'chase' && !h.lured);
+    const act = (fx.compass > time ? 1 : 0) + (fx.cloak > time ? 2 : 0) + (fx.decoy && fx.decoy.until > time ? 4 : 0);
+    if (act !== fx.lastAct) { fx.lastAct = act; updateGadgetUI(); }
     $('alert').classList.toggle('on', chasing);
     let nearest = Infinity;
     for (const h of hunters) nearest = Math.min(nearest, Math.hypot(h.x - player.x, h.y - player.y));
@@ -1407,6 +1522,7 @@ details .rules{margin-top:10px}
     $('home').onclick = menu;
   }
   function resume() {
+    setTimeout(updateGadgetUI, 0);
     state = 'play'; $('screen').hidden = true; $('hud').hidden = false; $('lampBtn').hidden = false;
     if (tutorial) $('tip').hidden = false;
     last = performance.now();
@@ -1453,8 +1569,8 @@ details .rules{margin-top:10px}
     const cat = CATALOG[shopTab], slot = SLOT[shopTab];
     const items = cat.map(it => {
       if (it.consumable) {
-        const have = save.spares || 0, full = have >= SPARE_MAX;
-        return `<li><canvas class="pv" width="68" height="68" data-pv="${it.id}" aria-hidden="true"></canvas><span class="name">${it.n[lang] || it.n.en}<span class="note">${t('gear_bat_desc')} ${t('gear_have', have, SPARE_MAX)}</span></span><button type="button" data-buy="${it.id}"${save.shards < it.price || full ? ' disabled' : ''}>◆ ${it.price}</button></li>`;
+        const have = gearCount(it.id), full = have >= GEAR_MAX;
+        return `<li><span class="gicon">${GEAR_IC[it.id]}</span><span class="name">${it.n[lang] || it.n.en}<span class="note">${t('gd_' + it.id.slice(5))} ${t('gear_have', have, GEAR_MAX)}</span></span><button type="button" data-buy="${it.id}"${save.shards < it.price || full ? ' disabled' : ''}>◆ ${it.price}</button></li>`;
       }
       const owned = save.owned.includes(it.id), on = save[slot] === it.id;
       const btn = on ? `<button type="button" disabled>${t('equipped')}</button>`
@@ -1470,6 +1586,7 @@ details .rules{margin-top:10px}
       <h1>${t('shopTitle')}</h1>
       <p class="muted">${t('shopIntro', save.shards)}</p>
       <div class="tabs" role="group">${tabs}</div>
+      ${shopTab === 'gear' ? `<p class="muted">${t('gear_hint')}</p>` : ''}
       <ul class="shop">${items}</ul>
       <div class="row"><button type="button" class="ghost" id="back">${t('back')}</button></div>`);
     $('panel').querySelectorAll('canvas[data-pv]').forEach(cv => {
@@ -1493,8 +1610,8 @@ details .rules{margin-top:10px}
       const it = cat.find(x => x.id === b.dataset.buy);
       if (!it || save.shards < it.price) return;
       if (it.consumable) {
-        if ((save.spares || 0) >= SPARE_MAX) return;
-        save.shards -= it.price; save.spares = (save.spares || 0) + 1;
+        if (gearCount(it.id) >= GEAR_MAX) return;
+        save.shards -= it.price; save.gear[it.id] = gearCount(it.id) + 1;
         stat({ ['purchases.' + it.id]: 1 }); persist(); sfx('bat'); shop();
         return;
       }
@@ -1646,6 +1763,7 @@ details .rules{margin-top:10px}
     if (master) master.gain.setTargetAtTime(save.sound ? 0.9 : 0, actx.currentTime, 0.05);
   }
   function showScreen(html) {
+    if ($('gadgets')) $('gadgets').hidden = true;
     $('screen').classList.remove('wide');
     $('panel').innerHTML = html;
     $('screen').hidden = false;
@@ -1692,7 +1810,7 @@ details .rules{margin-top:10px}
     $('screen').hidden = true; $('hud').hidden = false; $('lampBtn').hidden = false;
     $('tip').hidden = true; $('tip').dataset.shown = '';
     $('lvl').textContent = t('tutorial'); $('hudShards').textContent = '◆ 0/1';
-    updateSpareUI();
+    fx = { compass: 0, cloak: 0, decoy: null, lastAct: -1 }; updateGadgetUI();
     trail = [];
     updateLampUI();
   }
@@ -1973,10 +2091,19 @@ details .rules{margin-top:10px}
       ctx.fillStyle = C.hunter;
       ctx.beginPath(); ctx.arc(sx(h.x + Math.cos(h.a) * R * 0.55), sy(h.y + Math.sin(h.a) * R * 0.55), R * T * 0.28, 0, Math.PI * 2); ctx.fill();
     }
+    // Leurre lumineux
+    if (fx.decoy && fx.decoy.until > time) {
+      const pz = 1 + 0.15 * Math.sin(now / 120);
+      ctx.fillStyle = C.lamp; ctx.shadowColor = C.lamp; ctx.shadowBlur = T * 0.6;
+      ctx.beginPath(); ctx.arc(sx(fx.decoy.x), sy(fx.decoy.y), T * 0.14 * pz, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+    }
     // Joueur
+    const cloaked = fx.cloak > time;
+    if (cloaked) ctx.globalAlpha = 0.4;
     drawSkin(ctx, sx(player.x), sy(player.y), R * T, player.a, save.skin);
     ctx.fillStyle = player.lamp ? C.lamp : '#6d6a78';
     ctx.beginPath(); ctx.arc(sx(player.x + Math.cos(player.a) * R * 0.6), sy(player.y + Math.sin(player.a) * R * 0.6), R * T * 0.3, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
 
     // Obscurité
     dctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -1997,6 +2124,7 @@ details .rules{margin-top:10px}
     const hCones = hunters.map(h => cone(h.x, h.y, h.a, H_RANGE, 40));
     hunters.forEach((h, i) => { cutCone(h.x, h.y, hCones[i], H_RANGE, 0.9); cutCircle(h.x, h.y, 0.6, 0.55); });
     cutCircle(exit.x + 0.5, exit.y + 0.5, 1.8, 0.55);
+    if (fx.decoy && fx.decoy.until > time) cutCircle(fx.decoy.x, fx.decoy.y, 2.4, 0.85);
 
     ctx.globalAlpha = k; ctx.drawImage(dark, 0, 0, W, H); ctx.globalAlpha = 1;
 
@@ -2006,6 +2134,28 @@ details .rules{margin-top:10px}
       ctx.fillStyle = h.state === 'chase' ? 'rgba(255,90,69,0.3)' : 'rgba(255,90,69,0.18)';
       polyPath(ctx, h.x, h.y, hCones[i]); ctx.fill();
     });
+
+    // Gadgets : boussole, cape, leurre
+    if (state === 'play' || state === 'pause') {
+      if (fx.compass > time) {
+        const ang = Math.atan2(exit.y + 0.5 - player.y, exit.x + 0.5 - player.x), r = T * 1.25;
+        const ax = sx(player.x) + Math.cos(ang) * r, ay = sy(player.y) + Math.sin(ang) * r;
+        ctx.save(); ctx.translate(ax, ay); ctx.rotate(ang);
+        ctx.globalAlpha = 0.65 + 0.35 * Math.sin(now / 150);
+        ctx.fillStyle = C.exit; ctx.beginPath(); ctx.moveTo(T * 0.48, 0); ctx.lineTo(-T * 0.24, -T * 0.3); ctx.lineTo(-T * 0.09, 0); ctx.lineTo(-T * 0.24, T * 0.3); ctx.closePath(); ctx.fill();
+        ctx.restore(); ctx.globalAlpha = 1;
+      }
+      if (fx.cloak > time) {
+        const left = (fx.cloak - time) / 6;
+        ctx.strokeStyle = '#8fd3ff'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(sx(player.x), sy(player.y), T * 0.62, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * left); ctx.stroke();
+      }
+      if (fx.decoy && fx.decoy.until > time) {
+        const ph = reduceMotion ? 0.5 : (now / 700) % 1;
+        ctx.strokeStyle = C.lamp; ctx.lineWidth = 2; ctx.globalAlpha = 1 - ph;
+        ctx.beginPath(); ctx.arc(sx(fx.decoy.x), sy(fx.decoy.y), T * (0.3 + ph * 0.9), 0, Math.PI * 2); ctx.stroke(); ctx.globalAlpha = 1;
+      }
+    }
 
     // Tutoriel : repère sur l'objectif en cours
     if (tutorial && state === 'play') {
